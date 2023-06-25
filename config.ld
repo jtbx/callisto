@@ -19,8 +19,7 @@ file = {
 	".",
 	exclude = {
 		"external",
-		"lua-5.4",
-		"test.lua"
+		"lua-5.4"
 	}
 }
 

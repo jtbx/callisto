@@ -3,3 +3,4 @@
 *.so
 csto
 doc/
+test.lua
