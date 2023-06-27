@@ -9,10 +9,7 @@
 #include <signal.h>
 #include <string.h>
 #include <errno.h>
-#ifdef __linux__
-#	include <bsd/string.h>
-#else
-/* assume BSD */
+#ifdef BSD
 #	include <string.h>
 #endif
 

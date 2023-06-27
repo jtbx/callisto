@@ -9,10 +9,7 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <errno.h>
-#ifdef __linux__
-#	include <bsd/string.h>
-#else
-/* assume BSD */
+#ifdef BSD
 #	include <string.h>
 #endif
 
