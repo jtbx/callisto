@@ -62,7 +62,7 @@ $(LUA_A): $(BASE_O)
 	$(RANLIB) $@
 
 $(LUA_SO): $(CORE_O) $(LIB_O)
-	$(CC) -shared -ldl -Wl,-soname,$(LUA_SO) -o $@ $? -lm $(MYLDFLAGS)
+	$(CC) -shared -Wl,-soname,$(LUA_SO) -o $@ $? -lm $(MYLDFLAGS)
 
 $(LUA_T): $(LUA_O) $(LUA_A)
 	$(CC) -o $@ $(LDFLAGS) $(LUA_O) $(LUA_A) $(LIBS)
