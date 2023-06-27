@@ -9,20 +9,10 @@
 		lua_setfield(L, -2, lib[i].name);           \
 	}
 
-/*
- * Pushes the fail value and the string mesg
- * onto the stack, then returns 2.
- */
-int lfail(lua_State *L, const char* mesg);
-/*
- * Prepends t onto s.
- * Assumes s has enough space allocated
- * for the combined string.
- */
-void strprepend(char* s, const char* t);
+int lfail(lua_State *, const char *);
 
-/*
- * Slices the string s into buf.
- * The sliced string has the range [start .. end].
- */
-void strslice(const char *s, char *buf, size_t start, size_t end);
+#ifndef BSD
+size_t strlcat(char *, const char *, size_t);
+size_t strlcpy(char *, const char *, size_t);
+#endif
+void strprepend(char *, const char *);
