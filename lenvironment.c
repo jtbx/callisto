@@ -18,6 +18,8 @@
 #include "util.h"
 
 
+extern char **environ;
+
 /***
  * Returns the value of the given environment
  * variable.
@@ -72,7 +74,8 @@ environment_set(lua_State *L)
 
 	variable = luaL_checkstring(L, 1);
 	value    = luaL_checkstring(L, 2);
-	ret      = setenv(variable, value, 1);
+
+	ret	= setenv(variable, value, 1);
 
 	if (ret == 0)
 		return 0;
@@ -110,7 +113,7 @@ environment_clear(lua_State *L)
 	int ret;
 
 	if (lua_isnoneornil(L, 1)) {
-		clearenv();
+		environ = NULL;
 		return 0;
 	}
 
