@@ -31,13 +31,11 @@ your system's default C compiler. This should be gcc on Linux, and
 clang on most of the BSDs. If *cc* doesn't exist on your system,
 change the `CC` variable in the Makefile to your desired C compiler.
 
-At runtime you will need the following libraries:
- - libdl: for loading C modules
+At runtime you will need only these two libraries:
  - libm: basic math operations
  - libreadline: REPL history
- - (Linux only) libbsd: Utility functions from BSD operating systems
 
-All of these are very common and should be already installed on
+Both of these are very common and should be already installed on
 your machine.
 
 ## Installation
