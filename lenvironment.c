@@ -13,7 +13,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "lenvironment.h"
 #include "lcallisto.h"
 #include "util.h"
 

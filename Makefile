@@ -18,7 +18,7 @@ libcallisto.so: ${OBJS} ${LIBS}
 	${CC} -shared ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${LIBS}
 csto.o: csto.c lcallisto.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -c csto.c
-lcallisto.o: lcallisto.c lenvironment.h lfile.h los.h lprocess.h
+lcallisto.o: lcallisto.c lcallisto.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -c lcallisto.c
 lcl.o: lcl.c lcallisto.h
 	${CC} ${CFLAGS} ${CPPFLAGS} -c lcl.c

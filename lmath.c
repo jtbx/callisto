@@ -6,7 +6,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "lmath.h"
 #include "lcallisto.h"
 #include "util.h"
 

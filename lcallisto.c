@@ -8,16 +8,6 @@
 
 #include "lcallisto.h"
 
-/* Callisto libraries */
-#include "lcl.h"
-#include "lenvironment.h"
-#include "lfile.h"
-#include "ljson.h"
-#include "lmath.h"
-#include "los.h"
-#include "lprocess.h"
-#include "lsocket.h"
-
 
 static const luaL_Reg loadedlibs[] = {
 	{CALLISTO_CLLIBNAME,   callistoopen_cl},

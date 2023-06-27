@@ -12,7 +12,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "ljson.h"
 #include "lcallisto.h"
 
 
