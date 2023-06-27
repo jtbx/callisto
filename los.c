@@ -17,7 +17,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "los.h"
 #include "lcallisto.h"
 #include "util.h"
 
