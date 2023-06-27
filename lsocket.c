@@ -11,7 +11,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "lsocket.h"
 #include "lcallisto.h"
 
 

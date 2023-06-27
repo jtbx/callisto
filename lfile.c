@@ -16,7 +16,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "lfile.h"
 #include "lcallisto.h"
 #include "util.h"
 
