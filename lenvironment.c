@@ -6,10 +6,7 @@
 
 #include <stdlib.h>
 #include <errno.h>
-#ifdef __linux__
-#	include <bsd/string.h>
-#else
-/* assume BSD */
+#ifdef BSD
 #	include <string.h>
 #endif
 
@@ -18,6 +15,7 @@
 
 #include "lenvironment.h"
 #include "lcallisto.h"
+#include "util.h"
 
 
 /***
