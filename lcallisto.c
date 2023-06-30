@@ -12,6 +12,7 @@
 static const luaL_Reg loadedlibs[] = {
 	{CALLISTO_CLLIBNAME,   callistoopen_cl},
 	{CALLISTO_ENVLIBNAME,  callistoopen_environment},
+	{CALLISTO_EXTLIBNAME,  callistoopen_extra},
 	{CALLISTO_FILELIBNAME, callistoopen_file},
 	{CALLISTO_JSONLIBNAME, callistoopen_json},
 	{CALLISTO_MATHLIBNAME, callistoopen_math},
@@ -42,7 +43,6 @@ callisto_openlibs(lua_State *L)
 		lua_newtable(L);
 		lib->func(L); /* load library */
 		lua_setglobal(L, lib->name);
-		//lua_pop(L, 1);  /* remove lib */
 	}
 }
 
