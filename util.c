@@ -21,6 +21,11 @@ lfail(lua_State *L, const char* mesg)
 	return LFAIL_RET;
 }
 
+/*
+ * String concatenation and copying functions
+ * from OpenBSD lib/libc/string/strlcat.c and
+ * lib/libc/string/strlcpy.c respectively
+ */
 #ifndef BSD
 /*
  * Appends src to string dst of size dsize (unlike strncat, dsize is the
@@ -86,7 +91,6 @@ strlcpy(char *dst, const char *src, size_t dsize)
 	return(src - osrc - 1);	/* count does not include NUL */
 }
 #endif
-
 /*
  * Prepends t to s.
  */
