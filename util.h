@@ -1,7 +1,9 @@
+#include <string.h>
 #include <lua.h>
 
 #define LFAIL_RET 2
 
+#define streq(s1, s2) (strcmp((s1), (s2)) == 0)
 #define newoverride(L, lib, libname)                \
 	lua_getglobal(L, libname);                      \
 	for (int i = 0; lib[i].name != NULL; i++) {     \
