@@ -6,7 +6,7 @@
 # Your platform. See PLATS for possible values.
 PLAT= guess
 
-CC= cc -std=gnu99
+CC= cc -std=c99
 CFLAGS= -O2 -fpic -Wall -Wextra -DLUA_COMPAT_5_3 $(SYSCFLAGS) $(MYCFLAGS)
 LDFLAGS= $(SYSLDFLAGS) $(MYLDFLAGS)
 LIBS= -lm $(SYSLIBS) $(MYLIBS)
