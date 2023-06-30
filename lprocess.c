@@ -135,7 +135,7 @@ strtosig(const char *sig)
 	int i;
 
 	for (i = 1; i <= SIGC; i++) {
-		if (strcmp(signals[i], sig) == 0) {
+		if (streq(signals[i], sig)) {
 			return i; /* valid signal found */
 		}
 	}
