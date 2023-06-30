@@ -17,6 +17,7 @@
 
 #define CALLISTO_CLLIBNAME   "cl"
 #define CALLISTO_ENVLIBNAME  "environment"
+#define CALLISTO_EXTLIBNAME  "_G" /* global table */
 #define CALLISTO_FILELIBNAME "file"
 #define CALLISTO_JSONLIBNAME "json"
 #define CALLISTO_MATHLIBNAME "math"
@@ -26,6 +27,7 @@
 
 int callistoopen_cl(lua_State *);
 int callistoopen_environment(lua_State *);
+int callistoopen_extra(lua_State *);
 int callistoopen_file(lua_State *);
 int callistoopen_json(lua_State *);
 int callistoopen_math(lua_State *);
