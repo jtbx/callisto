@@ -93,7 +93,7 @@ environ_newindex(lua_State *L)
 }
 
 static const luaL_Reg mt[] = {
-	{"__index", environ_index},
+	{"__index",    environ_index},
 	{"__newindex", environ_newindex},
 	{NULL, NULL}
 };
