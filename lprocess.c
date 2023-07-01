@@ -93,12 +93,12 @@ static const char *signals[] = {
 static int
 process_pid(lua_State *L)
 {
-	char *process; /* parameter 1 (string) */
-	char *command; /* pidof command buffer */
-	char *buffer;  /* pidof reading buffer */
-	long pid;      /* pid to return to Lua */
-	size_t pidmax; /* length passed to getline */
-	ssize_t ret;   /* return value of getline */
+	const char *process; /* parameter 1 (string) */
+	char *command;       /* pidof command buffer */
+	char *buffer;        /* pidof reading buffer */
+	long pid;            /* pid to return to Lua */
+	size_t pidmax;       /* length passed to getline */
+	ssize_t ret;         /* return value of getline */
 	FILE *p;
 
 	if (lua_isnoneornil(L, 1)) { /* check if first parameter wasn't given */
@@ -106,7 +106,7 @@ process_pid(lua_State *L)
 		return 1;
 	}
 
-	process = (char *)luaL_checkstring(L, 1);
+	process = luaL_checkstring(L, 1);
 	command = calloc(1, PROCESS_MAX * sizeof(char *));
 
 	/* construct pidof command */

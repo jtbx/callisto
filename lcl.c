@@ -24,7 +24,7 @@ static void
 fmesg(lua_State *L, FILE* f, int shift)
 {
 	int paramc, i;
-	char *progname; /* argv[0] */
+	const char *progname; /* argv[0] */
 
 	paramc = lua_gettop(L); /* get parameter count */
 
@@ -32,7 +32,7 @@ fmesg(lua_State *L, FILE* f, int shift)
 	if (lua_type(L, -1) != LUA_TSTRING) { /* if argv[0] is not a string... */
 		luaL_error(L, "invalid argument table passed (must have an string in index [0])");
 	}
-	progname = (char *)lua_tostring(L, -1); /* set progname to argv[0] */
+	progname = lua_tostring(L, -1); /* set progname to argv[0] */
 
 	/* format using string.format */
 	lua_getglobal(L, "string");
@@ -229,7 +229,7 @@ cl_parseopts(lua_State *L)
 
 	/* parameter type checking */
 	luaL_checktype(L, 1, LUA_TTABLE);
-	strlcpy(optstring, (char *)luaL_checkstring(L, 2), lua_rawlen(L, 2) * sizeof(char *));
+	strlcpy(optstring, luaL_checkstring(L, 2), lua_rawlen(L, 2) * sizeof(char *));
 	luaL_checktype(L, 3, LUA_TFUNCTION);
 
 	argc = (int)lua_rawlen(L, 1) + 1; /* get argv length */
