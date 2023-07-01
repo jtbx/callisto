@@ -10,6 +10,16 @@
 #include "util.h"
 
 
+/***
+ * Linearly interpolates using the values given.
+ *
+ * Returns `x + (y - x) * z`
+ *
+ * @function lerp
+ * @tparam number x
+ * @tparam number y
+ * @tparam number z
+ */
 static int
 math_lerp(lua_State *L)
 {
