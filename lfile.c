@@ -38,11 +38,11 @@
 static int
 file_basename(lua_State *L)
 {
-	char *path; /* parameter 1 (string) */
-	char *ret;
+	const char *path; /* parameter 1 (string) */
+	const char *ret;
 
-	path = (char *)luaL_checkstring(L, 1);
-	ret = basename(path);
+	path = luaL_checkstring(L, 1);
+	ret  = basename(path);
 
 	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
 		return lfail(L, "pathname too long");
@@ -70,11 +70,11 @@ file_basename(lua_State *L)
 static int
 file_dirname(lua_State *L)
 {
-	char *path; /* parameter 1 (string) */
-	char *ret;
+	const char *path; /* parameter 1 (string) */
+	const char *ret;
 
-	path = (char *)luaL_checkstring(L, 1);
-	ret = dirname(path);
+	path = luaL_checkstring(L, 1);
+	ret  = dirname(path);
 
 	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
 		return lfail(L, "pathname too long");
@@ -269,8 +269,8 @@ file.workdir(environment.get("HOME"))
 static int
 file_workdir(lua_State *L)
 {
-	char *workdir; /* parameter 1 (string) */
-	char *buffer; /* buffer used by getcwd() */
+	const char *workdir; /* parameter 1 (string) */
+	char *buffer;        /* buffer used by getcwd() */
 	char *ret;
 	if (lua_isnoneornil(L, 1)) { /* if first argument was not given... */
 		buffer = malloc(sizeof(char *) * 512);
@@ -305,7 +305,7 @@ file_workdir(lua_State *L)
 
 		return 0;
 	} else {
-		workdir = (char *)luaL_checkstring(L, 1);
+		workdir = luaL_checkstring(L, 1);
 
 		if (chdir(workdir) == 0) {
 			lua_pushboolean(L, 1);
