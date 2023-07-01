@@ -79,19 +79,28 @@ static const char *signals[] = {
 };
 
 /***
+ * Returns the PID of the current process.
+ *
+ * @function pid
+ * @usage local pid = process.pid()
+ */
+static int
+process_pid(lua_State *L)
+{
+	lua_pushinteger(L, getpid()); /* push current process pid */
+	return 1;
+}
+/***
  * Returns the ID of the given process.
  *
  * Returns nil if the process was not found.
  *
- * If the first parameter is nil,
- * returns the ID of the current running process.
- *
- * @function pid
- * @usage process.pid("init")
- * @tparam[opt] string process The process to look up.
+ * @function pidof
+ * @usage process.pidof("init")
+ * @tparam string process The process to look up.
  */
 static int
-process_pid(lua_State *L)
+process_pidof(lua_State *L)
 {
 	const char *process; /* parameter 1 (string) */
 	char *command;       /* pidof command buffer */
@@ -268,6 +277,7 @@ process_terminate(lua_State *L)
 static const luaL_Reg proclib[] = {
 	{"kill",      process_kill},
 	{"pid",       process_pid},
+	{"pidof",     process_pidof},
 	{"send",      process_send},
 	{"signum",    process_signum},
 	{"terminate", process_terminate},
