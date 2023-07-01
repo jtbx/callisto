@@ -5,8 +5,8 @@ CFLAGS   = -std=c99 -pedantic -fpic -O2 -Wall -Wextra -Wno-override-init -I. -Il
 CPPFLAGS = -D_DEFAULT_SOURCE -DLUA_USE_READLINE
 LDFLAGS = -lm -lreadline
 
-OBJS = csto.o lcallisto.o lcl.o lenvironment.o lextra.o \
-	   lfile.o ljson.o lmath.o los.o lprocess.o lsocket.o util.o
+OBJS = csto.o lcallisto.o lcl.o lenviron.o lextra.o lfile.o \
+	   ljson.o lmath.o los.o lprocess.o lsocket.o util.o
 LIBS = liblua.a cjson.a socket.a
 
 all: csto libcallisto.so
@@ -25,7 +25,7 @@ csto.o: csto.c lcallisto.h
 lcallisto.o: lcallisto.c lcallisto.h
 lcl.o: lcl.c lcallisto.h
 lextra.o: lextra.c lcallisto.h
-lenvironment.o: lenvironment.c lcallisto.h
+lenviron.o: lenviron.c lcallisto.h
 lfile.o: lfile.c lcallisto.h
 ljson.o: ljson.c lcallisto.h
 lmath.o: lmath.c lcallisto.h

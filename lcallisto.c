@@ -11,7 +11,7 @@
 
 static const luaL_Reg loadedlibs[] = {
 	{CALLISTO_CLLIBNAME,   callistoopen_cl},
-	{CALLISTO_ENVLIBNAME,  callistoopen_environment},
+	{CALLISTO_ENVLIBNAME,  callistoopen_environ},
 	{CALLISTO_EXTLIBNAME,  callistoopen_extra},
 	{CALLISTO_FILELIBNAME, callistoopen_file},
 	{CALLISTO_JSONLIBNAME, callistoopen_json},
