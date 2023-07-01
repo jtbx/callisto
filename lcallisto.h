@@ -16,7 +16,7 @@
 #define CALLISTO_COPYRIGHT	CALLISTO_VERSION " (" LUA_RELEASE ")  Copyright (C) 1994-2022 Lua.org, PUC-Rio"
 
 #define CALLISTO_CLLIBNAME   "cl"
-#define CALLISTO_ENVLIBNAME  "environment"
+#define CALLISTO_ENVLIBNAME  "environ"
 #define CALLISTO_EXTLIBNAME  "_G" /* global table */
 #define CALLISTO_FILELIBNAME "file"
 #define CALLISTO_JSONLIBNAME "json"
@@ -25,8 +25,10 @@
 #define CALLISTO_PROCLIBNAME "process"
 #define CALLISTO_SOCKLIBNAME "socket"
 
+#define CALLISTO_ENVIRON "environ"
+
 int callistoopen_cl(lua_State *);
-int callistoopen_environment(lua_State *);
+int callistoopen_environ(lua_State *);
 int callistoopen_extra(lua_State *);
 int callistoopen_file(lua_State *);
 int callistoopen_json(lua_State *);
