@@ -17,7 +17,7 @@
 int luaopen_socket_core(lua_State *L);
 
 int
-callistoopen_socket(lua_State *L)
+luaopen_socket(lua_State *L)
 {
 	luaopen_socket_core(L);
 	return 1;
