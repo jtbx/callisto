@@ -38,6 +38,7 @@ int luaopen_process(lua_State *);
 int luaopen_socket(lua_State *);
 
 lua_State *callisto_newstate(void);
+void callisto_openall(lua_State *);
 void callisto_openlibs(lua_State *);
 void callisto_setversion(lua_State *);
 
