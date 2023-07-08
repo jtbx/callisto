@@ -32,18 +32,23 @@ callisto_newstate(void)
 }
 
 void
-callisto_openlibs(lua_State *L)
+callisto_openall(lua_State *L)
 {
 	const luaL_Reg *lib;
 
-	luaL_openlibs(L);
-
-	/* "require" functions from 'loadedlibs' and set results to global table */
+	/* for every Callisto library */
 	for (lib = loadedlibs; lib->func; lib++) {
-		lua_newtable(L);
+		lua_newtable(L); /* make a new table for the library */
 		lib->func(L); /* load library */
 		lua_setglobal(L, lib->name);
 	}
+}
+
+void
+callisto_openlibs(lua_State *L)
+{
+	luaL_openlibs(L);
+	callisto_openall(L);
 }
 
 void
