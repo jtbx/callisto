@@ -10,15 +10,15 @@
 
 
 static const luaL_Reg loadedlibs[] = {
-	{CALLISTO_CLLIBNAME,   callistoopen_cl},
-	{CALLISTO_ENVLIBNAME,  callistoopen_environ},
-	{CALLISTO_EXTLIBNAME,  callistoopen_extra},
-	{CALLISTO_FILELIBNAME, callistoopen_file},
-	{CALLISTO_JSONLIBNAME, callistoopen_json},
-	{CALLISTO_MATHLIBNAME, callistoopen_math},
-	{CALLISTO_OSLIBNAME,   callistoopen_os},
-	{CALLISTO_PROCLIBNAME, callistoopen_process},
-	{CALLISTO_SOCKLIBNAME, callistoopen_socket},
+	{CALLISTO_CLLIBNAME,   luaopen_cl},
+	{CALLISTO_ENVLIBNAME,  luaopen_environ},
+	{CALLISTO_EXTLIBNAME,  luaopen_extra},
+	{CALLISTO_FILELIBNAME, luaopen_file},
+	{CALLISTO_JSONLIBNAME, luaopen_json},
+	{CALLISTO_MATHLIBNAME, luaopen_math},
+	{CALLISTO_OSLIBNAME,   luaopen_os},
+	{CALLISTO_PROCLIBNAME, luaopen_process},
+	{CALLISTO_SOCKLIBNAME, luaopen_socket},
 	{NULL, NULL}
 };
 

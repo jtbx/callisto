@@ -27,15 +27,15 @@
 
 #define CALLISTO_ENVIRON "environ"
 
-int callistoopen_cl(lua_State *);
-int callistoopen_environ(lua_State *);
-int callistoopen_extra(lua_State *);
-int callistoopen_file(lua_State *);
-int callistoopen_json(lua_State *);
-int callistoopen_math(lua_State *);
-int callistoopen_os(lua_State *);
-int callistoopen_process(lua_State *);
-int callistoopen_socket(lua_State *);
+int luaopen_cl(lua_State *);
+int luaopen_environ(lua_State *);
+int luaopen_extra(lua_State *);
+int luaopen_file(lua_State *);
+int luaopen_json(lua_State *);
+int luaopen_math(lua_State *);
+int luaopen_os(lua_State *);
+int luaopen_process(lua_State *);
+int luaopen_socket(lua_State *);
 
 lua_State *callisto_newstate(void);
 void callisto_openlibs(lua_State *);

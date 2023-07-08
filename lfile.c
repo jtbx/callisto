@@ -350,7 +350,7 @@ static const luaL_Reg filelib[] = {
 };
 
 int
-callistoopen_file(lua_State *L)
+luaopen_file(lua_State *L)
 {
 	luaL_newlib(L, filelib);
 	return 1;

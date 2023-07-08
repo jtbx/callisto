@@ -61,7 +61,7 @@ static const luaL_Reg extlib[] = {
 };
 
 int
-callistoopen_extra(lua_State *L)
+luaopen_extra(lua_State *L)
 {
 	newoverride(L, extlib, CALLISTO_EXTLIBNAME);
 	return 1;

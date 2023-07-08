@@ -285,7 +285,7 @@ static const luaL_Reg proclib[] = {
 };
 
 int
-callistoopen_process(lua_State *L)
+luaopen_process(lua_State *L)
 {
 	luaL_newlib(L, proclib);
 	return 0;

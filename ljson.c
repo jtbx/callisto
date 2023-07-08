@@ -140,7 +140,7 @@ local t = json.decode(j)
 int luaopen_cjson(lua_State *L);
 
 int
-callistoopen_json(lua_State *L)
+luaopen_json(lua_State *L)
 {
 	luaopen_cjson(L);
 	return 1;

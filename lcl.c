@@ -291,7 +291,7 @@ static const luaL_Reg cllib[] = {
 };
 
 int
-callistoopen_cl(lua_State *L)
+luaopen_cl(lua_State *L)
 {
 	luaL_newlib(L, cllib);
 	return 0;

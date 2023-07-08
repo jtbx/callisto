@@ -99,7 +99,7 @@ static const luaL_Reg mt[] = {
 };
 
 int
-callistoopen_environ(lua_State *L)
+luaopen_environ(lua_State *L)
 {
 	const luaL_Reg *lib;
 
