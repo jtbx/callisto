@@ -47,7 +47,7 @@ static const luaL_Reg oslib[] = {
 };
 
 int
-callistoopen_os(lua_State *L)
+luaopen_os(lua_State *L)
 {
 	newoverride(L, oslib, CALLISTO_OSLIBNAME);
 	return 1;

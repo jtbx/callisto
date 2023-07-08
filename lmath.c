@@ -41,7 +41,7 @@ static const luaL_Reg mathlib[] = {
 };
 
 int
-callistoopen_math(lua_State *L)
+luaopen_math(lua_State *L)
 {
 	newoverride(L, mathlib, CALLISTO_MATHLIBNAME);
 	return 0;
