@@ -240,7 +240,7 @@ cl_parseopts(lua_State *L)
 	}
 
 	if (optstring[0] == ':')
-		return luaL_error(L, "option string may not start with a colon (:)");
+		return luaL_argerror(L, 2, "option string must not start with a colon (:)");
 
 	strprepend(optstring, ":");
 
