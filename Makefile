@@ -6,7 +6,7 @@ CPPFLAGS = -D_DEFAULT_SOURCE -DLUA_USE_READLINE
 LDFLAGS = -lm -lreadline
 
 OBJS = csto.o lcallisto.o lcl.o lenviron.o lextra.o lfile.o \
-	   ljson.o lmath.o los.o lprocess.o lsocket.o util.o
+	   ljson.o lprocess.o lsocket.o util.o
 LIBS = liblua.a cjson.a socket.a
 
 all: csto libcallisto.so
@@ -28,8 +28,6 @@ lextra.o: lextra.c lcallisto.h
 lenviron.o: lenviron.c lcallisto.h
 lfile.o: lfile.c lcallisto.h
 ljson.o: ljson.c lcallisto.h
-lmath.o: lmath.c lcallisto.h
-los.o: los.c lcallisto.h
 lprocess.o: lprocess.c lcallisto.h
 lsocket.o: lsocket.c lcallisto.h
 util.o: util.c
