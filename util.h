@@ -1,6 +1,8 @@
 #include <string.h>
 #include <lua.h>
 
+#define byte char
+#define ubyte unsigned char
 #define LFAIL_RET 2
 
 #define streq(s1, s2) (strcmp((s1), (s2)) == 0)
