@@ -134,19 +134,16 @@ end
 static int
 cl_panic(lua_State *L)
 {
-	int code;
+	ubyte code;
+	ubyte isinteger;
 
-	if (lua_isinteger(L, 1)) { /* if an exit code was given... */
-		code = lua_tointeger(L, 1); /* get code */
-		luaL_checktype(L, 2, LUA_TTABLE);
-		luaL_checkstring(L, 3);
-		fmesg(L, stderr, 1);
-	} else {
-		code = 1;
-		luaL_checktype(L, 1, LUA_TTABLE);
-		luaL_checkstring(L, 2);
-		fmesg(L, stderr, 0);
-	}
+	isinteger = lua_isinteger(L, 1);
+
+	/* get exit code */
+	code = lua_tointeger(L, 1) * isinteger + 1 * !isinteger;
+	luaL_checktype(L, 1 + isinteger, LUA_TTABLE);
+	luaL_checkstring(L, 2 + isinteger);
+	fmesg(L, stderr, isinteger);
 
 	/* format using string.format */
 	lua_getglobal(L, "os");
@@ -255,11 +252,8 @@ cl_parseopts(lua_State *L)
 		lua_pushvalue(L, 3);
 
 		/* first function parameter: opt */
-		if (ch == '?')
-			lua_pushnil(L); /* in case of unknown option */
-		else if (ch == ':')
-			lua_pushliteral(L, "*"); /* in case of missing option argument */
-		else
+		(ch == '?') ? lua_pushnil(L) : /* in case of unknown option */
+		(ch == ':') ? lua_pushliteral(L, "*") : /* in case of missing option argument */
 			lua_pushstring(L, s);
 
 		/* second function parameter: optarg */
@@ -268,9 +262,9 @@ cl_parseopts(lua_State *L)
 		lua_pushinteger(L, optind);
 		/* fourth function parameter: opterror
 		 * (only non-nil on error) */
-		if (optopt == '?') /* error was not encountered */
+		if (optopt == '?') { /* error was not encountered */
 			lua_pushnil(L);
-		else {
+		} else {
 			loptopt[0] = optopt;
 			loptopt[1] = 0;
 			lua_pushstring(L, loptopt);
