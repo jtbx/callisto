@@ -4,6 +4,11 @@
 ** See Copyright Notice in lua.h
 */
 
+/***
+ * Math and algorithms.
+ * @module math
+ */
+
 #define lmathlib_c
 #define LUA_LIB
 
@@ -646,6 +651,26 @@ static void setrandfunc (lua_State *L) {
   luaL_setfuncs(L, randfuncs, 1);
 }
 
+/***
+ * Linearly interpolates using the values given.
+ *
+ * Returns `x + (y - x) * z`
+ *
+ * @function lerp
+ * @tparam number x
+ * @tparam number y
+ * @tparam number z
+ */
+static int
+math_lerp(lua_State *L)
+{
+	double x; /* parameter 1 (number) */
+
+	x = luaL_checknumber(L, 1);
+	lua_pushnumber(L, x + (luaL_checknumber(L, 2) - x) * luaL_checknumber(L, 3));
+	return 1;
+}
+
 /* }================================================================== */
 
 
@@ -715,6 +740,7 @@ static const luaL_Reg mathlib[] = {
   {"floor", math_floor},
   {"fmod",   math_fmod},
   {"ult",   math_ult},
+  {"lerp",  math_lerp},
   {"log",   math_log},
   {"max",   math_max},
   {"min",   math_min},
