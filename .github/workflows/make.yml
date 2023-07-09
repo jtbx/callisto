@@ -1,0 +1,21 @@
+name: Compile with make
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: apt install -y bmake lua-ldoc
+    - name: Compile
+      run: make -j$(nproc)
+    - name: Generate documentation
+      run: make doc
