@@ -252,8 +252,11 @@ cl_parseopts(lua_State *L)
 		lua_pushvalue(L, 3);
 
 		/* first function parameter: opt */
-		(ch == '?') ? lua_pushnil(L) : /* in case of unknown option */
-		(ch == ':') ? lua_pushliteral(L, "*") : /* in case of missing option argument */
+		if (ch == '?') /* in case of unknown option */
+			lua_pushnil(L);
+		else if (ch == ':') /* in case of missing option argument */
+			lua_pushliteral(L, "*");
+		else /* otherwise just push the option character */
 			lua_pushstring(L, s);
 
 		/* second function parameter: optarg */
