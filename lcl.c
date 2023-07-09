@@ -24,15 +24,15 @@ static void
 fmesg(lua_State *L, FILE* f, int shift)
 {
 	int paramc, i;
-	const char *progname; /* argv[0] */
+	char *progname; /* argv[0] */
 
 	paramc = lua_gettop(L); /* get parameter count */
 
 	lua_geti(L, 1 + shift, 0); /* get index 0 of table at index 1 (argv) */
 	if (lua_type(L, -1) != LUA_TSTRING) { /* if argv[0] is not a string... */
-		luaL_error(L, "invalid argument table passed (must have an string in index [0])");
+		luaL_argerror(L, 1, "must have a string in index 0)");
 	}
-	progname = lua_tostring(L, -1); /* set progname to argv[0] */
+	progname = (char *)lua_tostring(L, -1); /* set progname to argv[0] */
 
 	/* format using string.format */
 	lua_getglobal(L, "string");
