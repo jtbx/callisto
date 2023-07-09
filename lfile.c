@@ -38,10 +38,10 @@
 static int
 file_basename(lua_State *L)
 {
-	const char *path; /* parameter 1 (string) */
 	const char *ret;
+	char *path; /* parameter 1 (string) */
 
-	path = luaL_checkstring(L, 1);
+	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
 	ret  = basename(path);
 
 	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
@@ -70,10 +70,10 @@ file_basename(lua_State *L)
 static int
 file_dirname(lua_State *L)
 {
-	const char *path; /* parameter 1 (string) */
 	const char *ret;
+	char *path; /* parameter 1 (string) */
 
-	path = luaL_checkstring(L, 1);
+	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
 	ret  = dirname(path);
 
 	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
