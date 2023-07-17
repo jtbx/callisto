@@ -2,7 +2,7 @@
 pkgs.mkShell {
 	nativeBuildInputs = with pkgs.buildPackages; [
 		bmake
-		gcc
+		clang
 		readline
 	];
 	shellHook = "alias make=bmake";
