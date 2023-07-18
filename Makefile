@@ -1,9 +1,6 @@
 PREFIX = /usr/local
 
-CC       = cc
-CFLAGS   = -std=c99 -pedantic -fpic -O2 -Wall -Wextra -Wno-override-init -I. -Ilua-5.4
-CPPFLAGS = -D_DEFAULT_SOURCE -DLUA_USE_READLINE
-LDFLAGS = -lm -lreadline
+include config.mk
 
 OBJS = csto.o lcallisto.o lcl.o lenviron.o lextra.o lfile.o \
 	   ljson.o lprocess.o lsocket.o util.o
