@@ -12,7 +12,7 @@
 
 ##### Build defaults #####
 CC     = cc
-AR     = ar rcu
+AR     = ar cr
 CFLAGS = -std=c99 -O2 -Wall -Wno-unused-function -pedantic -fpic -DNDEBUG -I../../lua-5.4
 OBJS   = dtoa.o fpconv.o g_fmt.o lua_cjson.o strbuf.o
 

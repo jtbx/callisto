@@ -28,7 +28,7 @@ DESTDIR?=
 
 #------
 # Compiler and linker settings
-AR     = ar rcu
+AR     = ar cr
 CC     = cc
 DEF    = -DLUASOCKET_${DEBUG}
 INCS   = -I../../../lua-5.4
