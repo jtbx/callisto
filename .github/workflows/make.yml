@@ -1,4 +1,4 @@
-name: Compile with make
+name: Compile
 
 on:
   push:
@@ -8,14 +8,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Install dependencies
-      run: sudo apt install -y bmake lua-ldoc
+      run: sudo apt install -y bmake
     - name: Compile
       run: make -j$(nproc)
-    - name: Generate documentation
-      run: make doc
