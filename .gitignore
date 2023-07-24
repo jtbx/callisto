@@ -1,6 +1,7 @@
 *.a
 *.o
 *.so
+*.so.*
 csto
 doc/
 include/
