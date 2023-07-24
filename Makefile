@@ -52,7 +52,7 @@ doc:
 
 install:
 	mkdir -p ${DESTDIR}${PREFIX}/{bin,lib}
-	chmod +x csto libcallisto.so
 	cp -f csto ${DESTDIR}${PREFIX}/bin
+	cp -f libcallisto.so ${DESTDIR}${PREFIX}/lib
 
 .PHONY: all clean doc install
