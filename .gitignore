@@ -3,6 +3,7 @@
 *.so
 csto
 doc/
+include/
 test.lua
 
 lua
