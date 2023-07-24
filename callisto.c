@@ -6,7 +6,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
-#include "lcallisto.h"
+#include "callisto.h"
 
 
 static const luaL_Reg loadedlibs[] = {
