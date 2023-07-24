@@ -53,11 +53,12 @@ doc:
 
 install:
 	mkdir -p include/callisto
-	mkdir -p ${DESTDIR}${PREFIX}/{bin,lib}
+	mkdir -p "${DESTDIR}${PREFIX}"/{bin,include,lib}
 	cp -f callisto.h include/callisto
 	cp -f lua-5.4/{lua.h,lualib.h,lauxlib.h,luaconf.h} \
 		include/callisto
-	cp -f csto ${DESTDIR}${PREFIX}/bin
-	cp -f libcallisto.so ${DESTDIR}${PREFIX}/lib
+	cp -f csto "${DESTDIR}${PREFIX}"/bin
+	cp -fR include/callisto "${DESTDIR}${PREFIX}"/include
+	cp -f libcallisto.so "${DESTDIR}${PREFIX}"/lib
 
 .PHONY: all clean doc install
