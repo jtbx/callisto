@@ -11,7 +11,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "lcallisto.h"
+#include "callisto.h"
 
 
 int luaopen_socket_core(lua_State *L);
