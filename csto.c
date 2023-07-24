@@ -13,7 +13,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
-#include "lcallisto.h"
+#include "callisto.h"
 
 
 #if !defined(LUA_PROGNAME)

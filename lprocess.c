@@ -16,7 +16,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "lcallisto.h"
+#include "callisto.h"
 #include "util.h"
 
 #define PID_MAX 8 /* rounded to the nearest even number */
