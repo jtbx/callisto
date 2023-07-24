@@ -1,5 +1,5 @@
 /*
- * Callisto stand-alone interpreter
+ * csto: The Callisto stand-alone interpreter
  */
 
 #include <lprefix.h>
@@ -13,7 +13,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
-#include <lcallisto.h>
+#include "lcallisto.h"
 
 
 #if !defined(LUA_PROGNAME)
@@ -21,7 +21,7 @@
 #endif
 
 #if !defined(LUA_INIT_VAR)
-#define LUA_INIT_VAR		"CALLISTO_INIT"
+#define LUA_INIT_VAR		"LUA_INIT"
 #endif
 
 #define LUA_INITVARVERSION	LUA_INIT_VAR LUA_VERSUFFIX
