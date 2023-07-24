@@ -9,7 +9,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "lcallisto.h"
+#include "callisto.h"
 
 
 extern char **environ;
