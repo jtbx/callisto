@@ -200,7 +200,7 @@ local t = json.decode(j)
  *   floating-point numbers (must be between 1 and 14, default 14)
  */
 /***
- * Configures handling of extremely sparse arrays.
+ * Configures handling of extremely sparse arrays; lists with holes.
  *
  * **Parameters:**
  *
