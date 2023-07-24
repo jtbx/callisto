@@ -8,6 +8,8 @@
 
 #include <lua.h>
 
+#define LUA_USE_POSIX
+
 #define CALLISTO_VERSION_MAJOR		"0"
 #define CALLISTO_VERSION_MINOR		"1"
 #define CALLISTO_VERSION_RELEASE	"0"

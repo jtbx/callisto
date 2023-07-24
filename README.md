@@ -18,9 +18,8 @@ First and foremost, Callisto tries to satisfy these requirements:
  - a library that works and integrates well with Lua and its
    standard library, and is easy to use
 
-Currently Callisto only works on POSIX operating systems such as
-Linux and the BSDs (mainly because I don't have a machine running
-Windows).
+Callisto only works on POSIX-compliant operating systems such as
+Linux and the BSDs. There is no plan for a Windows port.
 
 ## Dependencies
 
