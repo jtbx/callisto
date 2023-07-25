@@ -1,6 +1,6 @@
 # Callisto
 
-A featureful runtime for Lua 5.4, written in C99 using POSIX APIs.
+A featureful extension runtime for Lua 5.4, using POSIX .
 
 Callisto is an extension to Lua that adds commonly-needed functions
 and features to the language, and includes a file library to manage
@@ -12,7 +12,11 @@ Before I made Callisto, I usually had to rely on three libraries:
 luaposix for basic file manipulation and other routines, lua-cjson
 for JSON parsing support and LuaSocket for networking.
 
-First and foremost, Callisto tries to satisfy these requirements:
+luaposix provides most of the necessary functions, but is
+generally aimed towards people who already know how to use
+the POSIX APIs in C.
+
+First and foremost, Callisto tries to be:
  - an all-in-one zero-dependencies library for Lua that includes
    most features people would need, out of the box
  - a library that works and integrates well with Lua and its
@@ -45,3 +49,14 @@ executable will be named `csto`.
 To install `csto` (the Callisto standalone executable) and
 `libcallisto.so` (the Callisto shared library), run `make install`
 as the root user in the source code directory.
+
+## Usage
+
+The standalone Callisto interpreter is called `csto`. Running it
+will start a REPL so you can execute chunks of code interactively.
+
+csto works like the standalone Lua 5.4 interpreter. To run a file,
+run `csto <file>` where *<file>* is the name of the file you want
+to run. Alternatively, you can put `#!/usr/bin/env csto` at the top
+of your script, run `chmod +x` on it, and then you can run the script
+as if it was a standalone executable, for example `./yourscript.lua`.
