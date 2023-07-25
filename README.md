@@ -1,12 +1,16 @@
 # Callisto
 
-A featureful extension runtime for Lua 5.4, using POSIX .
+A featureful extension runtime for Lua 5.4, using POSIX APIs.
 
 Callisto is an extension to Lua that adds commonly-needed functions
 and features to the language, and includes a file library to manage
 and manipulate files, a process library to find active processes and
 manipulate signals, a socket and networking library using LuaSocket,
 and a JSON manipulation library *among many more*.
+
+It is a standalone runtime designed for people using Lua as a
+general scripting language, instead of using it embedded into
+another application.
 
 Before I made Callisto, I usually had to rely on three libraries:
 luaposix for basic file manipulation and other routines, lua-cjson
