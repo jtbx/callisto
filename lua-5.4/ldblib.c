@@ -379,7 +379,7 @@ static int db_sethook (lua_State *L) {
   if (!luaL_getsubtable(L, LUA_REGISTRYINDEX, HOOKKEY)) {
     /* table just created; initialize it */
     lua_pushliteral(L, "k");
-    lua_setfield(L, -2, "__mode");  /** hooktable.__mode = "k" */
+    lua_setfield(L, -2, "__mode");  /* hooktable.__mode = "k" */
     lua_pushvalue(L, -1);
     lua_setmetatable(L, -2);  /* metatable(hooktable) = hooktable */
   }
