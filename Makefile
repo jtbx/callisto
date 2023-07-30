@@ -2,8 +2,16 @@ PREFIX = /usr/local
 
 include config.mk
 
-OBJS = csto.o callisto.o lcl.o lenviron.o lextra.o lfile.o \
-	   ljson.o lprocess.o lsocket.o util.o
+OBJS = csto.o     \
+	   callisto.o \
+	   lcl.o      \
+	   lenviron.o \
+	   lextra.o   \
+	   lfs.o      \
+	   ljson.o    \
+	   lprocess.o \
+	   lsocket.o  \
+	   util.o
 LIBS = liblua.a cjson.a socket.a
 
 all: csto libcallisto.so
@@ -23,7 +31,7 @@ callisto.o: callisto.c callisto.h
 lcl.o: lcl.c callisto.h
 lextra.o: lextra.c callisto.h
 lenviron.o: lenviron.c callisto.h
-lfile.o: lfile.c callisto.h
+lfs.o: lfs.c callisto.h
 ljson.o: ljson.c callisto.h
 lprocess.o: lprocess.c callisto.h
 lsocket.o: lsocket.c callisto.h
