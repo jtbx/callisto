@@ -52,6 +52,7 @@ clean:
 	rm -f csto libcallisto.so ${OBJS} ${LIBS}
 	rm -fr include
 	rm -fr doc/*.html doc/modules
+clean-all: clean
 	${MAKE} -s -Clua-5.4 clean
 	${MAKE} -s -Cexternal/json clean
 	${MAKE} -s -Cexternal/socket clean
@@ -69,4 +70,4 @@ install:
 	cp -fR include/callisto "${DESTDIR}${PREFIX}"/include
 	cp -f libcallisto.so "${DESTDIR}${PREFIX}"/lib
 
-.PHONY: all clean doc install
+.PHONY: all clean clean-all doc install
