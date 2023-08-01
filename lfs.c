@@ -1,16 +1,21 @@
 /***
- * Files and file system manipulation.
+ * Files, directories and
+ * file system manipulation.
  * @module fs
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <libgen.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include <errno.h>
+#include <fts.h>
+#include <libgen.h>
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef BSD
 #	include <string.h>
 #endif
+#include <unistd.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -18,6 +23,31 @@
 #include "callisto.h"
 #include "util.h"
 
+/* Error messages */
+#define E_PATHNAMETOOLONG "pathname too long"
+#define E_WORKDIRNOTVALID "working directory is no longer valid"
+#define E_COMPNOTEXIST    "component of path does not exist"
+#define E_DIRNOTEMPTY     "directory not empty"
+#define E_MOUNTPOINT      "directory is busy"
+#define E_NOSUCHDEST      "no such file or directory"
+#define E_FTRAVERSE       "failed to traverse directory"
+#define E_NOSUCHDIR       "no such directory"
+#define E_STICKYDIR       "permission denied (sticky directory)"
+#define E_INTFAULT        "internal error (EFAULT)"
+#define E_MVPARENT        "cannot move a parent directory of pathname"
+#define E_FEXISTS         "file exists"
+#define E_MAXLINK         "maximum link count reached"
+#define E_NOSPACE         "insufficient space left on file system"
+#define E_NOTADIR         "pathname or a component of pathname is not a directory"
+#define E_SYMLINK         "could not translate pathname; too many symbolic links"
+#define E_DIFFFS          "pathnames are on different file systems"
+#define E_DIRDOT          "last component of path is '.'"
+#define E_ISADIR          "cannot move a file to the name of a directory"
+#define E_IOERR           "I/O error"
+#define E_NOMEM           "insufficent memory"
+#define E_QUOTA           "file system quota reached"
+#define E_PERM            "permission denied"
+#define E_ROFS            "read-only file system"
 
 /***
  * Returns the last component of the given pathname,
@@ -27,7 +57,7 @@
  * the string `"."` is returned.
  *
  * This function may return nil if the given
- * pathname is longer than the system's path length
+ * pathname exceeds the system's path length
  * limit (On most Linux systems this will be 4096).
  *
  * @function basename
@@ -44,7 +74,7 @@ fs_basename(lua_State *L)
 	ret  = basename(path);
 
 	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, "pathname too long");
+		return lfail(L, E_PATHNAMETOOLONG);
 
 	lua_pushstring(L, ret);
 	return 1;
@@ -59,7 +89,7 @@ fs_basename(lua_State *L)
  * signifying the current directory.
  *
  * This function may return nil if the given
- * pathname is longer than the system's path length
+ * pathname exceeds the system's path length
  * limit (On most Linux systems this will be 4096).
  *
  * @function dirname
@@ -76,7 +106,7 @@ fs_dirname(lua_State *L)
 	ret  = dirname(path);
 
 	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, "pathname too long");
+		return lfail(L, E_PATHNAMETOOLONG);
 
 	lua_pushstring(L, ret);
 	return 1;
@@ -88,7 +118,7 @@ fs_dirname(lua_State *L)
  * does not.
  *
  * This function may throw an error if the given
- * pathname is longer than the system's path length
+ * pathname exceeds the system's path length
  * limit (On most Linux systems this will be 4096).
  *
  * @function exists
@@ -108,10 +138,165 @@ fs_exists(lua_State *L)
 	ret = access(path, F_OK); /* check if file exists */
 
 	if (ret == -1 && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, "pathname too long");
+		return lfail(L, E_PATHNAMETOOLONG);
 
 	lua_pushboolean(L, ret == 0);
 	return 1;
+}
+
+/*
+ * Taken from OpenBSD mkdir(1)
+ * mkpath -- create directories.
+ *	path     - path
+ *	mode     - file mode of terminal directory
+ *	dir_mode - file mode of intermediate directories
+ */
+static int
+mkpath(char *path, mode_t mode, mode_t dir_mode)
+{
+	struct stat sb;
+	char *slash;
+	int done;
+
+	slash = path;
+
+	for (;;) {
+		slash += strspn(slash, "/");
+		slash += strcspn(slash, "/");
+
+		done = (*slash == '\0');
+		*slash = '\0';
+
+		if (mkdir(path, done ? mode : dir_mode) == 0) {
+			if (mode > 0777 && chmod(path, mode) == -1)
+				return -1;
+		} else {
+			int mkdir_errno = errno;
+
+			if (stat(path, &sb) == -1) {
+				/* Not there; use mkdir()s errno */
+				errno = mkdir_errno;
+				return -1;
+			}
+			if (!S_ISDIR(sb.st_mode)) {
+				/* Is there, but isn't a directory */
+				errno = ENOTDIR;
+				return -1;
+			}
+		}
+
+		if (done)
+			break;
+
+		*slash = '/';
+	}
+
+	return 0;
+}
+
+/***
+ * Creates a new directory.
+ *
+ * If *recursive* is true, creates intermediate directories
+ * as required; behaves as POSIX `mkdir -p` would.
+ *
+ * On success, returns true. Otherwise returns nil plus
+ * an error message.
+ *
+ * This function will return nil plus an error message
+ * if one of the following conditions are met:
+ *
+ *  - A component of one of the given pathnames is not a directory
+ *
+ *  - The given pathname exceeds the system's path length limit
+ *
+ *  - A component of the path prefix does not exist
+ *
+ *  - Search permission is denied for a component of the path prefix,
+ *  or write permission is denied on the parent directory of the
+ *  directory to be created.
+ *
+ *  - The given pathname could not be translated as a result
+ *  of too many symbolic links
+ *
+ *  - The directory to be created resides on a read-only file system
+ *
+ *  - The pathname given exists as a file
+ *
+ *  - There is no space left on the file system
+ *
+ *  - The current user's quota of disk blocks on the file system
+ *  containing the parent directory of the directory to be created
+ *  has been exhausted
+ *
+ * @function mkdir
+ * @usage fs.mkdir("/usr/local/bin")
+ * @tparam string dir The path of the directory to create.
+ * @tparam[opt] boolean recursive Whether to create intermediate
+ * directories as required.
+ */
+static int
+fs_mkdir(lua_State *L)
+{
+	char *dir;     /* parameter 1 (string) */
+	int recursive; /* parameter 2 (boolean) */
+	int ret;
+
+	dir = (char *)luaL_checkstring(L, 1);
+
+	if (!lua_isboolean(L, 2) && !lua_isnoneornil(L, 2)) {
+		luaL_typeerror(L, 2, "boolean");
+	}
+	recursive = lua_toboolean(L, 2);
+
+	if (recursive) {
+		ret = mkpath(dir, 0777, 0777);
+	} else {
+		ret = mkdir(dir, 0777);
+	}
+	
+	if (ret == 0) {
+		lua_pushboolean(L, 1);
+		return 1;
+	}
+
+	switch (errno) {
+		case ENOTDIR:
+			return lfail(L, E_NOTADIR);
+			break;
+		case ENAMETOOLONG:
+			return lfail(L, E_PATHNAMETOOLONG);
+			break;
+		case ENOENT:
+			return lfail(L, E_COMPNOTEXIST);
+			break;
+		case EACCES:
+			return lfail(L, E_PERM);
+			break;
+		case ELOOP:
+			return lfail(L, E_SYMLINK);
+			break;
+		case EROFS:
+			return lfail(L, E_ROFS);
+			break;
+		case EEXIST:
+			return lfail(L, E_FEXISTS);
+			break;
+		case ENOSPC:
+			return lfail(L, E_NOSPACE);
+			break;
+		case EDQUOT:
+			return lfail(L, E_QUOTA);
+			break;
+		case EIO:
+			return lfail(L, E_IOERR);
+			break;
+		case EFAULT:
+			return lfail(L, E_INTFAULT);
+			break;
+	}
+
+	return 0;
 }
 
 /***
@@ -124,7 +309,7 @@ fs_exists(lua_State *L)
  * This function will return nil plus an error message
  * if one of the following conditions are met:
  *
- *  - One of the given pathnames are longer than the system's path length limit
+ *  - One of the given pathnames exceeds the system's path length limit
  *
  *  - One of the given pathnames point to a file that does not exist
  *
@@ -173,49 +358,143 @@ fs_move(lua_State *L)
 
 	switch (errno) {
 		case ENAMETOOLONG:
-			return lfail(L, "pathname too long");
+			return lfail(L, E_PATHNAMETOOLONG);
 			break;
 		case ENOENT:
-			return lfail(L, "no such file or directory");
+			return lfail(L, E_NOSUCHDEST);
 			break;
 		case EACCES:
-			return lfail(L, "permission denied");
+			return lfail(L, E_PERM);
 			break;
 		case EPERM:
-			return lfail(L, "permission denied (sticky directory)");
+			return lfail(L, E_STICKYDIR);
 			break;
 		case ELOOP:
-			return lfail(L, "could not translate pathname; too many symbolic links");
+			return lfail(L, E_SYMLINK);
 			break;
 		case EMLINK:
-			return lfail(L, "maximum link count reached");
+			return lfail(L, E_MAXLINK);
 			break;
 		case ENOTDIR:
-			return lfail(L, "component of pathname is not a directory");
+			return lfail(L, E_NOTADIR);
 			break;
 		case EISDIR:
-			return lfail(L, "cannot move a file to the name of a directory");
+			return lfail(L, E_ISADIR);
 			break;
 		case EXDEV:
-			return lfail(L, "pathnames are on different file systems");
+			return lfail(L, E_DIFFFS);
 			break;
 		case ENOSPC:
-			return lfail(L, "insufficient space left on file system");
+			return lfail(L, E_NOSPACE);
 			break;
 		case EDQUOT:
-			return lfail(L, "file system quota reached");
+			return lfail(L, E_QUOTA);
 			break;
 		case EIO:
-			return luaL_error(L, "I/O error");
+			return lfail(L, E_IOERR);
 			break;
 		case EROFS:
-			return lfail(L, "read-only file system");
+			return lfail(L, E_ROFS);
 			break;
 		case EFAULT:
-			return luaL_error(L, "internal error (EFAULT)");
+			return lfail(L, E_INTFAULT);
 			break;
 		case EINVAL:
-			return lfail(L, "cannot move a parent directory of pathname");
+			return lfail(L, E_MVPARENT);
+			break;
+	}
+
+	return 0;
+}
+
+/***
+ * Removes an empty directory.
+ *
+ * On success, returns true. Otherwise returns nil plus
+ * an error message.
+ *
+ * This function will return nil plus an error message
+ * if one of the following conditions are met:
+ *
+ *  - A component of the given path is not a directory
+ *
+ *  - The given pathname exceeds the system's path length limit
+ *
+ *  - The named directory does not exist
+ *
+ *  - The given pathname could not be translated as a result
+ *  of too many symbolic links
+ *
+ *  - The named directory contains files other than '.' and '..' in it
+ *
+ *  - Search permission is denied for a component of the path prefix,
+ *  or write permission is denied on the directory containing the directory
+ *  to be removed
+ *
+ *  - The directory containing the directory to be removed is marked sticky,
+ *  and neither the containing directory nor the directory to be removed are
+ *  owned by the current user
+ *
+ *  - The directory to be removed or the directory containing it has its
+ *  immutable or append-only flag set
+ *
+ *  - The directory to be removed is the mount point for a mounted file system
+ *
+ *  - The last component of the directory to be removed is a '.'
+ *
+ *  - The directory to be created resides on a read-only file system
+ *
+ * @function mkdir
+ * @usage fs.rmdir("yourdirectory")
+ * @tparam string dir The path of the directory to remove.
+ */
+static int
+fs_rmdir(lua_State *L)
+{
+	const char *dir;
+	int ret;
+
+	dir = luaL_checkstring(L, 1);
+	ret = rmdir(dir);
+
+	if (ret == 0) {
+		lua_pushboolean(L, 1);
+		return 1;
+	}
+
+	switch (errno) {
+		case ENOTDIR:
+			return lfail(L, E_NOTADIR);
+			break;
+		case ENAMETOOLONG:
+			return lfail(L, E_PATHNAMETOOLONG);
+			break;
+		case ENOENT:
+			return lfail(L, E_NOSUCHDIR);
+			break;
+		case ELOOP:
+			return lfail(L, E_SYMLINK);
+			break;
+		case ENOTEMPTY:
+			return lfail(L, E_DIRNOTEMPTY);
+			break;
+		case EACCES:
+			return lfail(L, E_PERM);
+			break;
+		case EBUSY:
+			return lfail(L, E_MOUNTPOINT);
+			break;
+		case EINVAL:
+			return lfail(L, E_DIRDOT);
+			break;
+		case EIO:
+			return lfail(L, E_IOERR);
+			break;
+		case EROFS:
+			return lfail(L, E_ROFS);
+			break;
+		case EFAULT:
+			return lfail(L, E_INTFAULT);
 			break;
 	}
 
@@ -232,7 +511,7 @@ fs_move(lua_State *L)
  * This function will return nil and an error
  * message if one of the following conditions are met:
  *
- *  - One of the given pathnames are longer than the system's path length limit
+ *  - One of the given pathnames exceeds the system's path length limit
  *
  *  - The current user is denied permission to perform the action
  *
@@ -272,20 +551,20 @@ fs_workdir(lua_State *L)
 
 		switch (errno) {
 			case EACCES:
-				return lfail(L, "permission denied");
+				return lfail(L, E_PERM);
 				break;
 			case EFAULT:
-				return luaL_error(L, "internal error (EFAULT)");
+				return lfail(L, E_INTFAULT);
 				break;
 			case ENOENT:
-				return lfail(L, "working directory is no longer valid");
+				return lfail(L, E_WORKDIRNOTVALID);
 				break;
 			case ENOMEM:
-				return luaL_error(L, "insufficient memory");
+				return lfail(L, E_NOMEM);
 				break;
 			case ERANGE:
 			case ENAMETOOLONG: /* glibc */
-				return lfail(L, "pathname too long");
+				return lfail(L, E_PATHNAMETOOLONG);
 				break;
 		}
 
@@ -300,25 +579,25 @@ fs_workdir(lua_State *L)
 
 		switch (errno) {
 			case ENOTDIR:
-				return lfail(L, "pathname is not a directory");
+				return lfail(L, E_NOTADIR);
 				break;
 			case ENAMETOOLONG:
-				return lfail(L, "pathname too long");
+				return lfail(L, E_PATHNAMETOOLONG);
 				break;
 			case ENOENT:
-				return lfail(L, "no such file or directory");
+				return lfail(L, E_NOSUCHDEST);
 				break;
 			case ELOOP:
-				return lfail(L, "could not translate pathname; too many symbolic links");
+				return lfail(L, E_SYMLINK);
 				break;
 			case EACCES:
-				return lfail(L, "permission denied");
+				return lfail(L, E_PERM);
 				break;
 			case EFAULT:
-				return luaL_error(L, "internal error (EFAULT)");
+				return lfail(L, E_INTFAULT);
 				break;
 			case EIO:
-				return luaL_error(L, "I/O error");
+				return lfail(L, E_IOERR);
 				break;
 		}
 
@@ -330,7 +609,9 @@ static const luaL_Reg fslib[] = {
 	{"basename", fs_basename},
 	{"dirname",  fs_dirname},
 	{"exists",   fs_exists},
+	{"mkdir",    fs_mkdir},
 	{"move",     fs_move},
+	{"rmdir",    fs_rmdir},
 	{"workdir",  fs_workdir},
 	{NULL, NULL}
 };
