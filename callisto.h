@@ -20,7 +20,7 @@
 #define CALLISTO_CLLIBNAME   "cl"
 #define CALLISTO_ENVLIBNAME  "environ"
 #define CALLISTO_EXTLIBNAME  "_G" /* global table */
-#define CALLISTO_FILELIBNAME "file"
+#define CALLISTO_FSYSLIBNAME "fs"
 #define CALLISTO_JSONLIBNAME "json"
 #define CALLISTO_MATHLIBNAME "math"
 #define CALLISTO_OSLIBNAME   "os"
@@ -32,7 +32,7 @@
 int luaopen_cl(lua_State *);
 int luaopen_environ(lua_State *);
 int luaopen_extra(lua_State *);
-int luaopen_file(lua_State *);
+int luaopen_fs(lua_State *);
 int luaopen_json(lua_State *);
 int luaopen_process(lua_State *);
 int luaopen_socket(lua_State *);
