@@ -7,12 +7,12 @@
 
 	outputs = { self, nixpkgs }:
 	let
+		systems = [
+			"x86_64-linux"
+			"aarch64-linux"
+		];
 		forAllSystems = fn:
-			nixpkgs.lib.genAttrs [
-				"x86_64-linux"
-				"x86_64-darwin"
-				"aarch64-linux"
-			] (system:
+			nixpkgs.lib.genAttrs systems (system:
 				fn (import nixpkgs {
 					inherit system;
 				})
@@ -23,6 +23,10 @@
 			default = pkgs.stdenv.mkDerivation {
 				name = "callisto";
 				src = ./.;
+				nativeBuildInputs = with pkgs; [
+					gcc
+					binutils
+				];
 				buildPhase = ''
 					make
 				'';
