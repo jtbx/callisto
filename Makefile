@@ -9,6 +9,7 @@ OBJS = csto.o     \
 	   lextra.o   \
 	   lfs.o      \
 	   ljson.o    \
+	   lpath.o    \
 	   lprocess.o \
 	   lsocket.o  \
 	   util.o
@@ -28,12 +29,13 @@ libcallisto.so: ${LIBS} ${OBJS}
 
 csto.o: csto.c callisto.h
 callisto.o: callisto.c callisto.h
-lcl.o: lcl.c callisto.h
-lextra.o: lextra.c callisto.h
+lcl.o: lcl.c callisto.h util.h
+lextra.o: lextra.c callisto.h util.h
 lenviron.o: lenviron.c callisto.h
-lfs.o: lfs.c callisto.h
+lfs.o: lfs.c callisto.h errors.h util.h
 ljson.o: ljson.c callisto.h
-lprocess.o: lprocess.c callisto.h
+lpath.o: lpath.c callisto.h errors.h util.h
+lprocess.o: lprocess.c callisto.h util.h
 lsocket.o: lsocket.c callisto.h
 util.o: util.c
 
