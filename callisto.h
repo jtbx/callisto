@@ -24,6 +24,7 @@
 #define CALLISTO_JSONLIBNAME "json"
 #define CALLISTO_MATHLIBNAME "math"
 #define CALLISTO_OSLIBNAME   "os"
+#define CALLISTO_PATHLIBNAME "path"
 #define CALLISTO_PROCLIBNAME "process"
 #define CALLISTO_SOCKLIBNAME "socket"
 
@@ -34,6 +35,9 @@ int luaopen_environ(lua_State *);
 int luaopen_extra(lua_State *);
 int luaopen_fs(lua_State *);
 int luaopen_json(lua_State *);
+/* luaopen_math and luaopen_os
+ * are provided by Lua */
+int luaopen_path(lua_State *);
 int luaopen_process(lua_State *);
 int luaopen_socket(lua_State *);
 
