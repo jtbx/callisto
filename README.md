@@ -46,17 +46,19 @@ support for GNU libreadline. Lua 5.4 is statically linked in.
 
 ## Installation
 
-> If you're using Nix, you can install the flake using
-> `nix profile install github:jtbx/callisto`.
-
-Callisto is distributed as source-only, but don't worry, it's
-not hard to compile.
+Callisto is distributed as source-only, but it's not hard to compile.
 
 First, get the source code using one of the tarballs found in
 the [Releases](https://github.com/jtbx/callisto/releases) page.
-Untar it then run `make` to compile Callisto.
+Untar it then enter the directory with Callisto's source code.
 
-Run `make install`as the root user in the source code directory
+After that, run
+```
+make
+```
+to compile Callisto and all its dependencies.
+
+To install it, run `make install` as the root user in the source code directory
 to install Callisto and its shared library.
 
 ## Usage
