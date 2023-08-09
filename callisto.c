@@ -17,6 +17,7 @@ static const luaL_Reg loadedlibs[] = {
 	{CALLISTO_JSONLIBNAME, luaopen_json},
 	{CALLISTO_MATHLIBNAME, luaopen_math},
 	{CALLISTO_OSLIBNAME,   luaopen_os},
+	{CALLISTO_PATHLIBNAME, luaopen_path},
 	{CALLISTO_PROCLIBNAME, luaopen_process},
 	{CALLISTO_SOCKLIBNAME, luaopen_socket},
 	{NULL, NULL}

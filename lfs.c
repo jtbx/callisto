@@ -21,96 +21,8 @@
 #include <lauxlib.h>
 
 #include "callisto.h"
+#include "errors.h"
 #include "util.h"
-
-/* Error messages */
-#define E_PATHNAMETOOLONG "pathname too long"
-#define E_WORKDIRNOTVALID "working directory is no longer valid"
-#define E_COMPNOTEXIST    "component of path does not exist"
-#define E_DIRNOTEMPTY     "directory not empty"
-#define E_MOUNTPOINT      "directory is busy"
-#define E_NOSUCHDEST      "no such file or directory"
-#define E_FTRAVERSE       "failed to traverse directory"
-#define E_NOSUCHDIR       "no such directory"
-#define E_STICKYDIR       "permission denied (sticky directory)"
-#define E_INTFAULT        "internal error (EFAULT)"
-#define E_MVPARENT        "cannot move a parent directory of pathname"
-#define E_FEXISTS         "file exists"
-#define E_MAXLINK         "maximum link count reached"
-#define E_NOSPACE         "insufficient space left on file system"
-#define E_NOTADIR         "pathname or a component of pathname is not a directory"
-#define E_SYMLINK         "could not translate pathname; too many symbolic links"
-#define E_DIFFFS          "pathnames are on different file systems"
-#define E_DIRDOT          "last component of path is '.'"
-#define E_ISADIR          "cannot move a file to the name of a directory"
-#define E_IOERR           "I/O error"
-#define E_NOMEM           "insufficent memory"
-#define E_QUOTA           "file system quota reached"
-#define E_PERM            "permission denied"
-#define E_ROFS            "read-only file system"
-
-/***
- * Returns the last component of the given pathname,
- * removing any trailing '/' characters. If the given
- * path consists entirely of '/' characters, the string
- * `"/"` is returned. If *path* is an empty string,
- * the string `"."` is returned.
- *
- * This function may return nil if the given
- * pathname exceeds the system's path length
- * limit (On most Linux systems this will be 4096).
- *
- * @function basename
- * @usage fs.basename(arg[0])
- * @tparam string path The path to process.
- */
-static int
-fs_basename(lua_State *L)
-{
-	const char *ret;
-	char *path; /* parameter 1 (string) */
-
-	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
-	ret  = basename(path);
-
-	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, E_PATHNAMETOOLONG);
-
-	lua_pushstring(L, ret);
-	return 1;
-}
-
-/***
- * Returns the parent directory of the pathname
- * given. Any trailing '/' characters are not
- * counted as part of the directory name.
- * If the given path is an empty string or contains
- * no '/' characters, the string `"."` is returned,
- * signifying the current directory.
- *
- * This function may return nil if the given
- * pathname exceeds the system's path length
- * limit (On most Linux systems this will be 4096).
- *
- * @function dirname
- * @usage fs.dirname(arg[0])
- * @tparam string path The path to process.
- */
-static int
-fs_dirname(lua_State *L)
-{
-	const char *ret;
-	char *path; /* parameter 1 (string) */
-
-	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
-	ret  = dirname(path);
-
-	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, E_PATHNAMETOOLONG);
-
-	lua_pushstring(L, ret);
-	return 1;
-}
 
 /***
  * Returns true if the given pathname exists
@@ -606,8 +518,6 @@ fs_workdir(lua_State *L)
 }
 
 static const luaL_Reg fslib[] = {
-	{"basename", fs_basename},
-	{"dirname",  fs_dirname},
 	{"exists",   fs_exists},
 	{"mkdir",    fs_mkdir},
 	{"move",     fs_move},
