@@ -193,9 +193,9 @@ cl_panic(lua_State *L)
  * or in the case of *opt* being the string `"*"`, this
  * will be the option that required an argument).
  *
- * @function parseopts
+ * @function options
  * @usage
-cl.parseopts(arg, "abc:", function(opt, optarg, optindex, opterror)
+cl.options(arg, "abc:", function(opt, optarg, optindex, opterror)
 	if opt == 'a' then
 		print("-a was used")
 	elseif opt == 'b' then
@@ -213,7 +213,7 @@ end)
  * @tparam      function fn The function to be run each time a new option is specified on the command line.
  */
 static int
-cl_parseopts(lua_State *L)
+cl_options(lua_State *L)
 {
 	int argc; /* command line argument count */
 	int i;
@@ -283,7 +283,7 @@ static const luaL_Reg cllib[] = {
 	{"mesg",      cl_mesg},
 	{"error",     cl_error},
 	{"panic",     cl_panic},
-	{"parseopts", cl_parseopts},
+	{"options",   cl_options},
 	{NULL, NULL}
 };
 
