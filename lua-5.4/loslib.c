@@ -414,6 +414,10 @@ static int os_exit (lua_State *L) {
   return 0;
 }
 
+#ifndef HOST_NAME_MAX
+#	define HOST_NAME_MAX 256 /* according to POSIX */
+#endif
+
 /***
  * Returns the system hostname.
  *

@@ -2,31 +2,40 @@
  * util.c
  *
  * Utility functions.
- * See util.h for a description
- * of these functions.
  */
 
-
+#include <errno.h>
 #include <string.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 
 #include "util.h"
 
 int
-lfail(lua_State *L, const char* mesg)
+lfail(lua_State *L)
+{
+	luaL_pushfail(L);
+	lua_pushstring(L, strerror(errno));
+	lua_pushinteger(L, errno);
+	return 3;
+}
+
+int
+lfailm(lua_State *L, const char *mesg)
 {
 	luaL_pushfail(L);
 	lua_pushstring(L, mesg);
-	return LFAIL_RET;
+	return 2;
 }
 
 /*
- * String concatenation and copying functions
- * from OpenBSD lib/libc/string/strlcat.c and
+ * strlcat and strlcpy are from OpenBSD source files 
+ * lib/libc/string/strlcat.c and
  * lib/libc/string/strlcpy.c respectively
  */
 #ifndef BSD
+
 /*
  * Appends src to string dst of size dsize (unlike strncat, dsize is the
  * full size of dst, not space left).  At most dsize-1 characters
@@ -61,6 +70,7 @@ strlcat(char *dst, const char *src, size_t dsize)
 
 	return(dlen + (src - osrc));	/* count does not include NUL */
 }
+
 /*
  * Copy string src to buffer dst of size dsize.  At most dsize-1
  * chars will be copied.  Always NUL terminates (unless dsize == 0).
@@ -90,7 +100,9 @@ strlcpy(char *dst, const char *src, size_t dsize)
 
 	return(src - osrc - 1);	/* count does not include NUL */
 }
+
 #endif
+
 /*
  * Prepends t to s.
  */

@@ -19,31 +19,42 @@
 #include "callisto.h"
 #include "util.h"
 
-
 static void
-fmesg(lua_State *L, FILE* f, int shift)
+fmesgshift(lua_State *L, FILE* f, int shift)
 {
 	int paramc, i;
 	char *progname; /* argv[0] */
 
-	paramc = lua_gettop(L); /* get parameter count */
-
-	lua_geti(L, 1 + shift, 0); /* get index 0 of table at index 1 (argv) */
-	if (lua_type(L, -1) != LUA_TSTRING) { /* if argv[0] is not a string... */
-		luaL_argerror(L, 1, "must have a string in index 0)");
+	lua_getglobal(L, "arg");
+	if (!lua_istable(L, -1)) {
+		luaL_error(L, "arg table not present/inaccessible; cannot get script name");
+		return;
 	}
-	progname = (char *)lua_tostring(L, -1); /* set progname to argv[0] */
+
+	lua_geti(L, -1, 0);
+	if (!lua_isstring(L, -1)) {
+		luaL_argerror(L, 1, "arg[0] is not a string; cannot print script name");
+		return;
+	}
+	progname = (char *)lua_tostring(L, -1);
 
 	/* format using string.format */
 	lua_getglobal(L, "string");
 	lua_getfield(L, -1, "format");
 
-	for (i = 2 + shift; i <= paramc; i++) /* for every parameter */
+	paramc = lua_gettop(L); /* get parameter count */
+	for (i = 1 + shift; i <= paramc; i++) { /* for every parameter */
 		lua_pushvalue(L, i); /* push argument */
+	}
 
-	lua_call(L, paramc - (1 + shift), 1); /* call string.format */
+	lua_call(L, paramc - shift, 1);
+	fprintf(f, "%s: %s\n", basename(progname), lua_tostring(L, -1));
+}
 
-	fprintf(f, "%s: %s\n", basename(progname), lua_tostring(L, -1)); /* print */
+static void
+fmesg(lua_State *L, FILE* f)
+{
+	fmesgshift(L, f, 0);
 }
 
 /***
@@ -63,22 +74,21 @@ fmesg(lua_State *L, FILE* f, int shift)
  * @usage
 local succeeded, err = io.open("file.txt")
 if not succeeded then
-	cl.error(arg, "could not open " .. err)
+	cl.error("could not open " .. err)
 end
- * @tparam table  arg The command line argument table (this function only uses index *[0]*)
  * @tparam string message The message to print after the program's name. Supports *string.format*-style format specifiers.
  * @param  ... Any additional values specified by the format specifiers in the *message* parameter.
  */
 static int
 cl_error(lua_State *L)
 {
-	luaL_checktype(L, 1, LUA_TTABLE);
-	luaL_checkstring(L, 2);
+	luaL_checkstring(L, 1);
 
-	fmesg(L, stderr, 0);
+	fmesg(L, stderr);
 
 	return 0;
 }
+
 /***
  * Prints a formatted message to standard output.
  * It looks like so:
@@ -94,21 +104,20 @@ cl_error(lua_State *L)
  * using *string.format*.
  *
  * @function mesg
- * @usage cl.mesg(arg, "message to stdout")
- * @tparam table  arg The command line argument table (this function only uses index *[0]*)
+ * @usage cl.mesg("message to stdout")
  * @tparam string message The message to print after the program's name. Supports *string.format*-style format specifiers.
  * @param  ... Any additional values specified by the format specifiers in the *message* parameter.
  */
 static int
 cl_mesg(lua_State *L)
 {
-	luaL_checktype(L, 1, LUA_TTABLE);
-	luaL_checkstring(L, 2);
+	luaL_checkstring(L, 1);
 
-	fmesg(L, stdout, 0);
+	fmesg(L, stdout);
 
 	return 0;
 }
+
 /***
  * Convenience function that calls *cl.error* to
  * print a formatted error message to standard error,
@@ -122,69 +131,60 @@ cl_mesg(lua_State *L)
 local succeeded, err, code = io.open("file.txt")
 if not succeeded then
 	-- use a custom exit code:
-	cl.panic(code, arg, "could not open " .. err)
+	cl.panic(code, "could not open " .. err)
 	-- use the default exit code (1):
-	cl.panic(arg, "could not open " .. err)
+	cl.panic("could not open " .. err)
 end
- * @tparam[opt] integer code The exit code to return to the OS.
- * @tparam table  arg The command line argument table (this function only uses index *[0]*)
+ * @tparam[opt] integer code The exit code to return to the operating system.
  * @tparam string message The message to print after the program's name. Supports *string.format*-style format specifiers.
  * @param  ... Any additional values specified by the format specifiers in the *message* parameter.
  */
 static int
 cl_panic(lua_State *L)
 {
-	ubyte code;
-	ubyte isinteger;
-
-	isinteger = lua_isinteger(L, 1);
+	int code, codegiven;
 
 	/* get exit code */
-	code = lua_tointeger(L, 1) * isinteger + 1 * !isinteger;
-	luaL_checktype(L, 1 + isinteger, LUA_TTABLE);
-	luaL_checkstring(L, 2 + isinteger);
-	fmesg(L, stderr, isinteger);
+	codegiven = lua_isinteger(L, 1);
+	code = codegiven ? lua_tointeger(L, 1) : 1;
 
-	/* format using string.format */
-	lua_getglobal(L, "os");
-	lua_getfield(L, -1, "exit");
+	/* check arguments */
+	luaL_checkstring(L, 1 + codegiven);
+	fmesgshift(L, stderr, codegiven);
 
-	/* push arguments to os.exit */
-	lua_pushinteger(L, code);
-	lua_pushboolean(L, 1);
-
-	lua_call(L, 2, 0); /* call os.exit */
+	/* exit */
+	lua_close(L);
+	if (L) /* used to avoid "unreachable return" warnings */
+		exit(code);
 
 	return 0;
 }
 /***
  * Parses the command line argument list *arg*.
- * The string *optstring* may contain the
- * following elements: individual characters,
- * and characters followed by a colon.
- * A character followed by a single colon
- * indicates that an argument is to follow
- * the option on the command line. For example,
- * an option string `"x"` permits a **-x** option,
- * and an option string `"x:"` permits a **-x**
- * option that must take an argument. An option
- * string of `"x:yz"` permits a **-x** option that
- * takes an argument, and **-y** and **-z** options,
- * which do not.
+ * The string *optstring* may contain the following elements:
+ * individual characters, and characters followed by a colon.
+ * A character followed by a single colon indicates that an
+ * argument is to follow the option on the command line. For
+ * example, * an option string `"x"` permits a **-x** option,
+ * and an option string `"x:"` permits a **-x** option that
+ * must take an argument. An option * string of `"x:yz"` permits
+ * a **-x** option that takes an argument, and **-y** and **-z**
+ * options, which do not.
  *
- * The function *fn* is run each time a new option
- * is processed. of the argument list. It takes the
- * parameters *opt*, *optarg*, *optindex*, and *opterror*.
- * *opt* is a string containing the option used. It is set
+ * The function *fn* is run each time a new option of the argument
+ * list is processed. It takes the parameters *opt*, *optarg*,
+ * *optindex*, and *opterror*.
+ * - *opt* is a string containing the option used. It is set
  * to the option the user specified on the command line.
  * If the user specifies an unknown option (one that is
  * not specified in *optstring*), the value of *opt* will
  * be set to nil. If the user specifies an option that
  * requires an argument, but does not specify its argument,
  * the value of *opt* will be the string `"*"` (a single
- * asterisk). The second parameter, *optarg*, is a string
- * containing the option argument (if applicable).
- * *optindex* is an integer that contains the index of the
+ * asterisk).
+ * - *optarg*, is a string containing the option argument
+ * (if applicable).
+ * - *optindex* is an integer that contains the index of the
  * last command line argument processed. The last parameter,
  * *opterror*, is set in case of an option error (if *opt*
  * is nil or set to the string `"*"`), and is set to the
@@ -215,8 +215,7 @@ end)
 static int
 cl_options(lua_State *L)
 {
-	int argc; /* command line argument count */
-	int i;
+	int argc, i;
 	char ch, s[2];   /* opt character and string */
 	char loptopt[2]; /* opterror, returned to Lua */
 	char **argv;     /* parameter 1 (table), command line argument vector */
@@ -275,6 +274,7 @@ cl_options(lua_State *L)
 
 		lua_pcall(L, 4, 0, 0); /* call Lua function */
 	}
+
 	free(optstring);
 	return 0;
 }

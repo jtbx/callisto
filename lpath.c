@@ -1,5 +1,6 @@
 /***
  * File system path manipulation.
+ *
  * @module path
  */
 
@@ -20,7 +21,6 @@
 #include "errors.h"
 #include "util.h"
 
-
 /***
  * Returns the last component of the given pathname,
  * removing any trailing '/' characters. If the given
@@ -30,7 +30,7 @@
  *
  * This function may return nil if the given
  * pathname exceeds the system's path length
- * limit (On most Linux systems this will be 4096).
+ * limit (on most Linux systems this will be 4096).
  *
  * @function basename
  * @usage path.basename(arg[0])
@@ -45,10 +45,12 @@ path_basename(lua_State *L)
 	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
 	ret  = basename(path);
 
-	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, E_PATHNAMETOOLONG);
+	if (ret == NULL) /* failed? */
+		return lfail(L);
 
 	lua_pushstring(L, ret);
+
+	free(path);
 	return 1;
 }
 
@@ -62,7 +64,7 @@ path_basename(lua_State *L)
  *
  * This function may return nil if the given
  * pathname exceeds the system's path length
- * limit (On most Linux systems this will be 4096).
+ * limit (on most Linux systems this will be 4096).
  *
  * @function dirname
  * @usage path.dirname(arg[0])
@@ -77,10 +79,12 @@ path_dirname(lua_State *L)
 	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
 	ret  = dirname(path);
 
-	if (ret == NULL && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, E_PATHNAMETOOLONG);
+	if (ret == NULL) /* failed? */
+		return lfail(L);
 
 	lua_pushstring(L, ret);
+
+	free(path);
 	return 1;
 }
 

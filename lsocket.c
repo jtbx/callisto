@@ -13,8 +13,7 @@
 
 #include "callisto.h"
 
-
-int luaopen_socket_core(lua_State *L);
+int luaopen_socket_core(lua_State *);
 
 int
 luaopen_socket(lua_State *L)

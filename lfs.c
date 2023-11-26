@@ -1,6 +1,6 @@
 /***
- * Files, directories and
- * file system manipulation.
+ * Files, directories and file system manipulation.
+ *
  * @module fs
  */
 
@@ -31,7 +31,7 @@
  *
  * This function may throw an error if the given
  * pathname exceeds the system's path length
- * limit (On most Linux systems this will be 4096).
+ * limit (on most Linux systems this will be 4096).
  *
  * @function exists
  * @usage
@@ -49,8 +49,8 @@ fs_exists(lua_State *L)
 	path = luaL_checkstring(L, 1);
 	ret = access(path, F_OK); /* check if file exists */
 
-	if (ret == -1 && errno == ENAMETOOLONG) /* check if path is too long */
-		return lfail(L, E_PATHNAMETOOLONG);
+	if (ret == -1) /* failed? */
+		return lfail(L);
 
 	lua_pushboolean(L, ret == 0);
 	return 1;
@@ -156,59 +156,21 @@ fs_mkdir(lua_State *L)
 
 	dir = (char *)luaL_checkstring(L, 1);
 
-	if (!lua_isboolean(L, 2) && !lua_isnoneornil(L, 2)) {
+	if (!lua_isboolean(L, 2) && !lua_isnoneornil(L, 2))
 		luaL_typeerror(L, 2, "boolean");
-	}
 	recursive = lua_toboolean(L, 2);
 
-	if (recursive) {
+	if (recursive)
 		ret = mkpath(dir, 0777, 0777);
-	} else {
+	else
 		ret = mkdir(dir, 0777);
-	}
 	
 	if (ret == 0) {
 		lua_pushboolean(L, 1);
 		return 1;
 	}
 
-	switch (errno) {
-		case ENOTDIR:
-			return lfail(L, E_NOTADIR);
-			break;
-		case ENAMETOOLONG:
-			return lfail(L, E_PATHNAMETOOLONG);
-			break;
-		case ENOENT:
-			return lfail(L, E_COMPNOTEXIST);
-			break;
-		case EACCES:
-			return lfail(L, E_PERM);
-			break;
-		case ELOOP:
-			return lfail(L, E_SYMLINK);
-			break;
-		case EROFS:
-			return lfail(L, E_ROFS);
-			break;
-		case EEXIST:
-			return lfail(L, E_FEXISTS);
-			break;
-		case ENOSPC:
-			return lfail(L, E_NOSPACE);
-			break;
-		case EDQUOT:
-			return lfail(L, E_QUOTA);
-			break;
-		case EIO:
-			return lfail(L, E_IOERR);
-			break;
-		case EFAULT:
-			return lfail(L, E_INTFAULT);
-			break;
-	}
-
-	return 0;
+	return lfail(L);
 }
 
 /***
@@ -268,53 +230,7 @@ fs_move(lua_State *L)
 		return 1;
 	}
 
-	switch (errno) {
-		case ENAMETOOLONG:
-			return lfail(L, E_PATHNAMETOOLONG);
-			break;
-		case ENOENT:
-			return lfail(L, E_NOSUCHDEST);
-			break;
-		case EACCES:
-			return lfail(L, E_PERM);
-			break;
-		case EPERM:
-			return lfail(L, E_STICKYDIR);
-			break;
-		case ELOOP:
-			return lfail(L, E_SYMLINK);
-			break;
-		case EMLINK:
-			return lfail(L, E_MAXLINK);
-			break;
-		case ENOTDIR:
-			return lfail(L, E_NOTADIR);
-			break;
-		case EISDIR:
-			return lfail(L, E_ISADIR);
-			break;
-		case EXDEV:
-			return lfail(L, E_DIFFFS);
-			break;
-		case ENOSPC:
-			return lfail(L, E_NOSPACE);
-			break;
-		case EDQUOT:
-			return lfail(L, E_QUOTA);
-			break;
-		case EIO:
-			return lfail(L, E_IOERR);
-			break;
-		case EROFS:
-			return lfail(L, E_ROFS);
-			break;
-		case EFAULT:
-			return lfail(L, E_INTFAULT);
-			break;
-		case EINVAL:
-			return lfail(L, E_MVPARENT);
-			break;
-	}
+	return lfail(L);
 
 	return 0;
 }
@@ -374,41 +290,7 @@ fs_rmdir(lua_State *L)
 		return 1;
 	}
 
-	switch (errno) {
-		case ENOTDIR:
-			return lfail(L, E_NOTADIR);
-			break;
-		case ENAMETOOLONG:
-			return lfail(L, E_PATHNAMETOOLONG);
-			break;
-		case ENOENT:
-			return lfail(L, E_NOSUCHDIR);
-			break;
-		case ELOOP:
-			return lfail(L, E_SYMLINK);
-			break;
-		case ENOTEMPTY:
-			return lfail(L, E_DIRNOTEMPTY);
-			break;
-		case EACCES:
-			return lfail(L, E_PERM);
-			break;
-		case EBUSY:
-			return lfail(L, E_MOUNTPOINT);
-			break;
-		case EINVAL:
-			return lfail(L, E_DIRDOT);
-			break;
-		case EIO:
-			return lfail(L, E_IOERR);
-			break;
-		case EROFS:
-			return lfail(L, E_ROFS);
-			break;
-		case EFAULT:
-			return lfail(L, E_INTFAULT);
-			break;
-	}
+	return lfail(L);
 
 	return 0;
 }
@@ -460,27 +342,7 @@ fs_workdir(lua_State *L)
 		}
 
 		free(buffer);
-
-		switch (errno) {
-			case EACCES:
-				return lfail(L, E_PERM);
-				break;
-			case EFAULT:
-				return lfail(L, E_INTFAULT);
-				break;
-			case ENOENT:
-				return lfail(L, E_WORKDIRNOTVALID);
-				break;
-			case ENOMEM:
-				return lfail(L, E_NOMEM);
-				break;
-			case ERANGE:
-			case ENAMETOOLONG: /* glibc */
-				return lfail(L, E_PATHNAMETOOLONG);
-				break;
-		}
-
-		return 0;
+		return lfail(L);
 	} else {
 		workdir = luaL_checkstring(L, 1);
 
@@ -489,31 +351,7 @@ fs_workdir(lua_State *L)
 			return 1;
 		}
 
-		switch (errno) {
-			case ENOTDIR:
-				return lfail(L, E_NOTADIR);
-				break;
-			case ENAMETOOLONG:
-				return lfail(L, E_PATHNAMETOOLONG);
-				break;
-			case ENOENT:
-				return lfail(L, E_NOSUCHDEST);
-				break;
-			case ELOOP:
-				return lfail(L, E_SYMLINK);
-				break;
-			case EACCES:
-				return lfail(L, E_PERM);
-				break;
-			case EFAULT:
-				return lfail(L, E_INTFAULT);
-				break;
-			case EIO:
-				return lfail(L, E_IOERR);
-				break;
-		}
-
-		return 0;
+		return lfail(L);
 	}
 }
 

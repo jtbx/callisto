@@ -27,8 +27,7 @@
 
 #include "callisto.h"
 
-
-/* -=[ Functions ]=- */
+/* Functions */
 
 /***
  * Returns the given Lua table encoded as a JSON object.
@@ -90,7 +89,7 @@ local t = json.decode(j)
  * @function new
  */
 
-/* -=[ Fields ]=- */
+/* Fields */
 
 /***
  * The name of the module, provided for compatibility with
@@ -115,9 +114,9 @@ local t = json.decode(j)
  * @field null
  */
 
-/* -=[ Configuration options ]=- */
+/* Configuration options */
 
-/* Decoding */
+/* -> decoding */
 
 /***
  * Configures handling of invalid numbers while decoding;
@@ -145,7 +144,7 @@ local t = json.decode(j)
  * @tparam integer depth Max depth allowed when decoding.
  */
 
-/* Encoding */
+/* -> encoding */
 
 /***
  * Configures handling of invalid numbers while encoding;
@@ -214,7 +213,7 @@ local t = json.decode(j)
  */
 
 
-int luaopen_cjson(lua_State *L);
+int luaopen_cjson(lua_State *);
 
 int
 luaopen_json(lua_State *L)
