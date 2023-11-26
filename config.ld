@@ -13,7 +13,7 @@ it into your own program.
 ]]
 dir = "doc"
 format = "markdown"
-style = "."
+--style = "."
 
 file = {
 	".",
