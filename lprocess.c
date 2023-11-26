@@ -22,7 +22,6 @@
 #define PID_MAX 8 /* rounded to the nearest even number */
 #define PROCESS_MAX 256
 
-
 /* signals and signal count */
 #define SIGC 36
 static const char *signals[] = {
@@ -62,7 +61,7 @@ static const char *signals[] = {
 	[SIGPROF] = "SIGPROF",
 #ifdef SIGWINC
 	[SIGWINC] = "SIGWINC",
-#elif defined (SIGWINCH)
+#elif defined(SIGWINCH)
 	[SIGWINCH] = "SIGWINCH",
 #endif
 #ifdef SIGINFO
@@ -87,33 +86,30 @@ static const char *signals[] = {
 static int
 process_pid(lua_State *L)
 {
-	lua_pushinteger(L, getpid()); /* push current process pid */
+	lua_pushinteger(L, getpid());
 	return 1;
 }
+
 /***
- * Returns the ID of the given process.
+ * Returns the PID (process ID) of the given process.
  *
  * Returns nil if the process was not found.
  *
  * @function pidof
  * @usage process.pidof("init")
- * @tparam string process The process to look up.
+ * @tparam string process The name of the process to look up.
  */
 static int
 process_pidof(lua_State *L)
 {
 	const char *process; /* parameter 1 (string) */
-	char *command;       /* pidof command buffer */
-	char *buffer;        /* pidof reading buffer */
-	long pid;            /* pid to return to Lua */
-	size_t pidmax;       /* length passed to getline */
-	ssize_t ret;         /* return value of getline */
-	FILE *p;
-
-	if (lua_isnoneornil(L, 1)) { /* check if first parameter wasn't given */
-		lua_pushinteger(L, getpid()); /* push current process pid */
-		return 1;
-	}
+	char       *command; /* pidof command buffer */
+	char       *buffer;  /* pidof reading buffer */
+	int     pexit;       /* pidof exit code */
+	long    pid;         /* pid to return to Lua */
+	size_t  pidmax;      /* length passed to getline */
+	ssize_t ret;         /* getline return value */
+	FILE   *p;           /* pidof stream */
 
 	process = luaL_checkstring(L, 1);
 	command = calloc(1, PROCESS_MAX * sizeof(char *));
@@ -126,15 +122,21 @@ process_pidof(lua_State *L)
 	p = popen(command, "r");
 	buffer = malloc(PID_MAX * sizeof(char *));
 	pidmax = (size_t)PID_MAX;
-	ret = getline(&buffer, &pidmax, p); /* get line from pidof */
-	if (ret == -1 || pclose(p) != 0) { /* did getline or pidof fail? */
+
+	/* read line from pidof */
+	ret = getline(&buffer, &pidmax, p);
+	pexit = pclose(p);
+	if (ret == -1 || pexit != 0) { /* did getline or pidof fail? */
 		luaL_pushfail(L);
 		return 1;
 	}
-	pid = strtol(buffer, NULL, 10); /* convert it to an integer */
-	lua_pushinteger(L, pid); /* push pid */
+	/* convert it to an integer and push */
+	pid = strtol(buffer, NULL, 10);
+	lua_pushinteger(L, pid);
+
 	free(command);
 	free(buffer);
+
 	return 1;
 }
 
@@ -144,9 +146,8 @@ strtosig(const char *sig)
 	int i;
 
 	for (i = 1; i <= SIGC; i++) {
-		if (streq(signals[i], sig)) {
+		if (strcmp(signals[i], sig) == 0)
 			return i; /* valid signal found */
-		}
 	}
 	return -1; /* invalid signal */
 }
@@ -169,7 +170,7 @@ process_signum(lua_State *L)
 	if ((sig = strtosig(luaL_checkstring(L, 1))) != -1) /* valid signal? */
 		lua_pushinteger(L, sig); /* return signal */
 	else
-		return lfail(L, "no such signal");
+		return lfailm(L, "no such signal");
 
 	return 1;
 }
@@ -180,27 +181,17 @@ sigsend(lua_State *L, pid_t pid, const char *sigstr)
 	int ret, sig;
 
 	sig = strtosig(sigstr);
-	if (sig != -1) {
+	if (sig != -1) /* valid signal? */
 		ret = kill(pid, sig);
-	} else {
-		lfail(L, "no such signal");
-		return 0;
-	}
+	else
+		return lfailm(L, "no such signal");
 
 	if (ret == 0) { /* check for success */
 		lua_pushboolean(L, 1);
 		return 1;
 	}
 
-	switch (errno) {
-		case ESRCH:
-			lfail(L, "no such process");
-			break;
-		case EPERM:
-			lfail(L, "permission denied");
-			break;
-	}
-	return 0;
+	return lfail(L);
 }
 
 /***
@@ -214,7 +205,7 @@ sigsend(lua_State *L, pid_t pid, const char *sigstr)
  * @function send
  * @usage
 local pid = process.pid("sh")
-process.send(pid, process.SIGTERM)
+process.send(pid, "SIGTERM")
  * @tparam integer pid The PID of the process.
  * @tparam string signal The signal to send.
  */
@@ -227,10 +218,7 @@ process_send(lua_State *L)
 	pid = luaL_checkinteger(L, 1);
 	sig = luaL_checkstring(L, 2);
 
-	if (sigsend(L, pid, sig))
-		return 1;
-	else
-		return LFAIL_RET;
+	return sigsend(L, pid, sig);
 }
 
 /***
@@ -248,10 +236,7 @@ process_kill(lua_State *L)
 
 	pid = luaL_checkinteger(L, 1);
 
-	if (sigsend(L, pid, "SIGKILL"))
-		return 1;
-	else
-		return LFAIL_RET;
+	return sigsend(L, pid, "SIGKILL");
 }
 /***
  * Terminates the process with the given PID.
@@ -268,10 +253,7 @@ process_terminate(lua_State *L)
 
 	pid = luaL_checkinteger(L, 1);
 
-	if (sigsend(L, pid, "SIGTERM"))
-		return 1;
-	else
-		return LFAIL_RET;
+	return sigsend(L, pid, "SIGTERM");
 }
 
 static const luaL_Reg proclib[] = {
