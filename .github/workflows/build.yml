@@ -1,0 +1,21 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build/linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: sudo apt install -y bmake
+    - name: Compile
+      run: make
+  build/darwin:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install dependencies
+      run: brew install bmake
+    - name: Compile
+      run: make
