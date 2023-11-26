@@ -1,10 +1,8 @@
 /***
- * Extra functions that don't
- * fit into any other category.
+ * Extra functions that don't fit into any other category.
  *
- * This module does not provide its
- * own table; all functions here are
- * found in the global table.
+ * This module does not provide its own table;
+ * all functions here are found in the global table.
  *
  * @module extra
  */
@@ -16,7 +14,6 @@
 
 #include "callisto.h"
 #include "util.h"
-
 
 /***
  * Waits the specified amount of seconds.
@@ -63,6 +60,6 @@ static const luaL_Reg extlib[] = {
 int
 luaopen_extra(lua_State *L)
 {
-	newoverride(L, extlib, CALLISTO_EXTLIBNAME);
+	luaL_newlib(L, extlib);
 	return 1;
 }

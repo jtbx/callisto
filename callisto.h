@@ -2,9 +2,9 @@
  * Callisto, a featureful runtime for Lua 5.4.
  */
 
-#ifndef _LCALLISTO_H_
+#ifndef _CALLISTO_H_
 
-#define _LCALLISTO_H_
+#define _CALLISTO_H_
 
 #include <lua.h>
 
