@@ -3,7 +3,7 @@ name: build
 on: [push, pull_request]
 
 jobs:
-  build/linux:
+  linux:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -11,7 +11,7 @@ jobs:
       run: sudo apt install -y bmake
     - name: Compile
       run: make
-  build/darwin:
+  darwin:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
