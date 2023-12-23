@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 
 #include <errno.h>
+#include <fcntl.h>
 #include <fts.h>
 #include <libgen.h>
 #include <stdio.h>
@@ -23,13 +24,72 @@
 #include "util.h"
 
 /***
- * Returns true if the given pathname exists
- * in the file system, or returns false if it
- * does not.
+ * Copies the contents of the file *source* to
+ * the file *target*. *target* will be overwritten
+ * if it already exists.
  *
- * This function may throw an error if the given
- * pathname exceeds the system's path length
- * limit (on most Linux systems this will be 4096).
+ * @function copy
+ * @usage
+io.output("hello"):write("hello world")
+fs.copy("hello", "world")
+assert(io.input("world"):read("a") == "hello world")
+ * @tparam string source The source file to copy.
+ * @tparam string target The destination file.
+ */
+static int
+fs_copy(lua_State *L)
+{
+	struct stat sb;
+	const char *source, *target;
+	char readbuf[512];
+	ssize_t ret;
+	int sfd, tfd;
+
+	source = luaL_checkstring(L, 1);
+	target = luaL_checkstring(L, 2);
+
+	/* get the source file's mode */
+	if (stat(source, &sb) == -1)
+		return lfail(L);
+
+	sfd = open(source, O_RDONLY);
+	tfd = open(target, O_WRONLY | O_CREAT | O_TRUNC, sb.st_mode);
+
+	if (sfd == -1 || tfd == -1)
+		return lfail(L);
+
+	for (;;) {
+		ret = read(sfd, readbuf, 512);
+		switch (ret) {
+		case 0: /* end-of-file */
+			goto finish;
+			break;
+		case -1: /* error */
+			close(sfd);
+			close(tfd);
+			return lfail(L);
+			break;
+		}
+
+		ret = write(tfd, readbuf, ret);
+		if (ret == -1) {
+			close(sfd);
+			close(tfd);
+			return lfail(L);
+		}
+	}
+
+finish:
+	close(sfd);
+	close(tfd);
+
+	lua_pushboolean(L, 1);
+	return 1;
+}
+
+/***
+ * Returns true if the given pathname exists
+ * in the file system, or false if it does not.
  *
  * @function exists
  * @usage
@@ -110,34 +170,8 @@ mkpath(char *path, mode_t mode, mode_t dir_mode)
  * If *recursive* is true, creates intermediate directories
  * as required; behaves as POSIX `mkdir -p` would.
  *
- * On success, returns true. Otherwise returns nil plus
- * an error message.
- *
- * This function will return nil plus an error message
- * if one of the following conditions are met:
- *
- *  - A component of one of the given pathnames is not a directory
- *
- *  - The given pathname exceeds the system's path length limit
- *
- *  - A component of the path prefix does not exist
- *
- *  - Search permission is denied for a component of the path prefix,
- *  or write permission is denied on the parent directory of the
- *  directory to be created.
- *
- *  - The given pathname could not be translated as a result
- *  of too many symbolic links
- *
- *  - The directory to be created resides on a read-only file system
- *
- *  - The pathname given exists as a file
- *
- *  - There is no space left on the file system
- *
- *  - The current user's quota of disk blocks on the file system
- *  containing the parent directory of the directory to be created
- *  has been exhausted
+ * On success, returns true. Otherwise returns nil, an error
+ * message and a platform-dependent error code.
  *
  * @function mkdir
  * @usage fs.mkdir("/usr/local/bin")
@@ -152,7 +186,7 @@ fs_mkdir(lua_State *L)
 	int recursive; /* parameter 2 (boolean) */
 	int ret;
 
-	dir = (char *)luaL_checkstring(L, 1);
+	dir = strdup(luaL_checkstring(L, 1));
 
 	if (!lua_isboolean(L, 2) && !lua_isnoneornil(L, 2))
 		luaL_typeerror(L, 2, "boolean");
@@ -178,37 +212,11 @@ fs_mkdir(lua_State *L)
  * must be of the same type (that is, both directories or
  * both non-directories) and must reside on the same file system.
  *
- * This function will return nil plus an error message
- * if one of the following conditions are met:
- *
- *  - One of the given pathnames exceeds the system's path length limit
- *
- *  - One of the given pathnames point to a file that does not exist
- *
- *  - An attempt was made to move a parent directory of a pathname
- *
- *  - The current user is denied permission to perform the action
- *
- *  - One of the given pathnames could not be translated as a result
- *  of too many symbolic links
- *
- *  - A component of one of the given pathnames is not a directory
- *
- *  - *src* is a directory, but *dest* is not
- *
- *  - *dest* is a directory, but *src* is not
- *
- *  - The given pathnames are on different file systems
- *
- *  - There is no space left on the file system
- *
- *  - The current user's quota of disk blocks on the file system
- *  containing the directory of *dest* has been exhausted
- *
- *  - The directory containing *dest* resides on a read-only file system
+ * On success, returns true. Otherwise returns nil, an error
+ * message and a platform-dependent error code.
  *
  * @function move
- * @usage fs.move("file1", "file2")
+ * @usage fs.move("srcfile", "destfile")
  * @tparam string src  The pathname of the file to move.
  * @tparam string dest The destination pathname.
  */
@@ -236,39 +244,8 @@ fs_move(lua_State *L)
 /***
  * Removes an empty directory.
  *
- * On success, returns true. Otherwise returns nil plus
- * an error message.
- *
- * This function will return nil plus an error message
- * if one of the following conditions are met:
- *
- *  - A component of the given path is not a directory
- *
- *  - The given pathname exceeds the system's path length limit
- *
- *  - The named directory does not exist
- *
- *  - The given pathname could not be translated as a result
- *  of too many symbolic links
- *
- *  - The named directory contains files other than '.' and '..' in it
- *
- *  - Search permission is denied for a component of the path prefix,
- *  or write permission is denied on the directory containing the directory
- *  to be removed
- *
- *  - The directory containing the directory to be removed is marked sticky,
- *  and neither the containing directory nor the directory to be removed are
- *  owned by the current user
- *
- *  - The directory to be removed or the directory containing it has its
- *  immutable or append-only flag set
- *
- *  - The directory to be removed is the mount point for a mounted file system
- *
- *  - The last component of the directory to be removed is a '.'
- *
- *  - The directory to be created resides on a read-only file system
+ * On success, returns true. Otherwise returns nil, an error
+ * message and a platform-dependent error code.
  *
  * @function mkdir
  * @usage fs.rmdir("yourdirectory")
@@ -298,20 +275,10 @@ fs_rmdir(lua_State *L)
  *
  * If *dir* is nil, returns the current working
  * directory. Otherwise, sets the current working
- * directory to *dir* and returns true on success.
+ * directory to *dir*.
  *
- * This function will return nil and an error
- * message if one of the following conditions are met:
- *
- *  - One of the given pathnames exceeds the system's path length limit
- *
- *  - The current user is denied permission to perform the action
- *
- *  - The current working directory or *dir* no longer exists
- *
- *  - *dir* is not nil, nor is it the name of a directory
- *
- *  - *dir* could not be translated as a result of too many symbolic links
+ * On success, returns true. Otherwise returns nil, an error
+ * message and a platform-dependent error code.
  *
  * @function workdir
  * @usage
@@ -354,6 +321,7 @@ fs_workdir(lua_State *L)
 }
 
 static const luaL_Reg fslib[] = {
+	{"copy",     fs_copy},
 	{"exists",   fs_exists},
 	{"mkdir",    fs_mkdir},
 	{"move",     fs_move},
