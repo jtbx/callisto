@@ -4,12 +4,12 @@ OBJS = csto.o callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o\
        lpath.o lprocess.o util.o
 LIBS = liblua.a cjson.a
 
-all: csto libcallisto.so
+all: csto libcallisto.a
 
 csto: ${LIBS} ${OBJS}
 	${CC} ${CFLAGS} -o $@ ${OBJS} ${LIBS} ${LDFLAGS}
-libcallisto.so: ${LIBS} ${OBJS}
-	${CC} -shared ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} ${LIBS}
+libcallisto.a: ${LIBS} ${OBJS}
+	ar cr $@ ${OBJS} liblua.a
 
 .SUFFIXES: .o
 
@@ -36,7 +36,7 @@ liblua.a: external/luasrc/*.c
 	mv -f external/luasrc/liblua.a .
 
 clean:
-	rm -f csto libcallisto.so ${OBJS} ${LIBS}
+	rm -f csto libcallisto.a ${OBJS} ${LIBS}
 	rm -fr include doc/*.html doc/modules
 clean-all: clean
 	${MAKE} -s -Cexternal/luasrc clean
@@ -52,6 +52,6 @@ install:
 	cp -f external/luasrc/{lua.h,lualib.h,lauxlib.h,luaconf.h} include/callisto
 	cp -f csto "${DESTDIR}${PREFIX}"/bin
 	cp -fR include/callisto "${DESTDIR}${PREFIX}"/include
-	cp -f libcallisto.so "${DESTDIR}${PREFIX}"/lib
+	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib
 
 .PHONY: all clean clean-all doc install
