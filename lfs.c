@@ -114,6 +114,64 @@ fs_exists(lua_State *L)
 	return 1;
 }
 
+/***
+ * Returns true if the given path specifies a
+ * directory, or false if it does not.
+ *
+ * On error returns nil, an error message and a
+ * platform-dependent error code.
+ *
+ * @function isdirectory
+ * @usage
+if not fs.isdirectory("/usr") then
+    print("something's wrong")
+end
+ * @tparam string path The path to check.
+ */
+static int
+fs_isdirectory(lua_State *L)
+{
+	struct stat sb;
+	const char *path;
+
+	path = luaL_checkstring(L, 1);
+
+	if (stat(path, &sb) == -1)
+		return lfail(L);
+
+	lua_pushboolean(L, sb.st_mode & S_IFDIR);
+	return 1;
+}
+
+/***
+ * Returns true if the given path specifies a file,
+ * or false if it does not.
+ *
+ * On error returns nil, an error message and a
+ * platform-dependent error code.
+ *
+ * @function isfile
+ * @usage
+if not fs.isfile("/sbin/init") then
+    print("something's wrong")
+end
+ * @tparam string path The path to check.
+ */
+static int
+fs_isfile(lua_State *L)
+{
+	struct stat sb;
+	const char *path;
+
+	path = luaL_checkstring(L, 1);
+
+	if (stat(path, &sb) == -1)
+		return lfail(L);
+
+	lua_pushboolean(L, sb.st_mode & S_IFREG);
+	return 1;
+}
+
 /*
  * Taken from OpenBSD mkdir(1)
  * mkpath -- create directories.
@@ -321,12 +379,14 @@ fs_workdir(lua_State *L)
 }
 
 static const luaL_Reg fslib[] = {
-	{"copy",     fs_copy},
-	{"exists",   fs_exists},
-	{"mkdir",    fs_mkdir},
-	{"move",     fs_move},
-	{"rmdir",    fs_rmdir},
-	{"workdir",  fs_workdir},
+	{"copy",        fs_copy},
+	{"exists",      fs_exists},
+	{"isdirectory", fs_isdirectory},
+	{"isfile",      fs_isfile},
+	{"mkdir",       fs_mkdir},
+	{"move",        fs_move},
+	{"rmdir",       fs_rmdir},
+	{"workdir",     fs_workdir},
 	{NULL, NULL}
 };
 
