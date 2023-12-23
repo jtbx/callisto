@@ -1,5 +1,5 @@
 /*
- * Callisto, a featureful runtime for Lua 5.4.
+ * callisto - standalone scripting platform for Lua 5.4
  */
 
 #include <lua.h>
@@ -13,20 +13,22 @@ static const luaL_Reg loadedlibs[] = {
 	{CALLISTO_ENVLIBNAME,  luaopen_environ},
 	{CALLISTO_FSYSLIBNAME, luaopen_fs},
 	{CALLISTO_JSONLIBNAME, luaopen_json},
-	{CALLISTO_MATHLIBNAME, luaopen_math},
-	{CALLISTO_OSLIBNAME,   luaopen_os},
+	{LUA_MATHLIBNAME,      luaopen_math},
+	{LUA_OSLIBNAME,        luaopen_os},
 	{CALLISTO_PATHLIBNAME, luaopen_path},
 	{CALLISTO_PROCLIBNAME, luaopen_process},
-	{CALLISTO_SOCKLIBNAME, luaopen_socket},
 	{NULL, NULL}
 };
 
 lua_State *
 callisto_newstate(void)
 {
-	lua_State *L = luaL_newstate();
+	lua_State *L;
+
+	L = luaL_newstate();
 	callisto_openlibs(L);
 	callisto_setversion(L);
+
 	return L;
 }
 

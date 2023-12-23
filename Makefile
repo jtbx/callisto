@@ -2,18 +2,9 @@ PREFIX = /usr/local
 
 include config.mk
 
-OBJS = csto.o     \
-	   callisto.o \
-	   lcl.o      \
-	   lenviron.o \
-	   lextra.o   \
-	   lfs.o      \
-	   ljson.o    \
-	   lpath.o    \
-	   lprocess.o \
-	   lsocket.o  \
-	   util.o
-LIBS = liblua.a cjson.a socket.a
+OBJS = csto.o callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o\
+       lpath.o lprocess.o util.o
+LIBS = liblua.a cjson.a
 
 all: csto libcallisto.so
 
@@ -36,15 +27,11 @@ lfs.o: lfs.c callisto.h errors.h util.h
 ljson.o: ljson.c callisto.h
 lpath.o: lpath.c callisto.h errors.h util.h
 lprocess.o: lprocess.c callisto.h util.h
-lsocket.o: lsocket.c callisto.h
 util.o: util.c
 
 cjson.a: external/json/*.c
 	${MAKE} -Cexternal/json
 	mv -f external/json/cjson.a cjson.a
-socket.a: external/socket/src/*.c
-	${MAKE} -Cexternal/socket
-	mv -f external/socket/src/socket.a socket.a
 
 liblua.a: lua-5.4/*.c
 	${MAKE} -Clua-5.4
@@ -57,7 +44,6 @@ clean:
 clean-all: clean
 	${MAKE} -s -Clua-5.4 clean
 	${MAKE} -s -Cexternal/json clean
-	${MAKE} -s -Cexternal/socket clean
 
 doc:
 	ldoc -q . >/dev/null
