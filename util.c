@@ -15,8 +15,11 @@
 int
 lfail(lua_State *L)
 {
+	char strerrbuf[256];
+
 	luaL_pushfail(L);
-	lua_pushstring(L, strerror(errno));
+	strerror_r(errno, strerrbuf, 256);
+	lua_pushstring(L, strerrbuf);
 	lua_pushinteger(L, errno);
 	return 3;
 }
