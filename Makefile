@@ -21,9 +21,9 @@ callisto.o: callisto.c callisto.h
 lcl.o: lcl.c callisto.h util.h
 lextra.o: lextra.c callisto.h util.h
 lenviron.o: lenviron.c callisto.h
-lfs.o: lfs.c callisto.h errors.h util.h
+lfs.o: lfs.c callisto.h util.h
 ljson.o: ljson.c callisto.h
-lpath.o: lpath.c callisto.h errors.h util.h
+lpath.o: lpath.c callisto.h util.h
 lprocess.o: lprocess.c callisto.h util.h
 util.o: util.c
 
