@@ -1,4 +1,0 @@
-*.css linguist-vendored
-config.ld linguist-vendored
-external/json/* linguist-vendored
-external/socket/* linguist-vendored
