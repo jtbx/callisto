@@ -12,9 +12,7 @@
 #include <libgen.h>
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef BSD
-#	include <string.h>
-#endif
+#include <string.h>
 #include <unistd.h>
 
 #include <lua.h>
