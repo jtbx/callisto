@@ -1,5 +1,3 @@
-PREFIX = /usr/local
-
 include config.mk
 
 OBJS = csto.o callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o\
