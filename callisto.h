@@ -1,5 +1,5 @@
 /*
- * Callisto, a featureful runtime for Lua 5.4.
+ * callisto - standalone scripting platform for Lua 5.4
  */
 
 #ifndef _CALLISTO_H_
@@ -22,11 +22,8 @@
 #define CALLISTO_EXTLIBNAME  "_G" /* global table */
 #define CALLISTO_FSYSLIBNAME "fs"
 #define CALLISTO_JSONLIBNAME "json"
-#define CALLISTO_MATHLIBNAME "math"
-#define CALLISTO_OSLIBNAME   "os"
 #define CALLISTO_PATHLIBNAME "path"
 #define CALLISTO_PROCLIBNAME "process"
-#define CALLISTO_SOCKLIBNAME "socket"
 
 #define CALLISTO_ENVIRON "environ"
 
@@ -35,11 +32,8 @@ int luaopen_environ(lua_State *);
 int luaopen_extra(lua_State *);
 int luaopen_fs(lua_State *);
 int luaopen_json(lua_State *);
-/* luaopen_math and luaopen_os
- * are provided by Lua */
 int luaopen_path(lua_State *);
 int luaopen_process(lua_State *);
-int luaopen_socket(lua_State *);
 
 lua_State *callisto_newstate(void);
 void callisto_openall(lua_State *);
