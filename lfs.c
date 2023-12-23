@@ -113,9 +113,35 @@ fs_exists(lua_State *L)
 	return 1;
 }
 
+static int
+ismode(lua_State *L, mode_t mode)
+{
+	struct stat sb;
+	const char *path;
+
+	path = luaL_checkstring(L, 1);
+
+	if (stat(path, &sb) != -1) {
+		lua_pushboolean(L, sb.st_mode & mode);
+		return 1;
+	}
+
+	switch (errno) {
+	case ENOTDIR:
+	case ENOENT:
+		lua_pushboolean(L, 0);
+		return 1;
+		break;
+	default:
+		return lfail(L);
+	}
+}
+
 /***
  * Returns true if the given path specifies a
  * directory, or false if it does not.
+ * Will return false if the given path does not
+ * specify an existing directory entry at all.
  *
  * On error returns nil, an error message and a
  * platform-dependent error code.
@@ -130,21 +156,14 @@ end
 static int
 fs_isdirectory(lua_State *L)
 {
-	struct stat sb;
-	const char *path;
-
-	path = luaL_checkstring(L, 1);
-
-	if (stat(path, &sb) == -1)
-		return lfail(L);
-
-	lua_pushboolean(L, sb.st_mode & S_IFDIR);
-	return 1;
+	return ismode(L, S_IFDIR);
 }
 
 /***
  * Returns true if the given path specifies a file,
  * or false if it does not.
+ * Will return false if the given path does not
+ * specify an existing directory entry at all.
  *
  * On error returns nil, an error message and a
  * platform-dependent error code.
@@ -159,16 +178,7 @@ end
 static int
 fs_isfile(lua_State *L)
 {
-	struct stat sb;
-	const char *path;
-
-	path = luaL_checkstring(L, 1);
-
-	if (stat(path, &sb) == -1)
-		return lfail(L);
-
-	lua_pushboolean(L, sb.st_mode & S_IFREG);
-	return 1;
+	return ismode(L, S_IFREG);
 }
 
 /*
