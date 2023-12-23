@@ -20,7 +20,6 @@
 #include <lauxlib.h>
 
 #include "callisto.h"
-#include "errors.h"
 #include "util.h"
 
 /***
