@@ -37,7 +37,7 @@ lfailm(lua_State *L, const char *mesg)
  * lib/libc/string/strlcat.c and
  * lib/libc/string/strlcpy.c respectively
  */
-#ifndef BSD
+#ifndef __OpenBSD__
 
 /*
  * Appends src to string dst of size dsize (unlike strncat, dsize is the
