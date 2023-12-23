@@ -1,6 +1,6 @@
 /***
- * Processes, signals, and
- * signal handlers.
+ * Processes, signals, and signal handlers.
+ *
  * @module process
  */
 
@@ -9,7 +9,7 @@
 #include <signal.h>
 #include <string.h>
 #include <errno.h>
-#ifdef BSD
+#ifdef __OpenBSD__
 #	include <string.h>
 #endif
 

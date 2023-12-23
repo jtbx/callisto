@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <errno.h>
-#ifdef BSD
+#ifdef __OpenBSD__
 #	include <string.h>
 #endif
 
