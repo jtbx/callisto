@@ -1,5 +1,5 @@
 CC       = cc
-CFLAGS   = -std=c99 -pedantic -fpic -O2 -Wall -Wextra -Wno-override-init -I. -Ilua-5.4
+CFLAGS   = -std=c99 -pedantic -fpic -O2 -Wall -Wextra -Wno-override-init -Iexternal/luasrc
 CPPFLAGS = -D_DEFAULT_SOURCE
 LDFLAGS = -lm
 
