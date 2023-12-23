@@ -14,10 +14,7 @@ format = "markdown"
 
 file = {
 	".",
-	exclude = {
-		"external",
-		"result"
-	}
+	exclude = {"external"}
 }
 
 new_type("setting", "Settings")
