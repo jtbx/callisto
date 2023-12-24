@@ -4,9 +4,10 @@
  * @module fs
  */
 
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <fts.h>
@@ -23,11 +24,14 @@
 #include "util.h"
 
 /***
- * Returns the last component of the given pathname,
+ * Returns the last component of the given path,
  * removing any trailing '/' characters. If the given
  * path consists entirely of '/' characters, the string
  * `"/"` is returned. If *path* is an empty string,
  * the string `"."` is returned.
+ *
+ * This is purely a string manipulation function and
+ * depends on no outside state.
  *
  * @function basename
  * @usage
@@ -70,7 +74,8 @@ static int
 fs_copy(lua_State *L)
 {
 	struct stat sb;
-	const char *source, *target;
+	const char *source; /* parameter 1 (string) */
+	const char *target; /* parameter 2 (string) */
 	char readbuf[512];
 	ssize_t ret;
 	int sfd, tfd;
@@ -118,12 +123,15 @@ finish:
 }
 
 /***
- * Returns the parent directory of the pathname
+ * Returns the parent directory of the pathn
  * given. Any trailing '/' characters are not
  * counted as part of the directory name.
  * If the given path is an empty string or contains
  * no '/' characters, the string `"."` is returned,
  * signifying the current directory.
+ *
+ * This is purely a string manipulation function and
+ * depends on no outside state.
  *
  * @function dirname
  * @usage assert(fs.dirname("/usr/local/bin") == "/usr/local")
@@ -149,7 +157,7 @@ fs_dirname(lua_State *L)
 
 /***
  * Returns true if the given pathname exists
- * in the file system, or false if it does not.
+ * in the file system.
  *
  * @function exists
  * @usage
@@ -161,7 +169,7 @@ end
 static int
 fs_exists(lua_State *L)
 {
-	const char *path;
+	const char *path; /* parameter 1 (string) */
 	int ret;
 
 	path = luaL_checkstring(L, 1);
@@ -178,7 +186,7 @@ static int
 ismode(lua_State *L, mode_t mode)
 {
 	struct stat sb;
-	const char *path;
+	const char *path; /* parameter 1 (string) */
 
 	path = luaL_checkstring(L, 1);
 
@@ -199,10 +207,9 @@ ismode(lua_State *L, mode_t mode)
 }
 
 /***
- * Returns true if the given path specifies a
- * directory, or false if it does not.
- * Will return false if the given path does not
- * specify an existing directory entry at all.
+ * Returns true if the given path specifies a directory.
+ * Will return false if either the given path does not
+ * specify a directory or the path does not exist at all.
  *
  * On error returns nil, an error message and a
  * platform-dependent error code.
@@ -221,10 +228,10 @@ fs_isdirectory(lua_State *L)
 }
 
 /***
- * Returns true if the given path specifies a file,
- * or false if it does not.
- * Will return false if the given path does not
- * specify an existing directory entry at all.
+ * Returns true if the given path specifies a file.
+ * Will return false if either the given path
+ * does not specify a directory or the path
+ * does not exist at all.
  *
  * On error returns nil, an error message and a
  * platform-dependent error code.
@@ -296,7 +303,8 @@ mkpath(char *path, mode_t mode, mode_t dir_mode)
  * Creates a new directory.
  *
  * If *recursive* is true, creates intermediate directories
- * as required; behaves as POSIX `mkdir -p` would.
+ * (parent directories) as required; behaves as POSIX
+ * `mkdir -p` would.
  *
  * On success, returns true. Otherwise returns nil, an error
  * message and a platform-dependent error code.
@@ -304,8 +312,7 @@ mkpath(char *path, mode_t mode, mode_t dir_mode)
  * @function mkdir
  * @usage fs.mkdir("/usr/local/bin")
  * @tparam string dir The path of the directory to create.
- * @tparam[opt] boolean recursive Whether to create intermediate
- * directories as required.
+ * @tparam[opt] boolean recursive Whether to create intermediate directories.
  */
 static int
 fs_mkdir(lua_State *L)
@@ -334,11 +341,13 @@ fs_mkdir(lua_State *L)
 }
 
 /***
- * Moves the file at the path *src* to the path *dest*,
- * moving it between directories if required. If *dest*
- * exists, it is first removed. Both *src* and *dest*
- * must be of the same type (that is, both directories or
- * both non-directories) and must reside on the same file system.
+ * Moves the item at path *src* to path *dest*.
+ * If *dest* exists, it is overwritten. Both *src* and *dest*
+ * must be of the same type (that is, both directories or both
+ * non-directories) and must reside on the same file system.
+ *
+ * (If you need to move files across different file systems,
+ * consider using `fs.copy` instead.)
  *
  * On success, returns true. Otherwise returns nil, an error
  * message and a platform-dependent error code.
@@ -365,8 +374,80 @@ fs_move(lua_State *L)
 	}
 
 	return lfail(L);
+}
 
-	return 0;
+static int
+recursiveremove(lua_State *L, const char *path)
+{
+	DIR *d;
+	struct dirent *ent;
+	char *fullname;
+	size_t len, nlen, plen;
+
+	if ((d = opendir(path)) == NULL)
+		return lfail(L);
+
+	while ((ent = readdir(d)) != NULL) {
+		if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+			continue;
+
+		plen = strlen(path);
+		nlen = strlen(ent->d_name);
+		/* path + name + slash in between + null terminator */
+		len = plen + nlen + 2;
+		fullname = malloc(len * sizeof(char));
+
+		strlcpy(fullname, path, len);
+		fullname[plen] = '/';
+		fullname[plen + 1] = 0;
+		strlcat(fullname, ent->d_name, len);
+
+		printf("fullname: %s\n", fullname);
+		if (ent->d_type == DT_DIR) {
+			/* if rmdir succeeded, free fullname and
+			 * proceed with next entry */
+			if (rmdir(fullname) != -1)
+				goto next;
+
+			if (errno == ENOTEMPTY) /* if the directory is not empty... */
+				recursiveremove(L, fullname);
+			else /* if some other error occurred */
+				lfail(L);
+		} else {
+			if (remove(fullname) == -1)
+				lfail(L);
+		}
+
+next:
+		free(fullname);
+	}
+
+	closedir(d);
+	if (rmdir(path) == -1)
+		lfail(L);
+
+	lua_pushboolean(L, 1);
+	return 1;
+}
+
+/***
+ * Removes a file or directory.
+ *
+ * On success, returns true. Otherwise returns nil, an error
+ * message and a platform-dependent error code.
+ *
+ * @function remove
+ * @usage fs.remove("path/to/file")
+ * @tparam string dir The path to remove.
+ */
+static int
+fs_remove(lua_State *L)
+{
+	const char *path; /* parameter 1 (string) */
+
+	path = luaL_checkstring(L, 1);
+
+	return recursiveremove(L, path);
 }
 
 /***
@@ -382,7 +463,7 @@ fs_move(lua_State *L)
 static int
 fs_rmdir(lua_State *L)
 {
-	const char *dir;
+	const char *dir; /* parameter 1 (string) */
 	int ret;
 
 	dir = luaL_checkstring(L, 1);
@@ -394,8 +475,6 @@ fs_rmdir(lua_State *L)
 	}
 
 	return lfail(L);
-
-	return 0;
 }
 
 /***
@@ -421,31 +500,28 @@ static int
 fs_workdir(lua_State *L)
 {
 	const char *workdir; /* parameter 1 (string) */
-	char *buffer;        /* buffer used by getcwd() */
+	char buffer[512];    /* buffer used by getcwd() */
 	char *ret;
 
 	if (lua_isnoneornil(L, 1)) { /* if first argument was not given... */
-		buffer = malloc(sizeof(char *) * 512);
 		ret = getcwd(buffer, 512);
 
 		if (ret != NULL) {
 			lua_pushstring(L, buffer);
-			free(buffer);
-			return 1;
-		}
-
-		free(buffer);
-		return lfail(L);
-	} else {
-		workdir = luaL_checkstring(L, 1);
-
-		if (chdir(workdir) == 0) {
-			lua_pushboolean(L, 1);
 			return 1;
 		}
 
 		return lfail(L);
 	}
+
+	workdir = luaL_checkstring(L, 1);
+
+	if (chdir(workdir) == 0) {
+		lua_pushboolean(L, 1);
+		return 1;
+	}
+
+	return lfail(L);
 }
 
 static const luaL_Reg fslib[] = {
@@ -457,6 +533,7 @@ static const luaL_Reg fslib[] = {
 	{"isfile",      fs_isfile},
 	{"mkdir",       fs_mkdir},
 	{"move",        fs_move},
+	{"remove",      fs_remove},
 	{"rmdir",       fs_rmdir},
 	{"workdir",     fs_workdir},
 	{NULL, NULL}
