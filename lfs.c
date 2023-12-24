@@ -23,6 +23,37 @@
 #include "util.h"
 
 /***
+ * Returns the last component of the given pathname,
+ * removing any trailing '/' characters. If the given
+ * path consists entirely of '/' characters, the string
+ * `"/"` is returned. If *path* is an empty string,
+ * the string `"."` is returned.
+ *
+ * @function basename
+ * @usage
+print("name of script file is " .. fs.basename(arg[0]))
+assert(fs.basename("/etc/fstab") == "fstab")
+ * @tparam string path The path to process.
+ */
+static int
+fs_basename(lua_State *L)
+{
+	const char *ret;
+	char *path; /* parameter 1 (string) */
+
+	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
+	ret  = basename(path);
+
+	if (ret == NULL) /* failed? */
+		return lfail(L);
+
+	lua_pushstring(L, ret);
+
+	free(path);
+	return 1;
+}
+
+/***
  * Copies the contents of the file *source* to
  * the file *target*. *target* will be overwritten
  * if it already exists.
@@ -83,6 +114,36 @@ finish:
 	close(tfd);
 
 	lua_pushboolean(L, 1);
+	return 1;
+}
+
+/***
+ * Returns the parent directory of the pathname
+ * given. Any trailing '/' characters are not
+ * counted as part of the directory name.
+ * If the given path is an empty string or contains
+ * no '/' characters, the string `"."` is returned,
+ * signifying the current directory.
+ *
+ * @function dirname
+ * @usage assert(fs.dirname("/usr/local/bin") == "/usr/local")
+ * @tparam string path The path to process.
+ */
+static int
+fs_dirname(lua_State *L)
+{
+	const char *ret;
+	char *path; /* parameter 1 (string) */
+
+	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
+	ret  = dirname(path);
+
+	if (ret == NULL) /* failed? */
+		return lfail(L);
+
+	lua_pushstring(L, ret);
+
+	free(path);
 	return 1;
 }
 
@@ -388,7 +449,9 @@ fs_workdir(lua_State *L)
 }
 
 static const luaL_Reg fslib[] = {
+	{"basename",    fs_basename},
 	{"copy",        fs_copy},
+	{"dirname",     fs_dirname},
 	{"exists",      fs_exists},
 	{"isdirectory", fs_isdirectory},
 	{"isfile",      fs_isfile},
