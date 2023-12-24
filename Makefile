@@ -43,7 +43,7 @@ clean-all: clean
 	${MAKE} -s -Cexternal/json clean
 
 doc:
-	ldoc -q . >/dev/null
+	ldoc -s . -q . >/dev/null
 
 install:
 	mkdir -p include/callisto
