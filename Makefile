@@ -1,7 +1,7 @@
 include config.mk
 
 OBJS = csto.o callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o\
-       lpath.o lprocess.o util.o
+       lprocess.o util.o
 LIBS = liblua.a cjson.a
 
 all: csto libcallisto.a
@@ -23,7 +23,6 @@ lextra.o: lextra.c callisto.h util.h
 lenviron.o: lenviron.c callisto.h
 lfs.o: lfs.c callisto.h util.h
 ljson.o: ljson.c callisto.h
-lpath.o: lpath.c callisto.h util.h
 lprocess.o: lprocess.c callisto.h util.h
 util.o: util.c
 

@@ -22,7 +22,6 @@
 #define CALLISTO_EXTLIBNAME  "_G" /* global table */
 #define CALLISTO_FSYSLIBNAME "fs"
 #define CALLISTO_JSONLIBNAME "json"
-#define CALLISTO_PATHLIBNAME "path"
 #define CALLISTO_PROCLIBNAME "process"
 
 #define CALLISTO_ENVIRON "environ"
@@ -32,7 +31,6 @@ int luaopen_environ(lua_State *);
 int luaopen_extra(lua_State *);
 int luaopen_fs(lua_State *);
 int luaopen_json(lua_State *);
-int luaopen_path(lua_State *);
 int luaopen_process(lua_State *);
 
 lua_State *callisto_newstate(void);
