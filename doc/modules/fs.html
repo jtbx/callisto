@@ -61,7 +61,7 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#basename">basename (path)</a></td>
-	<td class="summary">Returns the last component of the given pathname,
+	<td class="summary">Returns the last component of the given path,
  removing any trailing '/' characters.</td>
 	</tr>
 	<tr>
@@ -71,23 +71,21 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#dirname">dirname (path)</a></td>
-	<td class="summary">Returns the parent directory of the pathname
+	<td class="summary">Returns the parent directory of the pathn
  given.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#exists">exists (path)</a></td>
 	<td class="summary">Returns true if the given pathname exists
- in the file system, or false if it does not.</td>
+ in the file system.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#isdirectory">isdirectory (path)</a></td>
-	<td class="summary">Returns true if the given path specifies a
- directory, or false if it does not.</td>
+	<td class="summary">Returns true if the given path specifies a directory.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#isfile">isfile (path)</a></td>
-	<td class="summary">Returns true if the given path specifies a file,
- or false if it does not.</td>
+	<td class="summary">Returns true if the given path specifies a file.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mkdir">mkdir (dir[, recursive])</a></td>
@@ -95,8 +93,11 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#move">move (src, dest)</a></td>
-	<td class="summary">Moves the file at the path <em>src</em> to the path <em>dest</em>,
- moving it between directories if required.</td>
+	<td class="summary">Moves the item at path <em>src</em> to path <em>dest</em>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#remove">remove (dir)</a></td>
+	<td class="summary">Removes a file or directory.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#mkdir">mkdir (dir)</a></td>
@@ -120,11 +121,14 @@
     <strong>basename (path)</strong>
     </dt>
     <dd>
-    Returns the last component of the given pathname,
+    Returns the last component of the given path,
  removing any trailing '/' characters.  If the given
  path consists entirely of '/' characters, the string
  <code>&quot;/&quot;</code> is returned. If <em>path</em> is an empty string,
- the string <code>&quot;.&quot;</code> is returned.
+ the string <code>&quot;.&quot;</code> is returned.</p>
+
+<p> This is purely a string manipulation function and
+ depends on no outside state.
 
 
     <h3>Parameters:</h3>
@@ -183,12 +187,15 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
     <strong>dirname (path)</strong>
     </dt>
     <dd>
-    Returns the parent directory of the pathname
+    Returns the parent directory of the pathn
  given.  Any trailing '/' characters are not
  counted as part of the directory name.
  If the given path is an empty string or contains
  no '/' characters, the string <code>&quot;.&quot;</code> is returned,
- signifying the current directory.
+ signifying the current directory.</p>
+
+<p> This is purely a string manipulation function and
+ depends on no outside state.
 
 
     <h3>Parameters:</h3>
@@ -214,7 +221,7 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
     </dt>
     <dd>
     Returns true if the given pathname exists
- in the file system, or false if it does not.
+ in the file system.
 
 
     <h3>Parameters:</h3>
@@ -241,10 +248,9 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
     <strong>isdirectory (path)</strong>
     </dt>
     <dd>
-    Returns true if the given path specifies a
- directory, or false if it does not.
- Will return false if the given path does not
- specify an existing directory entry at all.</p>
+    Returns true if the given path specifies a directory.
+ Will return false if either the given path does not
+ specify a directory or the path does not exist at all.</p>
 
 <p> On error returns nil, an error message and a
  platform-dependent error code.
@@ -274,10 +280,10 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
     <strong>isfile (path)</strong>
     </dt>
     <dd>
-    Returns true if the given path specifies a file,
- or false if it does not.
- Will return false if the given path does not
- specify an existing directory entry at all.</p>
+    Returns true if the given path specifies a file.
+ Will return false if either the given path
+ does not specify a directory or the path
+ does not exist at all.</p>
 
 <p> On error returns nil, an error message and a
  platform-dependent error code.
@@ -310,7 +316,8 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
     Creates a new directory. </p>
 
 <p> If <em>recursive</em> is true, creates intermediate directories
- as required; behaves as POSIX <code>mkdir -p</code> would.</p>
+ (parent directories) as required; behaves as POSIX
+ <code>mkdir -p</code> would.</p>
 
 <p> On success, returns true. Otherwise returns nil, an error
  message and a platform-dependent error code.
@@ -324,8 +331,7 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
         </li>
         <li><span class="parameter">recursive</span>
             <span class="types"><span class="type">boolean</span></span>
-         Whether to create intermediate
- directories as required.
+         Whether to create intermediate directories.
          (<em>optional</em>)
         </li>
     </ul>
@@ -344,11 +350,13 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
     <strong>move (src, dest)</strong>
     </dt>
     <dd>
-    Moves the file at the path <em>src</em> to the path <em>dest</em>,
- moving it between directories if required.  If <em>dest</em>
- exists, it is first removed. Both <em>src</em> and <em>dest</em>
- must be of the same type (that is, both directories or
- both non-directories) and must reside on the same file system.</p>
+    Moves the item at path <em>src</em> to path <em>dest</em>.
+ If <em>dest</em> exists, it is overwritten. Both <em>src</em> and <em>dest</em>
+ must be of the same type (that is, both directories or both
+ non-directories) and must reside on the same file system.</p>
+
+<p> (If you need to move files across different file systems,
+ consider using <a href="../modules/fs.html#copy">fs.copy</a> instead.)</p>
 
 <p> On success, returns true. Otherwise returns nil, an error
  message and a platform-dependent error code.
@@ -372,6 +380,34 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">fs.move(<span class="string">"srcfile"</span>, <span class="string">"destfile"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "remove"></a>
+    <strong>remove (dir)</strong>
+    </dt>
+    <dd>
+    Removes a file or directory. </p>
+
+<p> On success, returns true. Otherwise returns nil, an error
+ message and a platform-dependent error code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dir</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path to remove.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">fs.remove(<span class="string">"path/to/file"</span>)</pre>
     </ul>
 
 </dd>
@@ -447,7 +483,7 @@ fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2023-12-24 14:31:51 </i>
+<i style="float:right;">Last updated 2023-12-24 18:08:19 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
