@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Callisto library documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Callisto</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>cl</strong></li>
+  <li><a href="../modules/environ.html">environ</a></li>
+  <li><a href="../modules/extra.html">extra</a></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><a href="../modules/json.html">json</a></li>
+  <li><a href="../modules/process.html">process</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>cl</code></h1>
+<p>Option parsing, and error formatting
+ for the command line.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#error">error (message, ...)</a></td>
+	<td class="summary">Prints a formatted error message to standard error.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mesg">mesg (message, ...)</a></td>
+	<td class="summary">Prints a formatted message to standard output.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#panic">panic ([code], message, ...)</a></td>
+	<td class="summary">Convenience function that calls <em>cl.error</em> to
+ print a formatted error message to standard error,
+ then terminates script execution and calls <em>os.exit</em>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#options">options (arg, optstring, fn)</a></td>
+	<td class="summary">Parses the command line argument list <em>arg</em>.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "error"></a>
+    <strong>error (message, ...)</strong>
+    </dt>
+    <dd>
+    Prints a formatted error message to standard error.
+ It looks like so:</p>
+
+<p> <code>progname: message</code></p>
+
+<p> where <em>progname</em> is the name of the current script
+ being executed and <em>message</em> is the <em>message</em> parameter.</p>
+
+<p> The <em>message</em> parameter may optionally be followed by
+ a variable number of arguments which are formatted
+ using <em>string.format</em>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The message to print after the program's name. Supports <em>string.format</em>-style format specifiers.
+        </li>
+        <li><span class="parameter">...</span>
+         Any additional values specified by the format specifiers in the <em>message</em> parameter.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> succeeded, err = <span class="global">io</span>.open(<span class="string">"file.txt"</span>)
+<span class="keyword">if</span> <span class="keyword">not</span> succeeded <span class="keyword">then</span>
+	cl.<span class="global">error</span>(<span class="string">"could not open "</span> .. err)
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mesg"></a>
+    <strong>mesg (message, ...)</strong>
+    </dt>
+    <dd>
+    Prints a formatted message to standard output.
+ It looks like so:</p>
+
+<p> <code>progname: message</code></p>
+
+<p> where <em>progname</em> is the name of the current script
+ being executed and <em>message</em> is the (optionally
+ formatted) <em>message</em> parameter.</p>
+
+<p> The <em>message</em> parameter may optionally be followed by
+ a variable number of arguments which are formatted
+ using <em>string.format</em>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The message to print after the program's name. Supports <em>string.format</em>-style format specifiers.
+        </li>
+        <li><span class="parameter">...</span>
+         Any additional values specified by the format specifiers in the <em>message</em> parameter.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">cl.mesg(<span class="string">"message to stdout"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "panic"></a>
+    <strong>panic ([code], message, ...)</strong>
+    </dt>
+    <dd>
+    Convenience function that calls <em>cl.error</em> to
+ print a formatted error message to standard error,
+ then terminates script execution and calls <em>os.exit</em>. </p>
+
+<p> For more information on the <em>message</em> parameter,
+ see the <em>cl.error</em> function.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">code</span>
+            <span class="types"><span class="type">integer</span></span>
+         The exit code to return to the operating system.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">message</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The message to print after the program's name. Supports <em>string.format</em>-style format specifiers.
+        </li>
+        <li><span class="parameter">...</span>
+         Any additional values specified by the format specifiers in the <em>message</em> parameter.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> succeeded, err, code = <span class="global">io</span>.open(<span class="string">"file.txt"</span>)
+<span class="keyword">if</span> <span class="keyword">not</span> succeeded <span class="keyword">then</span>
+	<span class="comment">-- use a custom exit code:
+</span>	cl.panic(code, <span class="string">"could not open "</span> .. err)
+	<span class="comment">-- use the default exit code (1):
+</span>	cl.panic(<span class="string">"could not open "</span> .. err)
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "options"></a>
+    <strong>options (arg, optstring, fn)</strong>
+    </dt>
+    <dd>
+    Parses the command line argument list <em>arg</em>.
+ The string <em>optstring</em> may contain the following elements:
+ individual characters, and characters followed by a colon.
+ A character followed by a single colon indicates that an
+ argument is to follow the option on the command line. For
+ example, * an option string <code>&quot;x&quot;</code> permits a <strong>-x</strong> option,
+ and an option string <code>&quot;x:&quot;</code> permits a <strong>-x</strong> option that
+ must take an argument. An option * string of <code>&quot;x:yz&quot;</code> permits
+ a <strong>-x</strong> option that takes an argument, and <strong>-y</strong> and <strong>-z</strong>
+ options, which do not.</p>
+
+<p> The function <em>fn</em> is run each time a new option of the argument
+ list is processed. It takes the parameters <em>opt</em>, <em>optarg</em>,
+ <em>optindex</em>, and <em>opterror</em>.
+ - <em>opt</em> is a string containing the option used. It is set
+ to the option the user specified on the command line.
+ If the user specifies an unknown option (one that is
+ not specified in <em>optstring</em>), the value of <em>opt</em> will
+ be set to nil. If the user specifies an option that
+ requires an argument, but does not specify its argument,
+ the value of <em>opt</em> will be the string <code>&quot;*&quot;</code> (a single
+ asterisk).
+ - <em>optarg</em>, is a string containing the option argument
+ (if applicable).
+ - <em>optindex</em> is an integer that contains the index of the
+ last command line argument processed. The last parameter,
+ <em>opterror</em>, is set in case of an option error (if <em>opt</em>
+ is nil or set to the string <code>&quot;*&quot;</code>), and is set to the
+ option that caused an error (in the case of <em>opt</em> being
+ nil, this will be the unknown option the user specified,
+ or in the case of <em>opt</em> being the string <code>&quot;*&quot;</code>, this
+ will be the option that required an argument).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">arg</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         The argument table to parse.
+        </li>
+        <li><span class="parameter">optstring</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The option string, containing options that should be parsed.
+        </li>
+        <li><span class="parameter">fn</span>
+            <span class="types"><span class="type">function</span></span>
+         The function to be run each time a new option is specified on the command line.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">cl.options(arg, <span class="string">"abc:"</span>, <span class="keyword">function</span>(opt, optarg, optindex, opterror)
+	<span class="keyword">if</span> opt == <span class="string">'a'</span> <span class="keyword">then</span>
+		<span class="global">print</span>(<span class="string">"-a was used"</span>)
+	<span class="keyword">elseif</span> opt == <span class="string">'b'</span> <span class="keyword">then</span>
+		<span class="global">print</span>(<span class="string">"-b was used"</span>)
+	<span class="keyword">elseif</span> opt == <span class="string">'c'</span> <span class="keyword">then</span>
+		<span class="global">print</span>(<span class="string">"-c was used, with argument "</span> .. optarg)
+	<span class="keyword">elseif</span> opt == <span class="string">'*'</span> <span class="keyword">then</span>
+		<span class="global">print</span>(<span class="string">"missing argument for -"</span> .. opterror)
+	<span class="keyword">elseif</span> opt == <span class="keyword">nil</span> <span class="keyword">then</span> <span class="comment">-- or `<code>if not opt</code>`
+</span>		<span class="global">print</span>(<span class="string">"unknown option -"</span> .. opterror)
+	<span class="keyword">end</span>
+<span class="keyword">end</span>)</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2023-12-24 14:31:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

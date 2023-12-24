@@ -1,0 +1,591 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Callisto library documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Callisto</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Settings">Settings</a></li>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/cl.html">cl</a></li>
+  <li><a href="../modules/environ.html">environ</a></li>
+  <li><a href="../modules/extra.html">extra</a></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><strong>json</strong></li>
+  <li><a href="../modules/process.html">process</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>json</code></h1>
+<p>Manipulation of JavaScript Object Notation (JSON) values.</p>
+<p>
+
+
+<p> Implementation from <a href="https://github.com/openresty/lua-cjson">lua-cjson</a>,
+ with some additional modifications.</p>
+
+<p> <strong>Features</strong></p>
+
+<ul>
+    <li><p>Fast, standards compliant encoding/parsing routines</p></li>
+    <li><p>Full support for JSON with UTF-8, including decoding surrogate pairs</p></li>
+    <li><p>Optional run-time support for common exceptions to the JSON specification
+    (infinity, NaN, etc.) </p></li>
+    <li><p>No dependencies on other libraries</p></li>
+</ul>
+
+<p> <strong>Caveats</strong></p>
+
+<ul>
+    <li>UTF-16 and UTF-32 are not supported</li>
+</ul>
+</p>
+
+
+<h2><a href="#Settings">Settings</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#decode:invalid-numbers">decode:invalid-numbers</a></td>
+	<td class="summary">Configures handling of invalid numbers while decoding;
+ numbers not supported by the JSON specification.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#decode:max-depth">decode:max-depth</a></td>
+	<td class="summary">Configures the maximum number of nested
+ arrays/objects allowed when decoding.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#encode:invalid-numbers">encode:invalid-numbers</a></td>
+	<td class="summary">Configures handling of invalid numbers while encoding;
+ numbers not supported by the JSON specification.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#encode:keep-buffer">encode:keep-buffer</a></td>
+	<td class="summary">Determine whether or not the JSON encoding buffer
+ should be reused after each call to <em>encode</em>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#encode:max-depth">encode:max-depth</a></td>
+	<td class="summary">Configures the maximum number of nested
+ arrays/objects allowed when encoding.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#encode:number-precision">encode:number-precision</a></td>
+	<td class="summary">Configures the amount of significant digits returned when encoding
+ numbers.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#encode:sparse-array">encode:sparse-array</a></td>
+	<td class="summary">Configures handling of extremely sparse arrays; lists with holes.</td>
+	</tr>
+</table>
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#encode">encode (t)</a></td>
+	<td class="summary">Returns the given Lua table encoded as a JSON object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#decode">decode (j)</a></td>
+	<td class="summary">Returns the given JSON object decoded into a Lua table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#config">config (setting, ...)</a></td>
+	<td class="summary">Gets/sets configuration values used when
+ encoding or decoding JSON objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#new">new ()</a></td>
+	<td class="summary">Creates and returns a new independent copy of the module,
+ with default settings and a separate persistent encoding buffer.</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#_NAME">_NAME</a></td>
+	<td class="summary">The name of the module, provided for compatibility with
+ lua-cjson.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#_VERSION">_VERSION</a></td>
+	<td class="summary">The version of lua-cjson
+ used in the library.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#null">null</a></td>
+	<td class="summary">null value used when decoding JSON objects.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Settings"></a>Settings</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "decode:invalid-numbers"></a>
+    <strong>decode:invalid-numbers</strong>
+    </dt>
+    <dd>
+    Configures handling of invalid numbers while decoding;
+ numbers not supported by the JSON specification.
+ Invalid numbers are defined as:</p>
+
+<ul>
+    <li>infinity</li>
+    <li>NaN</li>
+    <li>hexadecimals</li>
+</ul>
+
+<p> <strong>Parameters:</strong>
+
+
+    <ul>
+        <li><span class="parameter">convert</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether or not to accept and decode invalid numbers.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">json.config(<span class="string">"decode:invalid-numbers"</span>, <span class="keyword">false</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "decode:max-depth"></a>
+    <strong>decode:max-depth</strong>
+    </dt>
+    <dd>
+    Configures the maximum number of nested
+ arrays/objects allowed when decoding. </p>
+
+<p> <strong>Parameters:</strong>
+
+
+    <ul>
+        <li><span class="parameter">depth</span>
+            <span class="types"><span class="type">integer</span></span>
+         Max depth allowed when decoding.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">json.config(<span class="string">"decode:max-depth"</span>, <span class="number">4</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "encode:invalid-numbers"></a>
+    <strong>encode:invalid-numbers</strong>
+    </dt>
+    <dd>
+    Configures handling of invalid numbers while encoding;
+ numbers not supported by the JSON specification.
+ Invalid numbers are defined as:</p>
+
+<ul>
+    <li>infinity</li>
+    <li>NaN</li>
+    <li>hexadecimals</li>
+</ul>
+
+<p> <strong>Parameters:</strong>
+
+
+    <ul>
+        <li><span class="parameter">convert</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether or not to accept and encode invalid numbers.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">json.config(<span class="string">"encode:invalid-numbers"</span>, <span class="keyword">false</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "encode:keep-buffer"></a>
+    <strong>encode:keep-buffer</strong>
+    </dt>
+    <dd>
+    Determine whether or not the JSON encoding buffer
+ should be reused after each call to <em>encode</em>. </p>
+
+<p> If <em>true</em>, the buffer will grow to the largest size
+ required and is not freed until the module is garbage
+ collected. This is the default setting.</p>
+
+<p> If <em>false</em>, the encode buffer is freed after each call.</p>
+
+<p> <strong>Parameters:</strong>
+
+
+    <ul>
+        <li><span class="parameter">keep</span>
+            <span class="types"><span class="type">integer</span></span>
+         Whether or not the JSON encoding buffer should be reused.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">json.config(<span class="string">"encode:keep-buffer"</span>, <span class="keyword">false</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "encode:max-depth"></a>
+    <strong>encode:max-depth</strong>
+    </dt>
+    <dd>
+    Configures the maximum number of nested
+ arrays/objects allowed when encoding. </p>
+
+<p> <strong>Parameters:</strong>
+
+
+    <ul>
+        <li><span class="parameter">depth</span>
+            <span class="types"><span class="type">integer</span></span>
+         Max depth allowed when encoding.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">json.config(<span class="string">"encode:max-depth"</span>, <span class="number">4</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "encode:number-precision"></a>
+    <strong>encode:number-precision</strong>
+    </dt>
+    <dd>
+    Configures the amount of significant digits returned when encoding
+ numbers.  This can be used to balance accuracy versus performance.</p>
+
+<p> <strong>Parameters:</strong>
+
+
+    <ul>
+        <li><span class="parameter">precision</span>
+            <span class="types"><span class="type">integer</span></span>
+         Amount of significant digits to return in
+   floating-point numbers (must be between 1 and 14, default 14)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">json.config(<span class="string">"encode:number-precision"</span>, <span class="number">2</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "encode:sparse-array"></a>
+    <strong>encode:sparse-array</strong>
+    </dt>
+    <dd>
+    Configures handling of extremely sparse arrays; lists with holes. </p>
+
+<p> <strong>Parameters:</strong>
+
+
+    <ul>
+        <li><span class="parameter">safe</span>
+            <span class="types"><span class="type">integer</span></span>
+         Always use an array when the max index is
+   larger than this value.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">convert</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether or not to convert extremely sparse
+   arrays into objects.
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">ration</span>
+            <span class="types"><span class="type">integer</span></span>
+         <em>0</em>: always allow sparse; <em>1</em>: never allow
+   sparse; <em>>1</em>: use ratio
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "encode"></a>
+    <strong>encode (t)</strong>
+    </dt>
+    <dd>
+    Returns the given Lua table encoded as a JSON object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
+         The table to encode.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> t = {
+	key = <span class="string">"value"</span>,
+	x = <span class="number">4</span>,
+	y = <span class="number">16.789</span>,
+	t = {
+		hello = <span class="string">"world"</span>
+	}
+}
+<span class="keyword">local</span> j = json.encode(t)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "decode"></a>
+    <strong>decode (j)</strong>
+    </dt>
+    <dd>
+    Returns the given JSON object decoded into a Lua table.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">j</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The JSON object to decode.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> j = <span class="string">[[
+{
+	"key": "value",
+	"x": 4,
+	"y": 16.789,
+	"obj": {
+		"hello": "world"
+	}
+}
+]]</span>
+<span class="keyword">local</span> t = json.decode(j)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "config"></a>
+    <strong>config (setting, ...)</strong>
+    </dt>
+    <dd>
+    Gets/sets configuration values used when
+ encoding or decoding JSON objects. </p>
+
+<p> The <em>setting</em> paramater is a string containing either <em>"encode:"</em> or
+ <em>"decode:"</em>, followed by the name of the setting. Available settings
+ can be found in the <a href="#Settings">Settings</a> section.</p>
+
+<p> The current setting is always returned, and is only updated
+ when an argument is provided.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">setting</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The setting to get/set.
+        </li>
+        <li><span class="parameter">...</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">json.config(<span class="string">"encode:max-depth"</span>, <span class="number">3</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "new"></a>
+    <strong>new ()</strong>
+    </dt>
+    <dd>
+    Creates and returns a new independent copy of the module,
+ with default settings and a separate persistent encoding buffer.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "_NAME"></a>
+    <strong>_NAME</strong>
+    </dt>
+    <dd>
+    The name of the module, provided for compatibility with
+ lua-cjson.  Normally this will just be <em>"json"</em>.
+
+
+    <ul>
+        <li><span class="parameter">_NAME</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "_VERSION"></a>
+    <strong>_VERSION</strong>
+    </dt>
+    <dd>
+    The version of lua-cjson
+ used in the library.
+
+
+    <ul>
+        <li><span class="parameter">_VERSION</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "null"></a>
+    <strong>null</strong>
+    </dt>
+    <dd>
+    null value used when decoding JSON objects. </p>
+
+<p> JSON <em>null</em> is decoded as a Lua lightuserdata <code>NULL</code> pointer.
+ <em>json.null</em> is provided for comparison.
+
+
+    <ul>
+        <li><span class="parameter">null</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2023-12-24 14:31:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

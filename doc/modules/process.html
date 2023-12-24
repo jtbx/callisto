@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Callisto library documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Callisto</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/cl.html">cl</a></li>
+  <li><a href="../modules/environ.html">environ</a></li>
+  <li><a href="../modules/extra.html">extra</a></li>
+  <li><a href="../modules/fs.html">fs</a></li>
+  <li><a href="../modules/json.html">json</a></li>
+  <li><strong>process</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>process</code></h1>
+<p>Processes, signals, and signal handlers.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#pid">pid ()</a></td>
+	<td class="summary">Returns the PID of the current process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pidof">pidof (process)</a></td>
+	<td class="summary">Returns the PID (process ID) of the given process.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#signum">signum (signal)</a></td>
+	<td class="summary">Returns the given signal as an integer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#send">send (pid, signal)</a></td>
+	<td class="summary">Sends the given signal to the
+ process with the given PID.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#kill">kill (pid)</a></td>
+	<td class="summary">Kills the process with the given PID.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#terminate">terminate (pid)</a></td>
+	<td class="summary">Terminates the process with the given PID.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "pid"></a>
+    <strong>pid ()</strong>
+    </dt>
+    <dd>
+    Returns the PID of the current process.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> pid = process.pid()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "pidof"></a>
+    <strong>pidof (process)</strong>
+    </dt>
+    <dd>
+    Returns the PID (process ID) of the given process. </p>
+
+<p> Returns nil if the process was not found.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">process</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The name of the process to look up.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">process.pidof(<span class="string">"init"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "signum"></a>
+    <strong>signum (signal)</strong>
+    </dt>
+    <dd>
+    Returns the given signal as an integer.
+ This function may return different values
+ across different operating systems, as
+ signal constants vary across different Unixes.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">signal</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The signal to look up.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> sigkill = process.signum(<span class="string">"SIGKILL"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "send"></a>
+    <strong>send (pid, signal)</strong>
+    </dt>
+    <dd>
+    Sends the given signal to the
+ process with the given PID. </p>
+
+<p> The <em>signal</em> parameter is a string
+ containing the name of the desired
+ signal to send..
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pid</span>
+            <span class="types"><span class="type">integer</span></span>
+         The PID of the process.
+        </li>
+        <li><span class="parameter">signal</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The signal to send.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> pid = process.pid(<span class="string">"sh"</span>)
+process.send(pid, <span class="string">"SIGTERM"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "kill"></a>
+    <strong>kill (pid)</strong>
+    </dt>
+    <dd>
+    Kills the process with the given PID. </p>
+
+<p> Equivalent to <code>process.send(pid, &quot;SIGKILL&quot;)</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pid</span>
+            <span class="types"><span class="type">integer</span></span>
+         The PID of the process.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "terminate"></a>
+    <strong>terminate (pid)</strong>
+    </dt>
+    <dd>
+    Terminates the process with the given PID. </p>
+
+<p> Equivalent to <code>process.send(pid, &quot;SIGTERM&quot;)</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pid</span>
+            <span class="types"><span class="type">integer</span></span>
+         The PID of the process.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2023-12-24 14:31:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

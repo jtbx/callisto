@@ -1,0 +1,454 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Callisto library documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Callisto</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/cl.html">cl</a></li>
+  <li><a href="../modules/environ.html">environ</a></li>
+  <li><a href="../modules/extra.html">extra</a></li>
+  <li><strong>fs</strong></li>
+  <li><a href="../modules/json.html">json</a></li>
+  <li><a href="../modules/process.html">process</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>fs</code></h1>
+<p>Files, directories and file system manipulation.</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#basename">basename (path)</a></td>
+	<td class="summary">Returns the last component of the given pathname,
+ removing any trailing '/' characters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#copy">copy (source, target)</a></td>
+	<td class="summary">Copies the contents of the file <em>source</em> to
+ the file <em>target</em>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dirname">dirname (path)</a></td>
+	<td class="summary">Returns the parent directory of the pathname
+ given.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#exists">exists (path)</a></td>
+	<td class="summary">Returns true if the given pathname exists
+ in the file system, or false if it does not.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isdirectory">isdirectory (path)</a></td>
+	<td class="summary">Returns true if the given path specifies a
+ directory, or false if it does not.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#isfile">isfile (path)</a></td>
+	<td class="summary">Returns true if the given path specifies a file,
+ or false if it does not.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mkdir">mkdir (dir[, recursive])</a></td>
+	<td class="summary">Creates a new directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#move">move (src, dest)</a></td>
+	<td class="summary">Moves the file at the path <em>src</em> to the path <em>dest</em>,
+ moving it between directories if required.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#mkdir">mkdir (dir)</a></td>
+	<td class="summary">Removes an empty directory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#workdir">workdir ([dir])</a></td>
+	<td class="summary">Returns or sets the current working directory.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "basename"></a>
+    <strong>basename (path)</strong>
+    </dt>
+    <dd>
+    Returns the last component of the given pathname,
+ removing any trailing '/' characters.  If the given
+ path consists entirely of '/' characters, the string
+ <code>&quot;/&quot;</code> is returned. If <em>path</em> is an empty string,
+ the string <code>&quot;.&quot;</code> is returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path to process.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="global">print</span>(<span class="string">"name of script file is "</span> .. fs.basename(arg[<span class="number">0</span>]))
+<span class="global">assert</span>(fs.basename(<span class="string">"/etc/fstab"</span>) == <span class="string">"fstab"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "copy"></a>
+    <strong>copy (source, target)</strong>
+    </dt>
+    <dd>
+    Copies the contents of the file <em>source</em> to
+ the file <em>target</em>.  <em>target</em> will be overwritten
+ if it already exists.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">source</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The source file to copy.
+        </li>
+        <li><span class="parameter">target</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The destination file.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="global">io</span>.output(<span class="string">"hello"</span>):write(<span class="string">"hello world"</span>)
+fs.copy(<span class="string">"hello"</span>, <span class="string">"world"</span>)
+<span class="global">assert</span>(<span class="global">io</span>.input(<span class="string">"world"</span>):read(<span class="string">"a"</span>) == <span class="string">"hello world"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "dirname"></a>
+    <strong>dirname (path)</strong>
+    </dt>
+    <dd>
+    Returns the parent directory of the pathname
+ given.  Any trailing '/' characters are not
+ counted as part of the directory name.
+ If the given path is an empty string or contains
+ no '/' characters, the string <code>&quot;.&quot;</code> is returned,
+ signifying the current directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path to process.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="global">assert</span>(fs.dirname(<span class="string">"/usr/local/bin"</span>) == <span class="string">"/usr/local"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "exists"></a>
+    <strong>exists (path)</strong>
+    </dt>
+    <dd>
+    Returns true if the given pathname exists
+ in the file system, or false if it does not.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path of the file to look for.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">if</span> fs.exists(<span class="string">"/etc/fstab"</span>) <span class="keyword">then</span>
+	<span class="comment">-- ...
+</span><span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "isdirectory"></a>
+    <strong>isdirectory (path)</strong>
+    </dt>
+    <dd>
+    Returns true if the given path specifies a
+ directory, or false if it does not.
+ Will return false if the given path does not
+ specify an existing directory entry at all.</p>
+
+<p> On error returns nil, an error message and a
+ platform-dependent error code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path to check.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">if</span> <span class="keyword">not</span> fs.isdirectory(<span class="string">"/usr"</span>) <span class="keyword">then</span>
+    <span class="global">print</span>(<span class="string">"something's wrong"</span>)
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "isfile"></a>
+    <strong>isfile (path)</strong>
+    </dt>
+    <dd>
+    Returns true if the given path specifies a file,
+ or false if it does not.
+ Will return false if the given path does not
+ specify an existing directory entry at all.</p>
+
+<p> On error returns nil, an error message and a
+ platform-dependent error code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path to check.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">if</span> <span class="keyword">not</span> fs.isfile(<span class="string">"/sbin/init"</span>) <span class="keyword">then</span>
+    <span class="global">print</span>(<span class="string">"something's wrong"</span>)
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mkdir"></a>
+    <strong>mkdir (dir[, recursive])</strong>
+    </dt>
+    <dd>
+    Creates a new directory. </p>
+
+<p> If <em>recursive</em> is true, creates intermediate directories
+ as required; behaves as POSIX <code>mkdir -p</code> would.</p>
+
+<p> On success, returns true. Otherwise returns nil, an error
+ message and a platform-dependent error code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dir</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path of the directory to create.
+        </li>
+        <li><span class="parameter">recursive</span>
+            <span class="types"><span class="type">boolean</span></span>
+         Whether to create intermediate
+ directories as required.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">fs.mkdir(<span class="string">"/usr/local/bin"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "move"></a>
+    <strong>move (src, dest)</strong>
+    </dt>
+    <dd>
+    Moves the file at the path <em>src</em> to the path <em>dest</em>,
+ moving it between directories if required.  If <em>dest</em>
+ exists, it is first removed. Both <em>src</em> and <em>dest</em>
+ must be of the same type (that is, both directories or
+ both non-directories) and must reside on the same file system.</p>
+
+<p> On success, returns true. Otherwise returns nil, an error
+ message and a platform-dependent error code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">src</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+          The pathname of the file to move.
+        </li>
+        <li><span class="parameter">dest</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The destination pathname.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">fs.move(<span class="string">"srcfile"</span>, <span class="string">"destfile"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "mkdir"></a>
+    <strong>mkdir (dir)</strong>
+    </dt>
+    <dd>
+    Removes an empty directory. </p>
+
+<p> On success, returns true. Otherwise returns nil, an error
+ message and a platform-dependent error code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dir</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The path of the directory to remove.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">fs.rmdir(<span class="string">"yourdirectory"</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "workdir"></a>
+    <strong>workdir ([dir])</strong>
+    </dt>
+    <dd>
+    Returns or sets the current working directory. </p>
+
+<p> If <em>dir</em> is nil, returns the current working
+ directory. Otherwise, sets the current working
+ directory to <em>dir</em>.</p>
+
+<p> On success, returns true. Otherwise returns nil, an error
+ message and a platform-dependent error code.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dir</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         The directory to set as the current working directory.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- Store the current working directory in a variable:
+</span><span class="keyword">local</span> wd = fs.workdir()
+<span class="comment">-- Set the current working directory to the value of
+</span><span class="comment">-- the HOME environment variable:
+</span>fs.workdir(environ[<span class="string">"HOME"</span>])</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2023-12-24 14:31:51 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
