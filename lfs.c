@@ -4,9 +4,10 @@
  * @module fs
  */
 
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <fts.h>
@@ -375,6 +376,80 @@ fs_move(lua_State *L)
 	return lfail(L);
 }
 
+static int
+recursiveremove(lua_State *L, const char *path)
+{
+	DIR *d;
+	struct dirent *ent;
+	char *fullname;
+	size_t len, nlen, plen;
+
+	if ((d = opendir(path)) == NULL)
+		return lfail(L);
+
+	while ((ent = readdir(d)) != NULL) {
+		if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+			continue;
+
+		plen = strlen(path);
+		nlen = strlen(ent->d_name);
+		/* path + name + slash in between + null terminator */
+		len = plen + nlen + 2;
+		fullname = malloc(len * sizeof(char));
+
+		strlcpy(fullname, path, len);
+		fullname[plen] = '/';
+		fullname[plen + 1] = 0;
+		strlcat(fullname, ent->d_name, len);
+
+		printf("fullname: %s\n", fullname);
+		if (ent->d_type == DT_DIR) {
+			/* if rmdir succeeded, free fullname and
+			 * proceed with next entry */
+			if (rmdir(fullname) != -1)
+				goto next;
+
+			if (errno == ENOTEMPTY) /* if the directory is not empty... */
+				recursiveremove(L, fullname);
+			else /* if some other error occurred */
+				return lfail(L);
+		} else {
+			if (remove(fullname) == -1)
+				return lfail(L);
+		}
+
+next:
+		free(fullname);
+	}
+
+	closedir(d);
+	if (rmdir(path) == -1)
+		return lfail(L);
+
+	lua_pushboolean(L, 1);
+	return 1;
+}
+
+/***
+ * Removes a file or directory.
+ *
+ * On success, returns true. Otherwise returns nil, an error
+ * message and a platform-dependent error code.
+ *
+ * @function remove
+ * @usage fs.remove("path/to/file")
+ * @tparam string dir The path to remove.
+ */
+static int
+fs_remove(lua_State *L)
+{
+	const char *path; /* parameter 1 (string) */
+
+	path = luaL_checkstring(L, 1);
+
+	return recursiveremove(L, path);
+}
+
 /***
  * Removes an empty directory.
  *
@@ -458,6 +533,7 @@ static const luaL_Reg fslib[] = {
 	{"isfile",      fs_isfile},
 	{"mkdir",       fs_mkdir},
 	{"move",        fs_move},
+	{"remove",      fs_remove},
 	{"rmdir",       fs_rmdir},
 	{"workdir",     fs_workdir},
 	{NULL, NULL}
