@@ -1,12 +1,10 @@
+csto
+lua
+luac
+
 *.a
 *.o
 *.so
-*.so.*
-csto
-doc/
-include/
-result
-test.lua
 
-lua
-luac
+include/
+test.lua
