@@ -384,8 +384,17 @@ recursiveremove(lua_State *L, const char *path)
 	char *fullname;
 	size_t len, nlen, plen;
 
-	if ((d = opendir(path)) == NULL)
-		return lfail(L);
+	if ((d = opendir(path)) == NULL) {
+		if (errno != ENOTDIR)
+			return lfail(L);
+
+		/* if it's a file... */
+		if (remove(path) == -1)
+			return lfail(L);
+
+		lua_pushboolean(L, 1);
+		return 1;
+	}
 
 	while ((ent = readdir(d)) != NULL) {
 		if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
@@ -402,7 +411,6 @@ recursiveremove(lua_State *L, const char *path)
 		fullname[plen + 1] = 0;
 		strlcat(fullname, ent->d_name, len);
 
-		printf("fullname: %s\n", fullname);
 		if (ent->d_type == DT_DIR) {
 			/* if rmdir succeeded, free fullname and
 			 * proceed with next entry */
@@ -456,7 +464,7 @@ fs_remove(lua_State *L)
  * On success, returns true. Otherwise returns nil, an error
  * message and a platform-dependent error code.
  *
- * @function mkdir
+ * @function rmdir
  * @usage fs.rmdir("yourdirectory")
  * @tparam string dir The path of the directory to remove.
  */
