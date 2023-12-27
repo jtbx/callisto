@@ -6,15 +6,9 @@
 
 /***
  * Operating system related facilities.
+ *
  * @module os
  */
-
-#ifdef __linux__
-#	include <bits/local_lim.h>
-#else
-/* assume OpenBSD/NetBSD */
-#	include <sys/syslimits.h>
-#endif
 
 #define loslib_c
 #define LUA_LIB
@@ -414,9 +408,7 @@ static int os_exit (lua_State *L) {
   return 0;
 }
 
-#ifndef HOST_NAME_MAX
-#	define HOST_NAME_MAX 256 /* according to POSIX */
-#endif
+#define HOST_NAME_MAX 256 /* according to POSIX */
 
 /***
  * Returns the system hostname.
@@ -427,13 +419,10 @@ static int os_exit (lua_State *L) {
 static int
 os_hostname(lua_State *L)
 {
-	char *buffer;
-
-	buffer = malloc(HOST_NAME_MAX * sizeof(char *));
+	char buffer[HOST_NAME_MAX];
 
 	gethostname(buffer, HOST_NAME_MAX); /* get hostname */
 	lua_pushstring(L, buffer);
-	free(buffer);
 
     return 1;
 }
