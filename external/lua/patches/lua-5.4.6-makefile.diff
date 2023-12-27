@@ -1,0 +1,18 @@
+--- Makefile
++++ Makefile
+@@ -6,12 +6,12 @@
+ # Your platform. See PLATS for possible values.
+ PLAT= guess
+
+-CC= gcc -std=gnu99
+-CFLAGS= -O2 -Wall -Wextra -DLUA_COMPAT_5_3 $(SYSCFLAGS) $(MYCFLAGS)
++CC= cc -std=c99
++CFLAGS= -O2 $(SYSCFLAGS) $(MYCFLAGS)
+ LDFLAGS= $(SYSLDFLAGS) $(MYLDFLAGS)
+ LIBS= -lm $(SYSLIBS) $(MYLIBS)
+ 
+-AR= ar rcu
++AR= ar cr
+ RANLIB= ranlib
+ RM= rm -f
+ UNAME= uname

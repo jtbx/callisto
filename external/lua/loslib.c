@@ -4,6 +4,12 @@
 ** See Copyright Notice in lua.h
 */
 
+/***
+ * Operating system related facilities.
+ *
+ * @module os
+ */
+
 #define loslib_c
 #define LUA_LIB
 
@@ -14,6 +20,7 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <time.h>
 
 #include "lua.h"
@@ -401,6 +408,25 @@ static int os_exit (lua_State *L) {
   return 0;
 }
 
+#define HOST_NAME_MAX 256 /* according to POSIX */
+
+/***
+ * Returns the system hostname.
+ *
+ * @function hostname
+ * @usage local hostname = os.hostname()
+ */
+static int
+os_hostname(lua_State *L)
+{
+	char buffer[HOST_NAME_MAX];
+
+	gethostname(buffer, HOST_NAME_MAX); /* get hostname */
+	lua_pushstring(L, buffer);
+
+    return 1;
+}
+
 
 static const luaL_Reg syslib[] = {
   {"clock",     os_clock},
@@ -409,6 +435,7 @@ static const luaL_Reg syslib[] = {
   {"execute",   os_execute},
   {"exit",      os_exit},
   {"getenv",    os_getenv},
+  {"hostname",  os_hostname},
   {"remove",    os_remove},
   {"rename",    os_rename},
   {"setlocale", os_setlocale},
