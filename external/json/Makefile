@@ -13,7 +13,7 @@
 ##### Build defaults #####
 CC     = cc
 AR     = ar cr
-CFLAGS = -std=c99 -O2 -Wall -Wno-unused-function -pedantic -fpic -DNDEBUG -I../luasrc
+CFLAGS = -std=c99 -O2 -Wall -Wno-unused-function -pedantic -fpic -DNDEBUG -I../lua
 OBJS   = dtoa.o fpconv.o g_fmt.o lua_cjson.o strbuf.o
 
 ##### End customisable sections #####
