@@ -30,15 +30,15 @@ cjson.a: external/json/*.c
 	${MAKE} -Cexternal/json
 	mv -f external/json/cjson.a cjson.a
 
-liblua.a: external/luasrc/*.c
-	${MAKE} -Cexternal/luasrc
-	mv -f external/luasrc/liblua.a .
+liblua.a: external/lua/*.c
+	${MAKE} -Cexternal/lua
+	mv -f external/lua/liblua.a .
 
 clean:
 	rm -f csto libcallisto.a ${OBJS} ${LIBS}
 	rm -fr include doc/*.html doc/modules
 clean-all: clean
-	${MAKE} -s -Cexternal/luasrc clean
+	${MAKE} -s -Cexternal/lua clean
 	${MAKE} -s -Cexternal/json clean
 
 doc:
@@ -48,7 +48,7 @@ install:
 	mkdir -p include/callisto
 	mkdir -p "${DESTDIR}${PREFIX}"/{bin,include,lib}
 	cp -f callisto.h include/callisto
-	cp -f external/luasrc/{lua.h,lualib.h,lauxlib.h,luaconf.h} include/callisto
+	cp -f external/lua/{lua.h,lualib.h,lauxlib.h,luaconf.h} include/callisto
 	cp -f csto "${DESTDIR}${PREFIX}"/bin
 	cp -fR include/callisto "${DESTDIR}${PREFIX}"/include
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib
