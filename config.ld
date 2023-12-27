@@ -15,7 +15,11 @@ style = "."
 
 file = {
 	".",
-	exclude = {"external"}
+	exclude = {
+		"external/lua/lua.h",
+		"external/lua/ldblib.c",
+		"external/json"
+	}
 }
 
 new_type("setting", "Settings")
