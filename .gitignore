@@ -7,4 +7,3 @@ luac
 *.so
 
 include/
-test.lua
