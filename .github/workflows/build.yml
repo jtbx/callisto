@@ -1,4 +1,4 @@
-name: build
+name: build+test
 
 on: [push, pull_request]
 
@@ -11,3 +11,5 @@ jobs:
       run: sudo apt install -y bmake
     - name: Compile
       run: make
+    - name: Run tests
+      run: ./csto test.lua
