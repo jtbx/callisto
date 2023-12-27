@@ -1,0 +1,57 @@
+--- liolib.c
++++ liolib.c
+@@ -4,6 +4,12 @@
+ ** See Copyright Notice in lua.h
+ */
+ 
++/***
++ * Input and output facilities.
++ *
++ * @module io
++ */
++
+ #define liolib_c
+ #define LUA_LIB
+ 
+@@ -16,6 +22,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <unistd.h>
+ 
+ #include "lua.h"
+ 
+@@ -723,8 +730,25 @@
+   return luaL_fileresult(L, res == 0, NULL);
+ }
+ 
++/***
++ * Returns whether the stream points to a valid TTY device.
++ *
++ * @function file:istty
++ * @usage
++local f = io.open("/etc/fstab", 'r');
++-- a regular file will never be a TTY device
++assert(not f:istty())
++-- stdin, stdout and stderr can often be TTYs
++print(io.stdout:istty())
++ */
++static int f_istty (lua_State *L) {
++  int fd = fileno(tofile(L));
++  lua_pushboolean(L, isatty(fd));
++  return 1;
++}
+ 
+ 
++
+ static int io_flush (lua_State *L) {
+   return luaL_fileresult(L, fflush(getiofile(L, IO_OUTPUT)) == 0, NULL);
+ }
+@@ -765,6 +789,7 @@
+   {"seek", f_seek},
+   {"close", f_close},
+   {"setvbuf", f_setvbuf},
++  {"istty", f_istty},
+   {NULL, NULL}
+ };
+ 
