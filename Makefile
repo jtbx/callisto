@@ -1,15 +1,28 @@
-include config.mk
+PREFIX = /usr/local
+MANPREFIX = ${PREFIX}/man
 
-OBJS = csto.o callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o\
-       lprocess.o util.o
-LIBS = liblua.a cjson.a
+CC       = cc
+CFLAGS   = -std=c99 -pedantic -fpic -Oz -Iexternal/lua -Wall -Wextra
+CPPFLAGS = -D_DEFAULT_SOURCE
+LDFLAGS  = -lm
+
+# Enable readline
+#CPPFLAGS += -DLUA_USE_READLINE
+#LDFLAGS  += -lreadline
+
+OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o lprocess.o util.o
+LIBS = libcallisto.a liblua.a
+
+CJSON_SRC    = external/json
+CJSON_OBJS   = fpconv.o lua_cjson.o strbuf.o
+CJSON_CFLAGS = -Wno-sign-compare -Wno-unused-function
 
 all: csto libcallisto.a
 
-csto: ${LIBS} ${OBJS}
-	${CC} ${CFLAGS} -o $@ ${OBJS} ${LIBS} ${LDFLAGS}
-libcallisto.a: ${LIBS} ${OBJS}
-	ar cr $@ ${OBJS} liblua.a
+csto: ${LIBS} csto.o
+	${CC} -o $@ libcallisto.a liblua.a csto.o ${LDFLAGS}
+libcallisto.a: liblua.a ${CJSON_OBJS} ${OBJS}
+	ar cr $@ ${OBJS} ${CJSON_OBJS}
 
 .SUFFIXES: .o
 
@@ -24,22 +37,25 @@ lenviron.o: lenviron.c callisto.h
 lfs.o: lfs.c callisto.h util.h
 ljson.o: ljson.c callisto.h
 lprocess.o: lprocess.c callisto.h util.h
+	${CC} ${CFLAGS} -Wno-override-init ${CPPFLAGS} -c lprocess.c
 util.o: util.c
 
-cjson.a: external/json/*.c
-	${MAKE} -Cexternal/json
-	mv -f external/json/cjson.a cjson.a
+# cjson
+fpconv.o: ${CJSON_SRC}/fpconv.c
+	${CC} ${CFLAGS} ${CJSON_CFLAGS} ${CPPFLAGS} -c $<
+lua_cjson.o: ${CJSON_SRC}/lua_cjson.c
+	${CC} ${CFLAGS} ${CJSON_CFLAGS} ${CPPFLAGS} -c $<
+strbuf.o: ${CJSON_SRC}/strbuf.c
+	${CC} ${CFLAGS} ${CJSON_CFLAGS} ${CPPFLAGS} -c $<
 
 liblua.a: external/lua/*.c
 	${MAKE} -Cexternal/lua
 	mv -f external/lua/liblua.a .
 
 clean:
-	rm -f csto libcallisto.a ${OBJS} ${LIBS}
+	rm -f csto libcallisto.a ${OBJS} ${CJSON_OBJS} ${LIBS}
 	rm -fr include doc/*.html doc/modules
-clean-all: clean
 	${MAKE} -s -Cexternal/lua clean
-	${MAKE} -s -Cexternal/json clean
 
 doc:
 	ldoc -s . -q . >/dev/null
