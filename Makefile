@@ -20,7 +20,7 @@ CJSON_CFLAGS = -Wno-sign-compare -Wno-unused-function
 all: csto libcallisto.a
 
 csto: ${LIBS} csto.o
-	${CC} -o $@ libcallisto.a liblua.a csto.o ${LDFLAGS}
+	${CC} -o $@ csto.o libcallisto.a liblua.a ${LDFLAGS}
 libcallisto.a: liblua.a ${CJSON_OBJS} ${OBJS}
 	ar cr $@ ${OBJS} ${CJSON_OBJS}
 
