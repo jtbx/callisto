@@ -2,7 +2,7 @@ PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/man
 
 CC       = cc
-CFLAGS   = -std=c99 -pedantic -fpic -Oz -Iexternal/lua -Wall -Wextra
+CFLAGS   = -std=c99 -pedantic -fpic -O2 -Iexternal/lua -Wall -Wextra
 CPPFLAGS = -D_DEFAULT_SOURCE
 LDFLAGS  = -lm
 
