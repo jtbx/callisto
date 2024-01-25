@@ -59,6 +59,7 @@ Untar it then enter the directory with Callisto's source code.
 
 After that, run
 
+    ./configure
     make
 
 to compile Callisto and all its dependencies.
