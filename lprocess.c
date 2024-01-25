@@ -168,9 +168,9 @@ process_pidof(lua_State *L)
 
 	/* construct pgrep command */
 	memset(command, 0, PROCESS_MAX * sizeof(char));
-	strlcat(command, "pgrep '",     PROCESS_MAX);
-	strlcat(command, process,       PROCESS_MAX);
-	strlcat(command, "' | sed 1q", PROCESS_MAX);
+	strbcat(command, "pgrep '",     PROCESS_MAX);
+	strbcat(command, process,       PROCESS_MAX);
+	strbcat(command, "' | sed 1q",  PROCESS_MAX);
 
 	p = popen(command, "r");
 	buffer = malloc(PID_MAX * sizeof(char *));
