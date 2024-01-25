@@ -1,14 +1,11 @@
+include config.mk
+
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/man
 
-CC       = cc
-CFLAGS   = -std=c99 -pedantic -fpic -O2 -Iexternal/lua -Wall -Wextra
-CPPFLAGS = -D_DEFAULT_SOURCE
-LDFLAGS  = -lm
-
-# Enable readline
-#CPPFLAGS += -DLUA_USE_READLINE
-#LDFLAGS  += -lreadline
+CC       = ${_CC}
+CFLAGS   = -std=c99 ${_CFLAGS} -pedantic -Iexternal/lua -Wall -Wextra -D_DEFAULT_SOURCE
+LDFLAGS  = -lm ${_LDFLAGS}
 
 OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o lprocess.o util.o
 LIBS = libcallisto.a liblua.a
