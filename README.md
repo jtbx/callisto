@@ -31,20 +31,23 @@ do (like Linux, macOS, and the BSDs).
 
 ## Dependencies
 
-To build Callisto, you'll need nothing but a C compiler.
+To build Callisto, you'll need nothing but a C compiler and `ar`.
 The default C compiler is *cc* which is usually a symbolic link
 to your system's default C compiler. This should be gcc on Linux,
 and clang on most of the BSDs. If *cc* doesn't exist on your system,
-override it by adding `CC=ccompiler` to make's command like
-(replace `ccompiler` with the nameor the path to your C compiler)
+override it by adding `CC=compiler` to make's command like
+(replace `compiler` with the name or path to your C compiler)
 
 ### Portability
 
 **Callisto has zero runtime dependencies**, unless you built it with
-support for GNU libreadline. Lua 5.4 is statically linked in.
-This means that the same binary will likely work across differnt Linux
+support for GNU libreadline.* Lua 5.4 is statically linked in.
+This means that the same binary will likely work across different Linux
 distributions/versions. The only strictly required library is libc
 which is available on all systems.
+
+*libreadline support is automatically enabled by the configure script
+if the system supports it. Otherwise support for it is turned off.
 
 ## Installation
 
@@ -66,7 +69,8 @@ to install Callisto and its shared library.
 ### Arch Linux
 
 Users of Arch Linux can install the AUR package:
-https://aur.archlinux.org/packages/callisto
+
+https://aur.archlinux.org/packages/callisto-git
 
 ### Nix
 
