@@ -33,11 +33,10 @@ lfailm(lua_State *L, const char *mesg)
 }
 
 /*
- * strlcat and strlcpy are from OpenBSD source files 
+ * strbcat and strbcpy are from OpenBSD source files
  * lib/libc/string/strlcat.c and
  * lib/libc/string/strlcpy.c respectively
  */
-#ifndef __OpenBSD__
 
 /*
  * Appends src to string dst of size dsize (unlike strncat, dsize is the
@@ -47,7 +46,7 @@ lfailm(lua_State *L, const char *mesg)
  * If retval >= dsize, truncation occurred.
  */
 size_t
-strlcat(char *dst, const char *src, size_t dsize)
+strbcat(char *dst, const char *src, size_t dsize)
 {
 	const char *odst = dst;
 	const char *osrc = src;
@@ -80,7 +79,7 @@ strlcat(char *dst, const char *src, size_t dsize)
  * Returns strlen(src); if retval >= dsize, truncation occurred.
  */
 size_t
-strlcpy(char *dst, const char *src, size_t dsize)
+strbcpy(char *dst, const char *src, size_t dsize)
 {
 	const char *osrc = src;
 	size_t nleft = dsize;
@@ -103,8 +102,6 @@ strlcpy(char *dst, const char *src, size_t dsize)
 
 	return(src - osrc - 1);	/* count does not include NUL */
 }
-
-#endif
 
 /*
  * Prepends t to s.

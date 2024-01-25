@@ -8,10 +8,8 @@
 int lfail(lua_State *);
 int lfailm(lua_State *, const char *);
 
-#ifndef __OpenBSD__
-size_t strlcat(char *, const char *, size_t);
-size_t strlcpy(char *, const char *, size_t);
-#endif
+size_t strbcat(char *, const char *, size_t);
+size_t strbcpy(char *, const char *, size_t);
 void strprepend(char *, const char *);
 
 #endif

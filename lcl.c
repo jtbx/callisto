@@ -9,9 +9,6 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <errno.h>
-#ifdef __OpenBSD__
-#	include <string.h>
-#endif
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -225,7 +222,7 @@ cl_options(lua_State *L)
 
 	/* parameter type checking */
 	luaL_checktype(L, 1, LUA_TTABLE);
-	strlcpy(optstring, luaL_checkstring(L, 2), lua_rawlen(L, 2) * sizeof(char *));
+	strbcpy(optstring, luaL_checkstring(L, 2), lua_rawlen(L, 2) * sizeof(char *));
 	luaL_checktype(L, 3, LUA_TFUNCTION);
 
 	argc = (int)lua_rawlen(L, 1) + 1; /* get argv length */

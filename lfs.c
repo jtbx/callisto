@@ -406,10 +406,10 @@ recursiveremove(lua_State *L, const char *path)
 		len = plen + nlen + 2;
 		fullname = malloc(len * sizeof(char));
 
-		strlcpy(fullname, path, len);
+		strbcpy(fullname, path, len);
 		fullname[plen] = '/';
 		fullname[plen + 1] = 0;
-		strlcat(fullname, ent->d_name, len);
+		strbcat(fullname, ent->d_name, len);
 
 		if (ent->d_type == DT_DIR) {
 			/* if rmdir succeeded, free fullname and
