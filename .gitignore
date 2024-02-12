@@ -5,6 +5,7 @@ luac
 *.a
 *.o
 *.so
+result
 
 config.mk
 include/
