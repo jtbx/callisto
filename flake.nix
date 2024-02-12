@@ -1,8 +1,8 @@
 {
-  description = "Callisto, a featureful extension runtime for Lua 5.4";
+  description = "standalone scripting platform for Lua 5.4";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   };
 
   outputs = { self, nixpkgs }:
@@ -24,17 +24,11 @@
         name = "callisto";
         src = ./.;
 
-        nativeBuildInputs = with pkgs; [
-          gcc
-          binutils
+        dontAddPrefix = true;
+        installFlags = [
+          "DESTDIR=$(out)"
+          "PREFIX=/"
         ];
-        buildPhase = ''
-          make
-        '';
-        installPhase = ''
-          mkdir -p $out/bin
-          make DESTDIR="$out" PREFIX=/ install
-        '';
       };
     });
   };
