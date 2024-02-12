@@ -94,3 +94,7 @@ script as if it was a standalone executable, for example `./yourscript.lua`.
 
 Docs can be found here:
 https://jtbx.github.io/callisto/doc
+
+## Contributing
+
+Pop me an email with your patch at jtbx@disroot.org or open a Github pull request.
