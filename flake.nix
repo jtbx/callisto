@@ -2,17 +2,14 @@
   description = "standalone scripting platform for Lua 5.4";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = github:NixOS/nixpkgs/nixpkgs-unstable;
   };
 
   outputs = { self, nixpkgs }:
+  with nixpkgs.lib;
   let
-    systems = [
-      "x86_64-linux"
-      "aarch64-linux"
-    ];
     forAllSystems = fn:
-      nixpkgs.lib.genAttrs systems (system:
+      genAttrs platforms.unix (system:
         fn (import nixpkgs {
           inherit system;
         })
