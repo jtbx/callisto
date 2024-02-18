@@ -2,23 +2,25 @@ include config.mk
 
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/man
+LUADIR = external/lua
 
 CC       = ${_CC}
-CFLAGS   = ${_CFLAGS} -Iexternal/lua -pedantic -Wall -Wextra
+CFLAGS   = ${_CFLAGS} -I${LUADIR} -pedantic -Wall -Wextra
 CPPFLAGS = -D_DEFAULT_SOURCE
 LDFLAGS  = -lm ${_LDFLAGS}
 
-OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o lprocess.o util.o
-LIBS = libcallisto.a liblua.a
+OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o \
+       lprocess.o util.o
+LIBS = liblua.a
 
 CJSON_SRC    = external/json
 CJSON_OBJS   = fpconv.o lua_cjson.o strbuf.o
-CJSON_CFLAGS = -Wno-sign-compare -Wno-unused-function
+CJSON_CFLAGS = ${_CFLAGS} -I${LUADIR}
 
 all: csto libcallisto.a
 
-csto: ${LIBS} csto.o
-	${CC} -o $@ csto.o libcallisto.a liblua.a ${LDFLAGS}
+csto: ${LIBS} libcallisto.a csto.o
+	${CC} -o $@ csto.o libcallisto.a ${LIBS} ${LDFLAGS}
 libcallisto.a: liblua.a ${CJSON_OBJS} ${OBJS}
 	ar cr $@ ${OBJS} ${CJSON_OBJS}
 
@@ -40,18 +42,18 @@ util.o: util.c
 
 # cjson
 fpconv.o: ${CJSON_SRC}/fpconv.c
-	${CC} ${CFLAGS} ${CJSON_CFLAGS} ${CPPFLAGS} -c $<
+	${CC} ${CJSON_CFLAGS} -c $<
 lua_cjson.o: ${CJSON_SRC}/lua_cjson.c
-	${CC} ${CFLAGS} ${CJSON_CFLAGS} ${CPPFLAGS} -c $<
+	${CC} ${CJSON_CFLAGS} -c $<
 strbuf.o: ${CJSON_SRC}/strbuf.c
-	${CC} ${CFLAGS} ${CJSON_CFLAGS} ${CPPFLAGS} -c $<
+	${CC} ${CJSON_CFLAGS} -c $<
 
 liblua.a: external/lua/*.c
 	${MAKE} -Cexternal/lua
 	mv -f external/lua/liblua.a .
 
 clean:
-	rm -f csto libcallisto.a ${OBJS} ${CJSON_OBJS} ${LIBS}
+	rm -f csto libcallisto.a csto.o ${OBJS} ${CJSON_OBJS} ${LIBS}
 	rm -fr include doc/*.html doc/modules
 	${MAKE} -s -Cexternal/lua clean
 
@@ -67,4 +69,4 @@ install:
 	cp -fR include/callisto "${DESTDIR}${PREFIX}"/include
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib
 
-.PHONY: all clean clean-all doc install
+.PHONY: all clean doc install
