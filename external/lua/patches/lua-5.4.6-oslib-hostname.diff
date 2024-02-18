@@ -21,11 +21,13 @@
  #include <time.h>
  
  #include "lua.h"
-@@ -401,7 +408,26 @@
+@@ -401,7 +408,28 @@
    return 0;
  }
  
++#ifndef HOST_NAME_MAX
 +#define HOST_NAME_MAX 256 /* according to POSIX */
++#endif
  
 +/***
 + * Returns the system hostname.
