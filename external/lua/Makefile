@@ -3,18 +3,15 @@
 
 # == CHANGE THE SETTINGS BELOW TO SUIT YOUR ENVIRONMENT =======================
 
-# Your platform. See PLATS for possible values.
-PLAT= guess
+include ../../config.mk
 
-CC= cc -std=c99
-CFLAGS= -O2 $(SYSCFLAGS) $(MYCFLAGS)
-LDFLAGS= $(SYSLDFLAGS) $(MYLDFLAGS)
-LIBS= -lm $(SYSLIBS) $(MYLIBS)
+CC=      ${_CC}
+CFLAGS=  ${_CFLAGS} ${_CPPFLAGS}
+LDFLAGS= ${_LDFLAGS}
 
 AR= ar cr
 RANLIB= ranlib
 RM= rm -f
-UNAME= uname
 
 SYSCFLAGS=
 SYSLDFLAGS=
@@ -29,8 +26,6 @@ MYOBJS=
 CMCFLAGS= 
 
 # == END OF USER SETTINGS -- NO NEED TO CHANGE ANYTHING BELOW THIS LINE =======
-
-PLATS= guess aix bsd c89 freebsd generic ios linux linux-readline macosx mingw posix solaris
 
 LUA_A=	liblua.a
 CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o ltm.o lundump.o lvm.o lzio.o
@@ -48,8 +43,6 @@ ALL_T= $(LUA_A) $(LUA_T) $(LUAC_T)
 ALL_A= $(LUA_A)
 
 # Targets start here.
-default: $(PLAT)
-
 all:	$(ALL_T)
 
 o:	$(ALL_O)
@@ -75,76 +68,11 @@ clean:
 depend:
 	@$(CC) $(CFLAGS) -MM l*.c
 
-echo:
-	@echo "PLAT= $(PLAT)"
-	@echo "CC= $(CC)"
-	@echo "CFLAGS= $(CFLAGS)"
-	@echo "LDFLAGS= $(LDFLAGS)"
-	@echo "LIBS= $(LIBS)"
-	@echo "AR= $(AR)"
-	@echo "RANLIB= $(RANLIB)"
-	@echo "RM= $(RM)"
-	@echo "UNAME= $(UNAME)"
-
 # Convenience targets for popular platforms.
 ALL= all
 
-help:
-	@echo "Do 'make PLATFORM' where PLATFORM is one of these:"
-	@echo "   $(PLATS)"
-	@echo "See doc/readme.html for complete instructions."
-
-guess:
-	@echo Guessing `$(UNAME)`
-	@$(MAKE) `$(UNAME)`
-
-AIX aix:
-	$(MAKE) $(ALL) CC="xlc" CFLAGS="-O2 -DLUA_USE_POSIX -DLUA_USE_DLOPEN" SYSLIBS="-ldl" SYSLDFLAGS="-brtl -bexpall"
-
-bsd:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" SYSLIBS="-Wl,-E"
-
-c89:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_C89" CC="gcc -std=c89"
-	@echo ''
-	@echo '*** C89 does not guarantee 64-bit integers for Lua.'
-	@echo '*** Make sure to compile all external Lua libraries'
-	@echo '*** with LUA_USE_C89 to ensure consistency'
-	@echo ''
-
-FreeBSD NetBSD OpenBSD freebsd:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_LINUX -DLUA_USE_READLINE -I/usr/include/edit" SYSLIBS="-Wl,-E -ledit" CC="cc"
-
-generic: $(ALL)
-
-ios:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_IOS"
-
-Linux linux:	linux-noreadline
-
-linux-noreadline:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_LINUX" SYSLIBS="-Wl,-E -ldl"
-
-linux-readline:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_LINUX -DLUA_USE_READLINE" SYSLIBS="-Wl,-E -ldl -lreadline"
-
-Darwin macos macosx:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_MACOSX -DLUA_USE_READLINE" SYSLIBS="-lreadline"
-
-mingw:
-	$(MAKE) "LUA_A=lua54.dll" "LUA_T=lua.exe" \
-	"AR=$(CC) -shared -o" "RANLIB=strip --strip-unneeded" \
-	"SYSCFLAGS=-DLUA_BUILD_AS_DLL" "SYSLIBS=" "SYSLDFLAGS=-s" lua.exe
-	$(MAKE) "LUAC_T=luac.exe" luac.exe
-
-posix:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_POSIX"
-
-SunOS solaris:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN -D_REENTRANT" SYSLIBS="-ldl"
-
 # Targets that do not create files (not all makes understand .PHONY).
-.PHONY: all $(PLATS) help test clean default o a depend echo
+.PHONY: all test clean o a depend
 
 # Compiler modules may use special flags.
 llex.o:
