@@ -1,3 +1,8 @@
+/*
+ * Callisto - standalone scripting platform for Lua 5.4
+ * Copyright (c) 2023-2024 Jeremy Baxter.
+ */
+
 /***
  * Option parsing, and error formatting
  * for the command line.

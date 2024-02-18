@@ -1,4 +1,9 @@
 /*
+ * Callisto - standalone scripting platform for Lua 5.4
+ * Copyright (c) 2023-2024 Jeremy Baxter.
+ */
+
+/*
  * util.c
  *
  * Utility functions.
