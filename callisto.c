@@ -1,5 +1,6 @@
 /*
- * callisto - standalone scripting platform for Lua 5.4
+ * Callisto - standalone scripting platform for Lua 5.4
+ * Copyright (c) 2023-2024 Jeremy Baxter.
  */
 
 #include <lua.h>

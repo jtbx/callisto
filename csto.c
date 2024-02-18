@@ -1,5 +1,7 @@
 /*
- * csto: The Callisto stand-alone interpreter
+ * csto: the Callisto stand-alone interpreter
+ * Copyright (c) 1994-2023 Lua.org, PUC-Rio.
+ * Copyright (c) 2023-2024 Jeremy Baxter.
  */
 
 #include <stdio.h>
