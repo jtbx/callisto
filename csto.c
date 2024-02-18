@@ -2,19 +2,17 @@
  * csto: The Callisto stand-alone interpreter
  */
 
-#include <lprefix.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
 
 #include "callisto.h"
-
 
 #if !defined(LUA_PROGNAME)
 #define LUA_PROGNAME		"csto"
@@ -26,13 +24,10 @@
 
 #define LUA_INITVARVERSION	LUA_INIT_VAR LUA_VERSUFFIX
 
-
 static lua_State *globalL = NULL;
 
 static const char *progname = LUA_PROGNAME;
 
-
-#if defined(LUA_USE_POSIX)	 /* { */
 
 /*
 ** Use 'sigaction' when available.
@@ -44,12 +39,6 @@ static void setsignal (int sig, void (*handler)(int)) {
 	sigemptyset(&sa.sa_mask);  /* do not mask any signal */
 	sigaction(sig, &sa, NULL);
 }
-
-#else					 /* }{ */
-
-#define setsignal						signal
-
-#endif															 /* } */
 
 
 /*
@@ -384,24 +373,7 @@ static int handle_luainit (lua_State *L) {
 */
 #if !defined(lua_stdin_is_tty)  /* { */
 
-#if defined(LUA_USE_POSIX)  /* { */
-
-#include <unistd.h>
 #define lua_stdin_is_tty()	isatty(0)
-
-#elif defined(LUA_USE_WINDOWS)  /* }{ */
-
-#include <io.h>
-#include <windows.h>
-
-#define lua_stdin_is_tty()	_isatty(_fileno(stdin))
-
-#else			  /* }{ */
-
-/* ISO C definition */
-#define lua_stdin_is_tty()	1  /* assume stdin is a tty */
-
-#endif			  /* } */
 
 #endif			  /* } */
 
