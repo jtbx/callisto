@@ -97,6 +97,8 @@ done
 
 # creating the makefile
 
+cd $(dirname $0)
+
 gen_CC
 gen_CFLAGS
 gen_LDFLAGS
