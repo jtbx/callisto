@@ -5,6 +5,7 @@
 set -e
 
 mkf=config.mk
+cflags='-std=c99' # set here to apply to all subtrees
 
 # utility functions
 
@@ -43,9 +44,9 @@ gen_CC () {
 ## flags used in the compilation step
 gen_CFLAGS () {
 	if [ -z "$debug" ]; then
-		cflags="-O2"
+		cflags="$cflags -O3"
 	else
-		cflags="-O0 -g"
+		cflags="$cflags -O0 -g"
 	fi
 
 	for flag in $cflags; do
