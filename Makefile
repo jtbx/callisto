@@ -4,7 +4,8 @@ PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/man
 
 CC       = ${_CC}
-CFLAGS   = -std=c99 ${_CFLAGS} -pedantic -Iexternal/lua -Wall -Wextra -D_DEFAULT_SOURCE
+CFLAGS   = ${_CFLAGS} -Iexternal/lua -pedantic -Wall -Wextra
+CPPFLAGS = -D_DEFAULT_SOURCE
 LDFLAGS  = -lm ${_LDFLAGS}
 
 OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o lprocess.o util.o
