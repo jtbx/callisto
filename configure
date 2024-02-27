@@ -10,7 +10,9 @@ cflags='-std=c99'
 cppflags='-DLUA_USE_POSIX'
 ldflags='-lm'
 
-# utility functions
+#
+## utility functions
+#
 
 present () {
 	command -v "$1" 1>/dev/null 2>/dev/null
@@ -23,7 +25,9 @@ throw () {
 	exit 1
 }
 
-# generators
+#
+## flag generators
+#
 
 ## C compiler
 gen_CC () {
@@ -74,7 +78,9 @@ gen_LDFLAGS () {
 	done
 }
 
-# command line interface
+#
+## command line interface
+#
 
 while getopts c:dhr ch; do
 	case "$ch" in
@@ -98,7 +104,9 @@ EOF
 	esac
 done
 
-# creating the makefile
+#
+## create the makefile
+#
 
 cd $(dirname $0)
 
