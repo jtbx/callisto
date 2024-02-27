@@ -6,7 +6,7 @@
 include ../../config.mk
 
 CC=      ${_CC}
-CFLAGS=  ${_CFLAGS} ${_CPPFLAGS}
+CFLAGS=  ${_CFLAGS} ${_EXT_CPPFLAGS}
 LDFLAGS= ${_LDFLAGS}
 
 AR= ar cr
