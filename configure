@@ -7,7 +7,8 @@ set -e
 mkf=config.mk
 # these also apply to all libraries in external/
 cflags='-std=c99'
-cppflags='-DLUA_USE_POSIX'
+cppflags=''
+ext_cppflags='-DLUA_USE_POSIX'
 ldflags='-lm'
 # optional libraries to build with support for; a dynamically
 # linked Lua 5.4 library may be supported here later
@@ -203,9 +204,12 @@ _CC       = %s
 _CFLAGS   = %s
 _CPPFLAGS = %s
 _LDFLAGS  =%s
+
+_EXT_CPPFLAGS = %s
 '              \
 	"$cc"      \
 	"$cflags"  \
 	"$cppflags"\
 	"$ldflags" \
+	"$ext_cppflags"\
 		>"$mkf"
