@@ -28,7 +28,7 @@ POSIX-compliant (like Microsoft Windows).
 To build Callisto, all you need is a C99 compiler. The configure
 script will check for the presence of various compilers before
 building, to decide which one to use.
-The compilers checked are clang, followed by cc, followed by gcc. If
+The compilers checked are clang, followed by gcc, followed by cc. If
 you have a compiler at a custom path that you would like to use over
 the system C compiler, just pass `-c /path/to/compiler` to the
 configure script before you build. The compiler must support gcc-like

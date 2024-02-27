@@ -80,12 +80,12 @@ gen_CC () {
 	fi
 	if present clang; then
 		cc=clang
-	elif present cc; then
-		cc=cc
 	elif present gcc; then
 		cc=gcc
+	elif present cc; then
+		cc=cc
 	else
-		throw "C compiler not found, please acquire a copy of LLVM Clang or the GNU C compiler"
+		throw "C compiler not found, please acquire a copy of LLVM Clang or the GNU C Compiler"
 	fi
 
 	using "$cc"
