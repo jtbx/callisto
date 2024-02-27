@@ -26,6 +26,44 @@ throw () {
 }
 
 #
+## list utilities
+#
+
+# Returns 0 if the given item is in the given list, otherwise returns 1.
+inlist () {
+	local item="$1"
+	local list="$2"
+
+	for elem in $list; do
+		if [ "$elem" = "$item" ]; then
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+# Removes the given item from the given list and returns the new list.
+removefrom () {
+	local item="$1"
+	local list="$2"
+	local newlist=""
+
+	for elem in $list; do
+		if ! [ "$elem" = "$item" ]; then
+			newlist="$newlist $elem"
+		fi
+	done
+
+	printf '%s' "$newlist"
+}
+
+# Trims the given string of leading and trailing whitespace.
+trim () {
+	printf '%s' "$1" | xargs
+}
+
+#
 ## flag generators
 #
 
