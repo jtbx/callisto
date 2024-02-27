@@ -95,8 +95,12 @@ gen_CFLAGS () {
 	fi
 
 	for flag in $cflags; do
+	for flag in $cflags $cppflags; do
 		using "$flag"
 	done
+
+	cflags="$(trim "$cflags")"
+	cppflags="$(trim "$cppflags")"
 }
 
 ## flags used in the linking step
@@ -114,6 +118,8 @@ gen_LDFLAGS () {
 	for flag in $ldflags; do
 		using "$flag"
 	done
+
+	ldflags="$(trim "$ldflags")"
 }
 
 #
