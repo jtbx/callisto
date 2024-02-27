@@ -6,7 +6,7 @@ LUADIR = external/lua
 
 CC       = ${_CC}
 CFLAGS   = ${_CFLAGS} -I${LUADIR} -pedantic -Wall -Wextra
-CPPFLAGS = -D_DEFAULT_SOURCE
+CPPFLAGS = -D_DEFAULT_SOURCE ${_CPPFLAGS}
 LDFLAGS  = ${_LDFLAGS}
 
 OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o \

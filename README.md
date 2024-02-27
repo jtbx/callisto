@@ -46,8 +46,9 @@ This means that the same binary will likely work across different Linux
 distributions/versions. The only strictly required library is libc
 which is available on all systems.
 
-*libreadline support is automatically enabled by the configure script
-if the system supports it. Otherwise support for it is turned off.
+*libreadline support can be enabled at build time, but is disabled by
+default. To force building with libreadline support, pass the
+`-wreadline` flag to the configure script.
 
 ## Installation
 

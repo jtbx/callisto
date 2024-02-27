@@ -9,6 +9,10 @@ mkf=config.mk
 cflags='-std=c99'
 cppflags='-DLUA_USE_POSIX'
 ldflags='-lm'
+# optional libraries to build with support for; a dynamically
+# linked Lua 5.4 library may be supported here later
+optlibs='readline'
+withlibs=''
 
 #
 ## utility functions
@@ -94,7 +98,10 @@ gen_CFLAGS () {
 		cflags="$cflags -O0 -g"
 	fi
 
-	for flag in $cflags; do
+	if inlist readline "$withlibs"; then
+		cppflags="$cppflags -DLUA_USE_READLINE"
+	fi
+
 	for flag in $cflags $cppflags; do
 		using "$flag"
 	done
@@ -105,7 +112,7 @@ gen_CFLAGS () {
 
 ## flags used in the linking step
 gen_LDFLAGS () {
-	if pkg-config readline; then
+	if inlist readline "$withlibs"; then
 		ldflags="$ldflags $(pkg-config --libs readline)"
 	fi
 	if present ld.lld; then
@@ -123,10 +130,21 @@ gen_LDFLAGS () {
 }
 
 #
+## misc. functions
+#
+
+assertvalidlib () {
+	if ! inlist "$OPTARG" "$optlibs"; then
+		throw "invalid library '$OPTARG'; supported libraries are:
+  $optlibs"
+	fi
+}
+
+#
 ## command line interface
 #
 
-while getopts c:dhr ch; do
+while getopts c:dhrw:W: ch; do
 	case "$ch" in
 		c) cc="$OPTARG" ;;
 		d) debug=1 ;;
@@ -140,9 +158,30 @@ options:
   -d: build in debug mode, with debug symbols enabled
   -r: build in release mode with optimisation flags enabled (default)
   -h: show this help message
+  -wname: build with support for the given library; see the list below
+  -Wname: build without support for the given library
+
+If a -w or -W option is supplied on the command line, then the
+argument is checked against the following list of libraries:
 EOF
+			for lib in $optlibs; do
+				printf '  - %s\n' "$lib"
+			done
 			exit 0
 			;;
+		w)
+			assertvalidlib
+			if ! inlist "$OPTARG" "$withlibs"; then
+				withlibs="$withlibs $OPTARG"
+			fi
+			;;
+		W)
+			assertvalidlib
+			if inlist "$OPTARG" "$withlibs"; then
+				withlibs="$(removefrom "$OPTARG" "$withlibs")"
+			fi
+			;;
+
 		?) exit 1 ;;
 		:) exit 1 ;;
 	esac
