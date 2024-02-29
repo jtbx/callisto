@@ -1,5 +1,7 @@
 ## callisto - standalone scripting platform for Lua 5.4
 
+[![builds.sr.ht status](https://builds.sr.ht/~jeremy/callisto.svg)](https://builds.sr.ht/~jeremy/callisto)
+
 Callisto extends Lua 5.4's standard library by adding new modules and
 facilities to the interpreter. It includes a file system library to
 manage and manipulate files and directories, a process library to find
