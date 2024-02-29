@@ -51,7 +51,7 @@ well as git for downloading the source code and make for compiling.
 
 First, obtain a copy of the source code using the following command:
 
-    git clone https://github.com/jtbx/callisto
+    git clone https://git.sr.ht/~jeremy/callisto
 
 After that, run
 
@@ -74,7 +74,7 @@ https://aur.archlinux.org/packages/callisto-git
 
 If you use Nix, you can use the flake:
 
-    nix profile install github:jtbx/callisto
+    nix profile install sourcehut:~jeremy/callisto
 
 ## usage
 
@@ -96,7 +96,16 @@ if it was a standalone executable, for example `./script.lua`.
 Library documentation can be found here:
 https://jtbx.github.io/callisto/doc
 
+## bugs
+
+If you find a bug, please submit a report using the ticket tracker:
+  https://todo.sr.ht/~jeremy/callisto
+
+If you don't have a sourcehut account, you can file a ticket by sending
+an email to ~jeremy/callisto@todo.sr.ht.
+
 ## contributing
 
-Drop me an email with your patch at jtbx@disroot.org or open a Github
-pull request. You can optionally read the style.md document :)
+Send a patch to ~jeremy/callisto-devel@lists.sr.ht using
+[`git send-email`](https://git-send-email.io). Preferred code style is
+detailed in the style.md document but is not required. Thanks :)
