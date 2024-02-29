@@ -12,6 +12,11 @@ LDFLAGS  = ${_LDFLAGS}
 OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o \
        lprocess.o util.o
 LIBS = liblua.a
+HEADERS = callisto.h \
+	${LUADIR}/lua.h \
+	${LUADIR}/luaconf.h \
+	${LUADIR}/lualib.h \
+	${LUADIR}/lauxlib.h
 
 CJSON_SRC    = external/json
 CJSON_OBJS   = fpconv.o lua_cjson.o strbuf.o
@@ -61,12 +66,11 @@ doc:
 	ldoc -s . -q . >/dev/null
 
 install:
-	mkdir -p include/callisto
-	mkdir -p "${DESTDIR}${PREFIX}"/{bin,include,lib}
-	cp -f callisto.h include/callisto
-	cp -f external/lua/{lua.h,lualib.h,lauxlib.h,luaconf.h} include/callisto
+	mkdir -p "${DESTDIR}${PREFIX}"/bin
+	mkdir -p "${DESTDIR}${PREFIX}"/include/callisto
+	mkdir -p "${DESTDIR}${PREFIX}"/lib
+	cp -f ${HEADERS} "${DESTDIR}${PREFIX}"/include/callisto
 	cp -f csto "${DESTDIR}${PREFIX}"/bin
-	cp -fR include/callisto "${DESTDIR}${PREFIX}"/include
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib
 
 .PHONY: all clean doc install

@@ -8,4 +8,3 @@ luac
 result
 
 config.mk
-include/
