@@ -1,0 +1,20 @@
+---
+image: openbsd/latest
+packages:
+  - gcc-11.2.0p9
+sources:
+  - "https://git.sr.ht/~jeremy/callisto"
+tasks:
+  - build-clang: |
+      cd callisto
+      ./configure -c clang
+      make
+      make clean
+  - build-gcc: |
+      cd callisto
+      ./configure -c egcc
+      make
+  - install: |
+      doas make -Ccallisto install
+  - test: |
+      csto callisto/test.lua

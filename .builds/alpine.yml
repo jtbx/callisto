@@ -1,0 +1,21 @@
+---
+image: alpine/edge
+packages:
+  - clang
+  - gcc
+sources:
+  - "https://git.sr.ht/~jeremy/callisto"
+tasks:
+  - build-clang: |
+      cd callisto
+      ./configure -c clang
+      make
+      make clean
+  - build-gcc: |
+      cd callisto
+      ./configure -c gcc
+      make
+  - install: |
+      sudo make -Ccallisto install
+  - test: |
+      csto callisto/test.lua
