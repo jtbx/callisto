@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <libgen.h>
 #include <errno.h>
@@ -22,9 +23,10 @@
 #include "util.h"
 
 static void
-fmesgshift(lua_State *L, FILE* f, int shift)
+fmesgshift(lua_State *L, int fd, int shift)
 {
 	int paramc, i;
+	char *bname;
 	char *progname; /* argv[0] */
 
 	lua_getglobal(L, "arg");
@@ -50,13 +52,18 @@ fmesgshift(lua_State *L, FILE* f, int shift)
 	}
 
 	lua_call(L, paramc - shift, 1);
-	fprintf(f, "%s: %s\n", basename(progname), lua_tostring(L, -1));
+
+	bname = basename(progname);
+	write(fd, bname, strlen(bname));
+	write(fd, ": ", 2);
+	write(fd, lua_tostring(L, -1), lua_rawlen(L, -1));
+	write(fd, "\n", 1);
 }
 
 static void
-fmesg(lua_State *L, FILE* f)
+fmesg(lua_State *L, int fd)
 {
-	fmesgshift(L, f, 0);
+	fmesgshift(L, fd, 0);
 }
 
 /***
@@ -86,7 +93,7 @@ cl_error(lua_State *L)
 {
 	luaL_checkstring(L, 1);
 
-	fmesg(L, stderr);
+	fmesg(L, 2);
 
 	return 0;
 }
@@ -115,7 +122,7 @@ cl_mesg(lua_State *L)
 {
 	luaL_checkstring(L, 1);
 
-	fmesg(L, stdout);
+	fmesg(L, 1);
 
 	return 0;
 }
@@ -152,7 +159,7 @@ cl_panic(lua_State *L)
 
 	/* check arguments */
 	luaL_checkstring(L, 1 + codegiven);
-	fmesgshift(L, stderr, codegiven);
+	fmesgshift(L, 2, codegiven);
 
 	/* exit */
 	lua_close(L);
