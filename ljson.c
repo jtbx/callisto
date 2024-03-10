@@ -16,7 +16,7 @@
  *  - Full support for JSON with UTF-8, including decoding surrogate pairs
  *
  *  - Optional run-time support for common exceptions to the JSON specification
- *  (infinity, NaN, etc.) 
+ *  (infinity, NaN, etc.)
  *
  *  - No dependencies on other libraries
  *

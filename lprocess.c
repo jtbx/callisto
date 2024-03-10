@@ -9,16 +9,14 @@
  * @module process
  */
 
-#include <stdlib.h>
-#include <unistd.h>
 #include <signal.h>
+#include <stdlib.h>
 #include <string.h>
-#include <errno.h>
+#include <unistd.h>
 
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "callisto.h"
 #include "util.h"
 
 #define PID_MAX 8 /* rounded to the nearest even number */

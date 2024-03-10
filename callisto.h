@@ -4,7 +4,6 @@
  */
 
 #ifndef _CALLISTO_H_
-
 #define _CALLISTO_H_
 
 #include <lua.h>

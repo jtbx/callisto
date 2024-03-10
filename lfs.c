@@ -24,7 +24,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "callisto.h"
 #include "util.h"
 
 /***
@@ -335,7 +334,7 @@ fs_mkdir(lua_State *L)
 		ret = mkpath(dir, 0777, 0777);
 	else
 		ret = mkdir(dir, 0777);
-	
+
 	if (ret == 0) {
 		lua_pushboolean(L, 1);
 		return 1;

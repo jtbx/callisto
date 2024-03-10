@@ -9,17 +9,15 @@
  * @module cl
  */
 
-#include <stdlib.h>
+#include <libgen.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <libgen.h>
-#include <errno.h>
 
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "callisto.h"
 #include "util.h"
 
 static void
@@ -240,7 +238,7 @@ cl_options(lua_State *L)
 	argc = (int)lua_rawlen(L, 1) + 1; /* get argv length */
 	argv = lua_newuserdatauv(L, (argc + 1) * sizeof(char *), 0);
 	argv[argc] = NULL;
-	
+
 	for (i = 0; i < argc; i++) { /* for every argument */
 		lua_pushinteger(L, i); /* push argv index */
 		lua_gettable(L, 1);    /* push argv[i] */
