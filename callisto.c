@@ -14,8 +14,6 @@ static const luaL_Reg loadedlibs[] = {
 	{CALLISTO_ENVLIBNAME,  luaopen_environ},
 	{CALLISTO_FSYSLIBNAME, luaopen_fs},
 	{CALLISTO_JSONLIBNAME, luaopen_json},
-	{LUA_MATHLIBNAME,      luaopen_math},
-	{LUA_OSLIBNAME,        luaopen_os},
 	{CALLISTO_PROCLIBNAME, luaopen_process},
 	{NULL, NULL}
 };
