@@ -21,8 +21,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <lua.h>
-#include <lauxlib.h>
+#include <lua/lauxlib.h>
+#include <lua/lua.h>
 
 #include "util.h"
 

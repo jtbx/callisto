@@ -2,10 +2,11 @@ include config.mk
 
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/man
+
 LUADIR = external/lua
 
 CC       = ${_CC}
-CFLAGS   = ${_CFLAGS} -I${LUADIR} -pedantic -Wall -Wextra
+CFLAGS   = ${_CFLAGS} -Iexternal -pedantic -Wall -Wextra
 CPPFLAGS = -D_DEFAULT_SOURCE ${_CPPFLAGS}
 LDFLAGS  = ${_LDFLAGS}
 

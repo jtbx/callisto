@@ -10,9 +10,9 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
+#include <lua/lauxlib.h>
+#include <lua/lua.h>
+#include <lua/lualib.h>
 
 #include "callisto.h"
 

@@ -8,7 +8,7 @@
 
 #include <stddef.h>
 
-#include <lua.h>
+#include <lua/lua.h>
 
 int lfail(lua_State *);
 int lfailm(lua_State *, const char *);

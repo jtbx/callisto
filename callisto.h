@@ -6,7 +6,7 @@
 #ifndef _CALLISTO_H_
 #define _CALLISTO_H_
 
-#include <lua.h>
+#include <lua/lua.h>
 
 #define CALLISTO_VERSION_MAJOR		"0"
 #define CALLISTO_VERSION_MINOR		"1"

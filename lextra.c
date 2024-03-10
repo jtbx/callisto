@@ -14,8 +14,8 @@
 
 #include <time.h>
 
-#include <lua.h>
-#include <lauxlib.h>
+#include <lua/lauxlib.h>
+#include <lua/lua.h>
 
 /***
  * Waits the specified amount of seconds.
