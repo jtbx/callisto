@@ -12,8 +12,8 @@
 #include <errno.h>
 #include <string.h>
 
-#include <lua.h>
-#include <lauxlib.h>
+#include <lua/lauxlib.h>
+#include <lua/lua.h>
 
 #include "util.h"
 
