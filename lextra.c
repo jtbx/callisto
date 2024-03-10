@@ -17,9 +17,6 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "callisto.h"
-#include "util.h"
-
 /***
  * Waits the specified amount of seconds.
  *

@@ -4,10 +4,10 @@
  */
 
 #ifndef _UTIL_H_
-
 #define _UTIL_H_
 
 #include <stddef.h>
+
 #include <lua.h>
 
 int lfail(lua_State *);

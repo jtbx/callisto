@@ -8,16 +8,13 @@
  * @module environ
  */
 
-#include <stdlib.h>
 #include <errno.h>
+#include <stdlib.h>
 
 #include <lua.h>
 #include <lauxlib.h>
 
 #include "callisto.h"
-
-
-extern char **environ;
 
 /***
  * Table enabling easy access to environment
