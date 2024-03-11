@@ -9,6 +9,13 @@
 
 #include "callisto.h"
 
+int luaopen_cl(lua_State *);
+int luaopen_environ(lua_State *);
+int luaopen_extra(lua_State *);
+int luaopen_fs(lua_State *);
+int luaopen_json(lua_State *);
+int luaopen_process(lua_State *);
+
 static const luaL_Reg loadedlibs[] = {
 	{CALLISTO_CLLIBNAME,   luaopen_cl},
 	{CALLISTO_ENVLIBNAME,  luaopen_environ},
