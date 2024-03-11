@@ -70,8 +70,10 @@ install:
 	mkdir -p "${DESTDIR}${PREFIX}"/bin
 	mkdir -p "${DESTDIR}${PREFIX}"/include/callisto
 	mkdir -p "${DESTDIR}${PREFIX}"/lib
+	mkdir -p "${DESTDIR}${PREFIX}"/share/man/man1
 	cp -f ${HEADERS} "${DESTDIR}${PREFIX}"/include/callisto/
 	cp -f csto "${DESTDIR}${PREFIX}"/bin/
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib/
+	cp -f man/csto.1 "${DESTDIR}${PREFIX}"/share/man/man1/
 
 .PHONY: all clean doc install
