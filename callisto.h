@@ -3,6 +3,8 @@
  * Copyright (c) 2023-2024 Jeremy Baxter.
  */
 
+/* clang-format off */
+
 #ifndef _CALLISTO_H_
 #define _CALLISTO_H_
 

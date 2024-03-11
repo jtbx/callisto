@@ -1,0 +1,90 @@
+---
+Language: Cpp
+BasedOnStyle: WebKit
+AlignAfterOpenBracket: DontAlign
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: Right
+AlignOperands: false
+AlignTrailingComments:
+  Kind: Never
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterReturnType: AllDefinitions
+AlwaysBreakBeforeMultilineStrings: true
+BinPackArguments: true
+BinPackParameters: true
+BraceWrapping:
+  AfterControlStatement: false
+  AfterEnum:       false
+  AfterFunction:   true
+  AfterStruct:     false
+  AfterUnion:      false
+  AfterExternBlock: false
+  BeforeElse:      false
+  IndentBraces:    false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+BreakBeforeBinaryOperators: All
+BreakBeforeBraces: Custom
+BreakBeforeTernaryOperators: true
+BreakStringLiterals: true
+ColumnLimit: 82
+ContinuationIndentWidth: 4
+DerivePointerAlignment: false
+DisableFormat: false
+ExperimentalAutoDetectBinPacking: false
+ForEachMacros:
+  - SLIST_FOREACH
+  - LIST_FOREACH
+  - SIMPLEQ_FOREACH
+  - TAILQ_FOREACH
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex: '^(<sys/)'
+    Priority: 1
+  - Regex: '^(<lua/)'
+    Priority: 3
+  - Regex: '^(<)'
+    Priority: 2
+  - Regex: '.*'
+    Priority: 5
+IncludeIsMainRegex: '(Test)?$'
+IndentCaseLabels: false
+IndentGotoLabels: false
+IndentPPDirectives: None
+IndentWidth: 4
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MacroBlockBegin: ''
+MacroBlockEnd:   ''
+MaxEmptyLinesToKeep: 1
+PenaltyBreakAssignment: 0
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyBreakTemplateDeclaration: 10
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 60
+PointerAlignment: Right
+ReflowComments: true
+SortIncludes: CaseInsensitive
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpacesBeforeTrailingComments: 1
+SpacesInCStyleCastParentheses: false
+SpacesInParens: Never
+SpacesInSquareBrackets: false
+TabWidth: 4
+UseTab: ForContinuationAndIndentation
+...

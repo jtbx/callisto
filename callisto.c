@@ -16,6 +16,7 @@ int luaopen_fs(lua_State *);
 int luaopen_json(lua_State *);
 int luaopen_process(lua_State *);
 
+/* clang-format off */
 static const luaL_Reg loadedlibs[] = {
 	{ CALLISTO_CLLIBNAME,   luaopen_cl      },
 	{ CALLISTO_ENVLIBNAME,  luaopen_environ },
@@ -24,6 +25,7 @@ static const luaL_Reg loadedlibs[] = {
 	{ CALLISTO_PROCLIBNAME, luaopen_process },
 	{ NULL,                 NULL            }
 };
+/* clang-format on */
 
 lua_State *
 callisto_newstate(void)
