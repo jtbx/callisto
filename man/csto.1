@@ -1,0 +1,133 @@
+.Dd $Mdocdate: March 11 2024 $
+.Dt CSTO 1
+.Os
+.Sh NAME
+.Nm csto
+.Nd Lua interpreter with POSIX interfaces
+.Sh SYNOPSIS
+.Nm csto
+.Bk -words
+.Op Fl EivW
+.Op Fl e Ar stat
+.Op Fl l Ar mod
+.Op Fl l Ar g=mod
+.Op Ar script Op Ar args
+.Ek
+.Sh DESCRIPTION
+.Nm
+is an interpreter for the Lua programming language, bundled with the Callisto
+libraries. Callisto provides Lua libraries for POSIX operating systems. These
+can aid in file manipulation, process management, command line argument parsing
+and other operations not available through the standard Lua library.
+.Pp
+All of these libraries are conveniently bundled directly into
+.Nm
+and do not depend on any external libraries or files, unless your copy of
+.Nm
+was built with support for
+.Lb libreadline .
+.Pp
+For up-to-date information concerning Callisto, visit the following page in a
+web browser:
+.Pp
+.Dl Lk https://sr.ht/~jeremy/callisto/
+.Pp
+.Nm
+executes Lua programs in source form or in bytecode form. Lua programs in
+source form can be compiled to bytecode form through the program
+.Xr luac 1 ,
+included with the standard Lua distribution.
+.Pp
+After handling command line options, the Lua program in file
+.Ar script
+is executed with arguments
+.Ar args .
+These arguments are available to
+.Ar script
+as strings in a global table named
+.Sy arg .
+When called without arguments,
+.Nm
+behaves as if
+.Fl v
+and
+.Fl i
+were given if standard input is a terminal, and as if
+.Fl
+was given otherwise.
+.Pp
+The options are as follows:
+.Bl -tag -width -l_g=mod
+.It Fl E
+Ignore environment variables (see section
+.Sx ENVIRONMENT
+below).
+.It Fl e Ar stat
+Execute the Lua statement
+.Ar stat .
+.It Fl i
+Enter interactive mode after executing
+.Ar script .
+.It Fl l Ar mod
+Load library
+.Ar mod
+into global
+.Ar mod .
+.It Fl l Ar g=mod
+Load library
+.Ar mod
+into global
+.Ar g .
+.It Fl v
+Print version information.
+.It Fl W
+Enable warnings (see
+.Sy warn()
+in the Lua manual).
+.El
+.Sh ENVIRONMENT
+.Bl -tag -width four
+.It Ev LUA_INIT , Ev LUA_INIT_5_4
+Before handling command line options and scripts,
+.Nm
+checks the values of
+.Ev LUA_INIT_5_4
+and
+.Ev LUA_INIT
+in that order. When
+.Ev LUA_INIT_5_4
+is set,
+.Ev LUA_INIT
+is ignored. If the contents are of the form
+.Dq @filename ,
+then the contents of the file
+.Em filename
+is executed as Lua code. Otherwise, the contents are assumed to be a Lua
+statement and is executed as Lua code.
+.It Ev LUA_PATH , Ev LUA_PATH_5_4
+Initial value of
+.Em package.path ,
+the path used by
+.Sy require()
+to search for Lua modules.
+.It Ev LUA_CPATH , Ev LUA_CPATH_5_4
+Initial value of
+.Em package.cpath ,
+the path used by
+.Sy require()
+to search for C loaders.
+.El
+.Sh AUTHORS
+.An Jeremy Baxter Aq Mt jtbx@disroot.org
+authored the Callisto libraries.
+.Pp
+R. Ierusalimschy, L. H. de Figueiredo, and W. Celes authored the Lua
+programming language and its standard libraries.
+.Sh BUGS
+Known bugs can be found at the bug tracker:
+.Pp
+.Dl Lk https://todo.sr.ht/~jeremy/callisto
+.Pp
+If you have discovered a bug in Callisto, please report it to the bug
+tracker or send an email to
+.Mt ~jeremy/callisto@todo.sr.ht .
