@@ -54,6 +54,8 @@ extra_sleep(lua_State *L)
 	return 0;
 }
 
+/* clang-format off */
+
 static const luaL_Reg extlib[] = {
 	{"sleep", extra_sleep},
 	{NULL, NULL}

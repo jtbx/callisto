@@ -286,6 +286,8 @@ cl_options(lua_State *L)
 	return 0;
 }
 
+/* clang-format off */
+
 static const luaL_Reg cllib[] = {
 	{"mesg",      cl_mesg},
 	{"error",     cl_error},
