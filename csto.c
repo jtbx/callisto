@@ -73,17 +73,17 @@ static void print_usage (const char *badoption) {
 	else
 		lua_writestringerror("unrecognized option '%s'\n", badoption);
 	lua_writestringerror(
-	"usage: %s [-e stat] [-l mod|g=mod] [-EivW] [script [args]]\n"
+	"usage: %s [-EivW] [-e stat] [-l mod|g=mod] [script [args]]\n"
 	"available options are:\n"
-	"	-e stat	 execute string 'stat'\n"
-	"	-i				enter interactive mode after executing 'script'\n"
-	"	-l mod		require library 'mod' into global 'mod'\n"
-	"	-l g=mod	require library 'mod' into global 'g'\n"
-	"	-v				show version information\n"
-	"	-E				ignore environment variables\n"
-	"	-W				turn warnings on\n"
-	"	--				stop handling options\n"
-	"	-				 stop handling options and execute stdin\n"
+	"    -e stat         execute string 'stat'\n"
+	"    -i              enter interactive mode after executing 'script'\n"
+	"    -l mod          require library 'mod' into global 'mod'\n"
+	"    -l g=mod        require library 'mod' into global 'g'\n"
+	"    -v              show version information\n"
+	"    -E              ignore environment variables\n"
+	"    -W              turn warnings on\n"
+	"    --              stop handling options\n"
+	"    -               stop handling options and execute stdin\n"
 	,
 	progname);
 }
