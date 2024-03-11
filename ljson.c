@@ -217,7 +217,6 @@ local t = json.decode(j)
  *   sparse; *>1*: use ratio
  */
 
-
 int luaopen_cjson(lua_State *);
 
 int

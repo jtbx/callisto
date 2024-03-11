@@ -29,7 +29,8 @@ fmesgshift(lua_State *L, int fd, int shift)
 
 	lua_getglobal(L, "arg");
 	if (!lua_istable(L, -1)) {
-		luaL_error(L, "arg table not present/inaccessible; cannot get script name");
+		luaL_error(L,
+			"arg table not present/inaccessible; cannot get script name");
 		return;
 	}
 
@@ -44,9 +45,9 @@ fmesgshift(lua_State *L, int fd, int shift)
 	lua_getglobal(L, "string");
 	lua_getfield(L, -1, "format");
 
-	paramc = lua_gettop(L); /* get parameter count */
+	paramc = lua_gettop(L);                 /* get parameter count */
 	for (i = 1 + shift; i <= paramc; i++) { /* for every parameter */
-		lua_pushvalue(L, i); /* push argument */
+		lua_pushvalue(L, i);                /* push argument */
 	}
 
 	lua_call(L, paramc - shift, 1);
@@ -240,13 +241,14 @@ cl_options(lua_State *L)
 	argv[argc] = NULL;
 
 	for (i = 0; i < argc; i++) { /* for every argument */
-		lua_pushinteger(L, i); /* push argv index */
-		lua_gettable(L, 1);    /* push argv[i] */
+		lua_pushinteger(L, i);   /* push argv index */
+		lua_gettable(L, 1);      /* push argv[i] */
 		argv[i] = (char *)luaL_checkstring(L, -1);
 	}
 
 	if (optstring[0] == ':')
-		return luaL_argerror(L, 2, "option string must not start with a colon (:)");
+		return luaL_argerror(L, 2,
+			"option string must not start with a colon (:)");
 
 	strprepend(optstring, ":");
 

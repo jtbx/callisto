@@ -68,7 +68,7 @@ environ_newindex(lua_State *L)
 
 	if (lua_isnil(L, 3)) {
 		ret = unsetenv(variable); /* remove variable from environ */
-		if (ret == 0) /* did unsetenv succeed? */
+		if (ret == 0)             /* did unsetenv succeed? */
 			return 0;
 
 		/* if unsetenv didn't succeed:
@@ -77,18 +77,18 @@ environ_newindex(lua_State *L)
 	}
 
 	value = luaL_checkstring(L, 3);
-	ret	= setenv(variable, value, 1);
+	ret = setenv(variable, value, 1);
 
 	if (ret == 0) /* did setenv succeed? */
 		return 0;
 
 	switch (errno) {
-		case EINVAL:
-			return luaL_error(L, "invalid input string");
-			break;
-		case ENOMEM:
-			return luaL_error(L, "insufficient memory");
-			break;
+	case EINVAL:
+		return luaL_error(L, "invalid input string");
+		break;
+	case ENOMEM:
+		return luaL_error(L, "insufficient memory");
+		break;
 	}
 
 	return 0;

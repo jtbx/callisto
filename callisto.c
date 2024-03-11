@@ -47,7 +47,7 @@ callisto_openall(lua_State *L)
 	/* for each Callisto library except extra */
 	for (lib = loadedlibs; lib->func; lib++) {
 		lua_newtable(L); /* make a new table for the library */
-		lib->func(L); /* load library */
+		lib->func(L);    /* load library */
 		lua_setglobal(L, lib->name);
 	}
 	/* inject extra into the global environment */
