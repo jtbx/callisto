@@ -65,7 +65,7 @@ strbcat(char *dst, const char *src, size_t dsize)
 	n = dsize - dlen;
 
 	if (n-- == 0)
-		return(dlen + strlen(src));
+		return (dlen + strlen(src));
 	while (*src != '\0') {
 		if (n != 0) {
 			*dst++ = *src;
@@ -75,7 +75,7 @@ strbcat(char *dst, const char *src, size_t dsize)
 	}
 	*dst = '\0';
 
-	return(dlen + (src - osrc));	/* count does not include NUL */
+	return (dlen + (src - osrc)); /* count does not include NUL */
 }
 
 /*
@@ -100,12 +100,12 @@ strbcpy(char *dst, const char *src, size_t dsize)
 	/* Not enough room in dst, add NUL and traverse rest of src. */
 	if (nleft == 0) {
 		if (dsize != 0)
-			*dst = '\0';		/* NUL-terminate dst */
+			*dst = '\0'; /* NUL-terminate dst */
 		while (*src++)
 			;
 	}
 
-	return(src - osrc - 1);	/* count does not include NUL */
+	return (src - osrc - 1); /* count does not include NUL */
 }
 
 /*
@@ -114,7 +114,7 @@ strbcpy(char *dst, const char *src, size_t dsize)
 void
 strprepend(char *s, const char *t)
 {
-    size_t len = strlen(t);
-    memmove(s + len, s, strlen(s) + 1);
-    memcpy(s, t, len);
+	size_t len = strlen(t);
+	memmove(s + len, s, strlen(s) + 1);
+	memcpy(s, t, len);
 }

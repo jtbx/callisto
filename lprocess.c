@@ -19,7 +19,7 @@
 
 #include "util.h"
 
-#define PID_MAX 8 /* rounded to the nearest even number */
+#define PID_MAX     8 /* rounded to the nearest even number */
 #define PROCESS_MAX 256
 
 /* clang-format off */

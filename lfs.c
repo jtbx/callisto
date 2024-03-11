@@ -49,7 +49,7 @@ fs_basename(lua_State *L)
 	char *path; /* parameter 1 (string) */
 
 	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
-	ret  = basename(path);
+	ret = basename(path);
 
 	if (ret == NULL) /* failed? */
 		return lfail(L);
@@ -147,7 +147,7 @@ fs_dirname(lua_State *L)
 	char *path; /* parameter 1 (string) */
 
 	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
-	ret  = dirname(path);
+	ret = dirname(path);
 
 	if (ret == NULL) /* failed? */
 		return lfail(L);
@@ -367,9 +367,9 @@ fs_move(lua_State *L)
 	const char *src;  /* parameter 1 (string) */
 	const char *dest; /* parameter 2 (string) */
 
-	src  = luaL_checkstring(L, 1);
+	src = luaL_checkstring(L, 1);
 	dest = luaL_checkstring(L, 2);
-	ret  = rename(src, dest); /* move file */
+	ret = rename(src, dest); /* move file */
 
 	if (ret == 0) { /* check for success */
 		lua_pushboolean(L, 1);
