@@ -24,5 +24,9 @@ tasks:
       sudo make -Ccallisto install
   - test: |
       csto callisto/test.lua
+  - format: |
+      cd callisto
+      make format
+      git diff --exit-code
   - flake: |
       nix build ./callisto
