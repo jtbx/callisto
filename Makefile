@@ -5,6 +5,8 @@ MANPREFIX = ${PREFIX}/man
 
 LUADIR = external/lua
 
+CLANG_FORMAT = clang-format
+
 CC       = ${_CC}
 CFLAGS   = ${_CFLAGS} -Iexternal -pedantic -Wall -Wextra
 CPPFLAGS = -D_DEFAULT_SOURCE ${_CPPFLAGS}
@@ -66,6 +68,10 @@ clean:
 doc:
 	ldoc -s . -q . >/dev/null
 
+format:
+	find . -maxdepth 1 -iname '*.c' -o -iname '*.h' \
+		| xargs ${CLANG_FORMAT} -i
+
 install:
 	mkdir -p "${DESTDIR}${PREFIX}"/bin
 	mkdir -p "${DESTDIR}${PREFIX}"/include/callisto
@@ -76,4 +82,4 @@ install:
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib/
 	cp -f man/csto.1 "${DESTDIR}${PREFIX}"/share/man/man1/
 
-.PHONY: all clean doc install
+.PHONY: all clean doc format install
