@@ -535,6 +535,8 @@ fs_workdir(lua_State *L)
 	return lfail(L);
 }
 
+/* clang-format off */
+
 static const luaL_Reg fslib[] = {
 	{"basename",    fs_basename},
 	{"copy",        fs_copy},

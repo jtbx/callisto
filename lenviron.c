@@ -94,6 +94,8 @@ environ_newindex(lua_State *L)
 	return 0;
 }
 
+/* clang-format off */
+
 static const luaL_Reg mt[] = {
 	{"__index",    environ_index},
 	{"__newindex", environ_newindex},

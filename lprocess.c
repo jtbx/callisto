@@ -22,7 +22,7 @@
 #define PID_MAX 8 /* rounded to the nearest even number */
 #define PROCESS_MAX 256
 
-/* signals */
+/* clang-format off */
 static const int signals[] = {
 	SIGHUP,
 	SIGINT,
@@ -356,6 +356,8 @@ process_terminate(lua_State *L)
 
 	return sigsend(L, pid, "SIGTERM");
 }
+
+/* clang-format off */
 
 static const luaL_Reg proclib[] = {
 	{"kill",      process_kill},
