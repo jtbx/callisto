@@ -24,13 +24,6 @@
 
 #define CALLISTO_ENVIRON "environ"
 
-int luaopen_cl(lua_State *);
-int luaopen_environ(lua_State *);
-int luaopen_extra(lua_State *);
-int luaopen_fs(lua_State *);
-int luaopen_json(lua_State *);
-int luaopen_process(lua_State *);
-
 lua_State *callisto_newstate(void);
 void callisto_openall(lua_State *);
 void callisto_openlibs(lua_State *);
