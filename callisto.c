@@ -17,12 +17,12 @@ int luaopen_json(lua_State *);
 int luaopen_process(lua_State *);
 
 static const luaL_Reg loadedlibs[] = {
-	{CALLISTO_CLLIBNAME,   luaopen_cl},
-	{CALLISTO_ENVLIBNAME,  luaopen_environ},
-	{CALLISTO_FSYSLIBNAME, luaopen_fs},
-	{CALLISTO_JSONLIBNAME, luaopen_json},
-	{CALLISTO_PROCLIBNAME, luaopen_process},
-	{NULL, NULL}
+	{ CALLISTO_CLLIBNAME,   luaopen_cl      },
+	{ CALLISTO_ENVLIBNAME,  luaopen_environ },
+	{ CALLISTO_FSYSLIBNAME, luaopen_fs      },
+	{ CALLISTO_JSONLIBNAME, luaopen_json    },
+	{ CALLISTO_PROCLIBNAME, luaopen_process },
+	{ NULL,                 NULL            }
 };
 
 lua_State *
