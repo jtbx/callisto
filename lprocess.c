@@ -23,6 +23,7 @@
 #define PROCESS_MAX 256
 
 /* clang-format off */
+
 static const int signals[] = {
 	SIGHUP,
 	SIGINT,
@@ -76,6 +77,7 @@ static const int signals[] = {
 	SIGUSR2,
 	-1 /* end */
 };
+
 static const char *sigstrs[] = {
 	[SIGHUP]  = "SIGHUP",
 	[SIGINT]  = "SIGINT",
@@ -128,6 +130,8 @@ static const char *sigstrs[] = {
 	[SIGUSR1] = "SIGUSR1",
 	[SIGUSR2] = "SIGUSR2"
 };
+
+/* clang-format on */
 
 /***
  * Returns the PID of the current process.
