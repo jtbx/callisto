@@ -162,22 +162,22 @@ process_pid(lua_State *L)
 static int
 process_pidof(lua_State *L)
 {
-	const char *process;        /* parameter 1 (string) */
-	char  command[PROCESS_MAX]; /* pgrep command buffer */
-	char *buffer;               /* pgrep reading buffer */
-	int   pexit;                /* pgrep exit code */
-	long  pid;                  /* pid to return to Lua */
-	size_t  pidmax;             /* length passed to getline */
-	ssize_t ret;                /* getline return value */
-	FILE   *p;                  /* pgrep reading stream */
+	const char *process;       /* parameter 1 (string) */
+	char command[PROCESS_MAX]; /* pgrep command buffer */
+	char *buffer;              /* pgrep reading buffer */
+	int pexit;                 /* pgrep exit code */
+	long pid;                  /* pid to return to Lua */
+	size_t pidmax;             /* length passed to getline */
+	ssize_t ret;               /* getline return value */
+	FILE *p;                   /* pgrep reading stream */
 
 	process = luaL_checkstring(L, 1);
 
 	/* construct pgrep command */
 	memset(command, 0, PROCESS_MAX * sizeof(char));
-	strbcat(command, "pgrep '",     PROCESS_MAX);
-	strbcat(command, process,       PROCESS_MAX);
-	strbcat(command, "' | sed 1q",  PROCESS_MAX);
+	strbcat(command, "pgrep '", PROCESS_MAX);
+	strbcat(command, process, PROCESS_MAX);
+	strbcat(command, "' | sed 1q", PROCESS_MAX);
 
 	p = popen(command, "r");
 	buffer = malloc(PID_MAX * sizeof(char *));
@@ -266,7 +266,7 @@ process_signum(lua_State *L)
 	sig = strtosig(sigstr, sigc);
 	free(sigstr);
 
-	if (sig != -1) { /* valid signal? */
+	if (sig != -1) {             /* valid signal? */
 		lua_pushinteger(L, sig); /* return signal */
 		return 1;
 	}
@@ -317,7 +317,7 @@ process.send(pid, "SIGTERM")
 static int
 process_send(lua_State *L)
 {
-    pid_t pid;       /* parameter 1 (integer) */
+	pid_t pid;       /* parameter 1 (integer) */
 	const char *sig; /* parameter 2 (string)  */
 
 	pid = luaL_checkinteger(L, 1);
@@ -337,7 +337,7 @@ process_send(lua_State *L)
 static int
 process_kill(lua_State *L)
 {
-    pid_t pid;       /* parameter 1 (integer) */
+	pid_t pid; /* parameter 1 (integer) */
 
 	pid = luaL_checkinteger(L, 1);
 
@@ -354,7 +354,7 @@ process_kill(lua_State *L)
 static int
 process_terminate(lua_State *L)
 {
-    pid_t pid;       /* parameter 1 (integer) */
+	pid_t pid; /* parameter 1 (integer) */
 
 	pid = luaL_checkinteger(L, 1);
 
