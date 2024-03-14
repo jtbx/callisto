@@ -94,7 +94,7 @@ gen_CC () {
 ## flags used in the compilation step
 gen_CFLAGS () {
 	if [ -z "$debug" ]; then
-		cflags="$cflags -Oz"
+		cflags="$cflags -O3"
 	else
 		cflags="$cflags -O0 -g"
 	fi
