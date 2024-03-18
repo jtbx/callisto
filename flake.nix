@@ -6,10 +6,10 @@
   };
 
   outputs = { self, nixpkgs }:
-  with nixpkgs.lib;
   let
+    plats = nixpkgs.lib.platforms.unix;
     forAllSystems = fn:
-      genAttrs platforms.unix (system:
+      nixpkgs.lib.genAttrs plats (system:
         fn (import nixpkgs {
           inherit system;
         })
