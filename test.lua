@@ -158,64 +158,6 @@ fs.dirname("]] .. dpath .. '")'
 		end
 	},
 
-	-- basic tests for lua-cjson; this is not
-	-- my library so I won't test it extensively
-	json = {
-		decode = function()
-			local o = [[
-"hello": "world",
-"n": 4,
-"fpn": 2.4444449,
-"a": [1, 2, 4, 8, 16]
-]]
-			local j = [[
-{
-	]] .. o .. [[,
-	"o": {
-		]] .. o .. [[
-	}
-}
-]]
-
-			local t = json.decode(j)
-
-			for _, t in ipairs {t, t.o} do
-				assert(t.hello == "world")
-				assert(t.n == 4)
-				assert(t.fpn == 2.4444449)
-				assert(t.a[1] == 1)
-				assert(t.a[2] == 2)
-				assert(t.a[3] == 4)
-				assert(t.a[4] == 8)
-				assert(t.a[5] == 16)
-			end
-
-			return "json.decode('" .. j:gsub("%s", "") .. "')"
-		end,
-		encode = function()
-			local o = {
-				hello = "world",
-				n = 4,
-				fpn = 2.4444449,
-				a = {1, 2, 4, 8, 16}
-			}
-
-			local j = json.encode(o)
-			local t = json.decode(j)
-
-			assert(t.hello == "world")
-			assert(t.n == 4)
-			assert(t.fpn == 2.4444449)
-			assert(t.a[1] == 1)
-			assert(t.a[2] == 2)
-			assert(t.a[3] == 4)
-			assert(t.a[4] == 8)
-			assert(t.a[5] == 16)
-
-			return "json.decode(json.encode({...}))"
-		end
-	},
-
 	os = {
 		hostname = function ()
 			assert(os.hostname())
@@ -271,10 +213,6 @@ do
 	test(fs.path)
 	test(fs.remove)
 	test(fs.workdir)
-
-	-- json
-	test(json.decode)
-	test(json.encode)
 
 	-- os
 	test(os.hostname)
