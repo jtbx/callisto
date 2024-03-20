@@ -523,6 +523,40 @@ fs_rmdir(lua_State *L)
 	return lfail(L);
 }
 
+static int
+fs_status(lua_State *L)
+{
+	struct stat s;
+	const char *path; /* parameter 1 (string) */
+
+	path = luaL_checkstring(L, 1);
+
+	if (lstat(path, &s) == -1)
+		return lfail(L);
+
+	lua_createtable(L, 0, 7);
+
+	lua_pushvalue(L, 1);
+	lua_setfield(L, -2, "path");
+
+	lua_pushinteger(L, s.st_mode);
+	lua_setfield(L, -2, "mode");
+
+	lua_pushinteger(L, s.st_uid);
+	lua_setfield(L, -2, "uid");
+	lua_pushinteger(L, s.st_gid);
+	lua_setfield(L, -2, "gid");
+
+	lua_pushinteger(L, s.st_atim.tv_sec);
+	lua_setfield(L, -2, "accessdate");
+	lua_pushinteger(L, s.st_mtim.tv_sec);
+	lua_setfield(L, -2, "modifydate");
+	lua_pushinteger(L, s.st_ctim.tv_sec);
+	lua_setfield(L, -2, "chdate");
+
+	return 1;
+}
+
 /***
  * Returns or sets the current working directory.
  *
@@ -583,6 +617,7 @@ static const luaL_Reg fslib[] = {
 	{"move",        fs_move},
 	{"remove",      fs_remove},
 	{"rmdir",       fs_rmdir},
+	{"status",      fs_status},
 	{"workdir",     fs_workdir},
 	{NULL, NULL}
 };
