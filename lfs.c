@@ -26,6 +26,41 @@
 
 #include "util.h"
 
+/* clang-format off */
+struct {
+	mode_t mode;
+	char name[8];
+} modes[] = {
+	/* file types */
+	{S_IFMT, "IFMT"},
+	{S_IFBLK, "IFBLK"},
+	{S_IFCHR, "IFCHR"},
+	{S_IFIFO, "IFIFO"},
+	{S_IFREG, "IFREG"},
+	{S_IFDIR, "IFDIR"},
+	{S_IFLNK, "IFLNK"},
+	{S_IFSOCK, "IFSOCK"},
+
+	/* file permissions */
+	{S_IRWXU, "IRWXU"},
+	{S_IRUSR, "IRUSR"},
+	{S_IWUSR, "IWUSR"},
+	{S_IXUSR, "IXUSR"},
+	{S_IRWXG, "IRWXG"},
+	{S_IRGRP, "IRGRP"},
+	{S_IWGRP, "IWGRP"},
+	{S_IXGRP, "IXGRP"},
+	{S_IRWXO, "IRWXO"},
+	{S_IROTH, "IROTH"},
+	{S_IWOTH, "IWOTH"},
+	{S_IXOTH, "IXOTH"},
+	{S_ISUID, "ISUID"},
+	{S_ISGID, "ISGID"},
+	{S_ISVTX, "ISVTX"},
+	{0, {0}}
+};
+/* clang-format on */
+
 /***
  * Returns the last component of the given path,
  * removing any trailing '/' characters. If the given
@@ -555,6 +590,14 @@ static const luaL_Reg fslib[] = {
 int
 luaopen_fs(lua_State *L)
 {
+	int i;
+
 	luaL_newlib(L, fslib);
+
+	for (i = 0; modes[i].name[0] != 0; i++) {
+		lua_pushinteger(L, modes[i].mode);
+		lua_setfield(L, -2, modes[i].name);
+	}
+
 	return 1;
 }
