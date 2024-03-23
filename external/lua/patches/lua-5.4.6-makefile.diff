@@ -24,7 +24,7 @@
  
  SYSCFLAGS=
  SYSLDFLAGS=
-@@ -30,8 +27,6 @@
+@@ -30,26 +27,16 @@
  
  # == END OF USER SETTINGS -- NO NEED TO CHANGE ANYTHING BELOW THIS LINE =======
  
@@ -33,7 +33,17 @@
  LUA_A=	liblua.a
  CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o ltm.o lundump.o lvm.o lzio.o
  LIB_O=	lauxlib.o lbaselib.o lcorolib.o ldblib.o liolib.o lmathlib.o loadlib.o loslib.o lstrlib.o ltablib.o lutf8lib.o linit.o
-@@ -48,8 +43,6 @@
+ BASE_O= $(CORE_O) $(LIB_O) $(MYOBJS)
+ 
+-LUA_T=	lua
+-LUA_O=	lua.o
+-
+-LUAC_T=	luac
+-LUAC_O=	luac.o
+-
+ ALL_O= $(BASE_O) $(LUA_O) $(LUAC_O)
+-ALL_T= $(LUA_A) $(LUA_T) $(LUAC_T)
++ALL_T= $(LUA_A)
  ALL_A= $(LUA_A)
  
  # Targets start here.
@@ -42,7 +52,20 @@
  all:	$(ALL_T)
  
  o:	$(ALL_O)
-@@ -75,76 +68,11 @@
+@@ -60,12 +47,6 @@
+ 	$(AR) $@ $(BASE_O)
+ 	$(RANLIB) $@
+ 
+-$(LUA_T): $(LUA_O) $(LUA_A)
+-	$(CC) -o $@ $(LDFLAGS) $(LUA_O) $(LUA_A) $(LIBS)
+-
+-$(LUAC_T): $(LUAC_O) $(LUA_A)
+-	$(CC) -o $@ $(LDFLAGS) $(LUAC_O) $(LUA_A) $(LIBS)
+-
+ test:
+ 	./$(LUA_T) -v
+ 
+@@ -75,76 +56,11 @@
  depend:
  	@$(CC) $(CFLAGS) -MM l*.c
  
@@ -120,3 +143,13 @@
  
  # Compiler modules may use special flags.
  llex.o:
+@@ -209,9 +125,6 @@
+ ltablib.o: ltablib.c lprefix.h lua.h luaconf.h lauxlib.h lualib.h
+ ltm.o: ltm.c lprefix.h lua.h luaconf.h ldebug.h lstate.h lobject.h \
+  llimits.h ltm.h lzio.h lmem.h ldo.h lgc.h lstring.h ltable.h lvm.h
+-lua.o: lua.c lprefix.h lua.h luaconf.h lauxlib.h lualib.h
+-luac.o: luac.c lprefix.h lua.h luaconf.h lauxlib.h ldebug.h lstate.h \
+- lobject.h llimits.h ltm.h lzio.h lmem.h lopcodes.h lopnames.h lundump.h
+ lundump.o: lundump.c lprefix.h lua.h luaconf.h ldebug.h lstate.h \
+  lobject.h llimits.h ltm.h lzio.h lmem.h ldo.h lfunc.h lstring.h lgc.h \
+  lundump.h
