@@ -169,12 +169,12 @@ finish:
 }
 
 /***
- * Returns the parent directory of the pathn
- * given. Any trailing '/' characters are not
- * counted as part of the directory name.
- * If the given path is an empty string or contains
- * no '/' characters, the string `"."` is returned,
- * signifying the current directory.
+ * Returns the parent directory of the pathname given.
+ *
+ * Any trailing '/' characters are not counted
+ * as part of the directory name. If the given path is
+ * an empty string or contains no '/' characters, the string
+ * `"."` is returned.
  *
  * This is purely a string manipulation function and
  * depends on no outside state.
