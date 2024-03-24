@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +26,13 @@
 #include <lua/lua.h>
 
 #include "util.h"
+
+/* wrapped DIR structure with the
+ * absolute path of the directory */
+struct wdir {
+	DIR *d;
+	const char *path;
+};
 
 /* clang-format off */
 struct {
@@ -190,6 +198,76 @@ fs_dirname(lua_State *L)
 	lua_pushstring(L, ret);
 
 	free(path);
+	return 1;
+}
+
+static int fs_status(lua_State *);
+
+static int
+entries_iter(lua_State *L)
+{
+	struct wdir *w;
+	struct dirent *ent;
+	char cwd[PATH_MAX];
+
+	w = (struct wdir *)lua_touserdata(L, lua_upvalueindex(1));
+
+	ent = readdir(w->d);
+	if (!ent) {
+		closedir(w->d);
+		w->d = NULL;
+		return 0;
+	}
+
+	getcwd(cwd, PATH_MAX);
+	if (chdir(w->path) == -1)
+		return lfail(L);
+
+	lua_pushcfunction(L, fs_status);
+	lua_pushstring(L, ent->d_name);
+	lua_call(L, 1, 1);
+
+	if (chdir(cwd) == -1)
+		return lfail(L);
+
+	return 1;
+}
+
+static int
+entries_gc(lua_State *L)
+{
+	struct wdir *w;
+
+	w = (struct wdir *)lua_touserdata(L, 1);
+
+	if (w->d)
+		closedir(w->d);
+
+	return 0;
+}
+
+static int
+fs_entries(lua_State *L)
+{
+	struct wdir *w;
+	const char *path; /* parameter 1 (string) */
+
+	path = luaL_optstring(L, 1, ".");
+	w = (struct wdir *)lua_newuserdatauv(L, sizeof(struct wdir), 0);
+	w->d = opendir(path);
+	w->path = path;
+
+	if (!(w->d))
+		return luaL_error(L, "%s: %s", path, strerror(errno));
+
+	if (luaL_newmetatable(L, "directory entry")) {
+		lua_pushcfunction(L, entries_gc);
+		lua_setfield(L, -2, "__gc");
+	}
+
+	lua_setmetatable(L, -2);
+	lua_pushcclosure(L, entries_iter, 1);
+
 	return 1;
 }
 
@@ -610,6 +688,7 @@ static const luaL_Reg fslib[] = {
 	{"basename",    fs_basename},
 	{"copy",        fs_copy},
 	{"dirname",     fs_dirname},
+	{"entries",     fs_entries},
 	{"exists",      fs_exists},
 	{"isdirectory", fs_isdirectory},
 	{"isfile",      fs_isfile},
