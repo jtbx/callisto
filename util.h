@@ -12,6 +12,7 @@
 
 int lfail(lua_State *);
 int lfailm(lua_State *, const char *);
+int lstrfmt(lua_State *);
 
 size_t strbcat(char *, const char *, size_t);
 size_t strbcpy(char *, const char *, size_t);
