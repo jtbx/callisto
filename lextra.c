@@ -12,10 +12,36 @@
  * @module extra
  */
 
+#include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <lua/lauxlib.h>
 #include <lua/lua.h>
+
+#include "util.h"
+
+static int
+extra_printfmt(lua_State *L)
+{
+	const char *outstring;
+	int i, nargs;
+
+	nargs = lua_gettop(L);
+
+	lua_pushcfunction(L, lstrfmt);
+	for (i = 1; i <= nargs; i++) {
+		lua_pushvalue(L, i);
+	}
+	lua_call(L, nargs, 1);
+
+	outstring = lua_tostring(L, -1);
+	lua_pop(L, 1);
+	write(1, outstring, strlen(outstring));
+	write(1, "\n", 1);
+
+	return 0;
+}
 
 /***
  * Waits the specified amount of seconds.
@@ -57,7 +83,8 @@ extra_sleep(lua_State *L)
 /* clang-format off */
 
 static const luaL_Reg extlib[] = {
-	{"sleep", extra_sleep},
+	{"printfmt", extra_printfmt},
+	{"sleep",    extra_sleep},
 	{NULL, NULL}
 };
 
