@@ -447,6 +447,7 @@ fs_mkdir(lua_State *L)
 		ret = mkpath(dir, 0777, 0777);
 	else
 		ret = mkdir(dir, 0777);
+	free(dir);
 
 	if (ret == 0) {
 		lua_pushboolean(L, 1);
