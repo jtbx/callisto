@@ -41,9 +41,8 @@ fmesgshift(lua_State *L, int fd, int shift)
 	}
 	progname = (char *)lua_tostring(L, -1);
 
-	/* format using string.format */
-	lua_getglobal(L, "string");
-	lua_getfield(L, -1, "format");
+	/* format using string.format rules */
+	lua_pushcfunction(L, lstrfmt);
 
 	paramc = lua_gettop(L);                 /* get parameter count */
 	for (i = 1 + shift; i <= paramc; i++) { /* for every parameter */
