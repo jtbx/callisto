@@ -1,10 +1,7 @@
 csto
-lua
-luac
 
 *.a
 *.o
-*.so
 result
 
 config.mk
