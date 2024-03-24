@@ -345,7 +345,7 @@ fs_isdirectory(lua_State *L)
 /***
  * Returns true if the given path specifies a file.
  * Will return false if either the given path
- * does not specify a directory or the path
+ * does not specify a file or the path
  * does not exist at all.
  *
  * On error returns nil, an error message and a
