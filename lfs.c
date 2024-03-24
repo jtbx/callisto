@@ -636,6 +636,44 @@ fs_status(lua_State *L)
 	return 1;
 }
 
+static int
+fs_type(lua_State *L)
+{
+	struct stat sb;
+	const char *path; /* parameter 1 (string) */
+
+	path = luaL_checkstring(L, 1);
+
+	if (lstat(path, &sb) == -1)
+		return lfail(L);
+
+	switch (sb.st_mode & S_IFMT) {
+	case S_IFBLK:
+		lua_pushstring(L, "block");
+		break;
+	case S_IFCHR:
+		lua_pushstring(L, "character");
+		break;
+	case S_IFDIR:
+		lua_pushstring(L, "directory");
+		break;
+	case S_IFIFO:
+		lua_pushstring(L, "fifo");
+		break;
+	case S_IFLNK:
+		lua_pushstring(L, "symlink");
+		break;
+	case S_IFREG:
+		lua_pushstring(L, "file");
+		break;
+	case S_IFSOCK:
+		lua_pushstring(L, "socket");
+		break;
+	}
+
+	return 1;
+}
+
 /***
  * Returns or sets the current working directory.
  *
@@ -699,6 +737,7 @@ static const luaL_Reg fslib[] = {
 	{"remove",      fs_remove},
 	{"rmdir",       fs_rmdir},
 	{"status",      fs_status},
+	{"type",        fs_type},
 	{"workdir",     fs_workdir},
 	{NULL, NULL}
 };
