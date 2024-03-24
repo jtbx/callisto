@@ -306,7 +306,7 @@ ismode(lua_State *L, mode_t mode)
 
 	path = luaL_checkstring(L, 1);
 
-	if (stat(path, &sb) != -1) {
+	if (lstat(path, &sb) != -1) {
 		lua_pushboolean(L, sb.st_mode & mode);
 		return 1;
 	}
