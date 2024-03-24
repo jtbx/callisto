@@ -365,21 +365,32 @@ fs_isfile(lua_State *L)
 	return ismode(L, S_IFREG);
 }
 
-/*
- * Taken from OpenBSD mkdir(1)
- * mkpath -- create directories.
- *	path     - path
- *	mode     - file mode of terminal directory
- *	dir_mode - file mode of intermediate directories
+/***
+ * Creates a new directory, creating intermediate directories as required.
+ *
+ * On success, returns true. Otherwise returns nil, an error
+ * message and a platform-dependent error code.
+ *
+ * @function mkpath
+ * @usage fs.mkpath("/usr/local/bin")
+ * @tparam string path The path to create.
  */
 static int
-mkpath(char *path, mode_t mode, mode_t dir_mode)
+fs_mkpath(lua_State *L)
 {
+	/*
+	 * Code derived from OpenBSD mkdir(1)
+	 */
 	struct stat sb;
+	const char *path; /* path to make */
 	char *slash;
+	mode_t mode;     /* file mode of terminal directory */
+	mode_t dir_mode; /* file mode of intermediate directories */
 	int done;
 
-	slash = path;
+	path = luaL_checkstring(L, 1);
+	mode = dir_mode = 0777;
+	slash = (char *)path;
 
 	for (;;) {
 		slash += strspn(slash, "/");
@@ -390,19 +401,19 @@ mkpath(char *path, mode_t mode, mode_t dir_mode)
 
 		if (mkdir(path, done ? mode : dir_mode) == 0) {
 			if (mode > 0777 && chmod(path, mode) == -1)
-				return -1;
+				return lfail(L);
 		} else {
 			int mkdir_errno = errno;
 
 			if (stat(path, &sb) == -1) {
 				/* Not there; use mkdir()s errno */
 				errno = mkdir_errno;
-				return -1;
+				return lfail(L);
 			}
 			if (!S_ISDIR(sb.st_mode)) {
 				/* Is there, but isn't a directory */
 				errno = ENOTDIR;
-				return -1;
+				return lfail(L);
 			}
 		}
 
@@ -412,15 +423,15 @@ mkpath(char *path, mode_t mode, mode_t dir_mode)
 		*slash = '/';
 	}
 
-	return 0;
+	lua_pushboolean(L, 1);
+	return 1;
 }
 
 /***
  * Creates a new directory.
  *
- * If *recursive* is true, creates intermediate directories
- * (parent directories) as required; behaves as POSIX
- * `mkdir -p` would.
+ * If you need to create multiple directories at once (similar to
+ * the behaviour of `mkdir -p`), use *fs.mkpath* instead.
  *
  * On success, returns true. Otherwise returns nil, an error
  * message and a platform-dependent error code.
@@ -428,25 +439,15 @@ mkpath(char *path, mode_t mode, mode_t dir_mode)
  * @function mkdir
  * @usage fs.mkdir("/usr/local/bin")
  * @tparam string dir The path of the directory to create.
- * @tparam[opt] boolean recursive Whether to create intermediate directories.
  */
 static int
 fs_mkdir(lua_State *L)
 {
-	char *dir;     /* parameter 1 (string) */
-	int recursive; /* parameter 2 (boolean) */
+	char *dir; /* parameter 1 (string) */
 	int ret;
 
 	dir = strdup(luaL_checkstring(L, 1));
-
-	if (!lua_isboolean(L, 2) && !lua_isnoneornil(L, 2))
-		luaL_typeerror(L, 2, "boolean");
-	recursive = lua_toboolean(L, 2);
-
-	if (recursive)
-		ret = mkpath(dir, 0777, 0777);
-	else
-		ret = mkdir(dir, 0777);
+	ret = mkdir(dir, 0777);
 	free(dir);
 
 	if (ret == 0) {
@@ -694,6 +695,7 @@ static const luaL_Reg fslib[] = {
 	{"isdirectory", fs_isdirectory},
 	{"isfile",      fs_isfile},
 	{"mkdir",       fs_mkdir},
+	{"mkpath",      fs_mkpath},
 	{"move",        fs_move},
 	{"remove",      fs_remove},
 	{"rmdir",       fs_rmdir},
