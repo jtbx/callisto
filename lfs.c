@@ -298,27 +298,21 @@ fs_exists(lua_State *L)
 	return 1;
 }
 
+static int fs_type(lua_State *);
+
 static int
-ismode(lua_State *L, mode_t mode)
+istype(lua_State *L, char *type)
 {
-	struct stat sb;
-	const char *path; /* parameter 1 (string) */
+	luaL_checkstring(L, 1);
 
-	path = luaL_checkstring(L, 1);
+	lua_pushcfunction(L, fs_type);
+	lua_pushvalue(L, 1);
+	lua_call(L, 1, 1);
 
-	if (lstat(path, &sb) != -1) {
-		lua_pushboolean(L, sb.st_mode & mode);
-		return 1;
-	}
+	lua_pushstring(L, type);
 
-	switch (errno) {
-	case ENOTDIR:
-	case ENOENT:
-		lua_pushboolean(L, 0);
-		return 1;
-	default:
-		return lfail(L);
-	}
+	lua_pushboolean(L, lua_compare(L, -1, -2, LUA_OPEQ));
+	return 1;
 }
 
 /***
@@ -339,7 +333,7 @@ end
 static int
 fs_isdirectory(lua_State *L)
 {
-	return ismode(L, S_IFDIR);
+	return istype(L, "directory");
 }
 
 /***
@@ -361,7 +355,7 @@ end
 static int
 fs_isfile(lua_State *L)
 {
-	return ismode(L, S_IFREG);
+	return istype(L, "file");
 }
 
 /***
