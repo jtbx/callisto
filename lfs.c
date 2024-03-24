@@ -389,7 +389,7 @@ fs_mkpath(lua_State *L)
 	int done;
 
 	path = luaL_checkstring(L, 1);
-	mode = dir_mode = 0777;
+	mode = dir_mode = 0755;
 	slash = (char *)path;
 
 	for (;;) {
@@ -400,7 +400,7 @@ fs_mkpath(lua_State *L)
 		*slash = '\0';
 
 		if (mkdir(path, done ? mode : dir_mode) == 0) {
-			if (mode > 0777 && chmod(path, mode) == -1)
+			if (mode > 0755 && chmod(path, mode) == -1)
 				return lfail(L);
 		} else {
 			int mkdir_errno = errno;
@@ -447,7 +447,7 @@ fs_mkdir(lua_State *L)
 	int ret;
 
 	dir = strdup(luaL_checkstring(L, 1));
-	ret = mkdir(dir, 0777);
+	ret = mkdir(dir, 0755);
 	free(dir);
 
 	if (ret == 0) {
