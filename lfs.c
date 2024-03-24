@@ -359,6 +359,24 @@ fs_isfile(lua_State *L)
 }
 
 /***
+ * Returns true if the given path specifies a symbolic link.
+ * Will return false if either the given path
+ * does not specify a file or the path
+ * does not exist at all.
+ *
+ * On error returns nil, an error message and a
+ * platform-dependent error code.
+ *
+ * @function issymlink
+ * @tparam string path The path to check.
+ */
+static int
+fs_issymlink(lua_State *L)
+{
+	return istype(L, "symlink");
+}
+
+/***
  * Creates a new directory, creating intermediate directories as required.
  *
  * On success, returns true. Otherwise returns nil, an error
@@ -725,6 +743,7 @@ static const luaL_Reg fslib[] = {
 	{"exists",      fs_exists},
 	{"isdirectory", fs_isdirectory},
 	{"isfile",      fs_isfile},
+	{"issymlink",   fs_issymlink},
 	{"mkdir",       fs_mkdir},
 	{"mkpath",      fs_mkpath},
 	{"move",        fs_move},
