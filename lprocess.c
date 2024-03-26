@@ -22,6 +22,8 @@
 #define PID_MAX     8 /* rounded to the nearest even number */
 #define PROCESS_MAX 256
 
+static int sigc = -1;
+
 /* clang-format off */
 
 static const int signals[] = {
@@ -199,37 +201,15 @@ process_pidof(lua_State *L)
 	return 1;
 }
 
-#define REG_SIGC "callisto!process:sigc"
-
 static int
-initsignals(lua_State *L)
+strtosig(const char *sig)
 {
-	int sigc;
-
-	/* get the registry entry containing the sig count */
-	lua_getfield(L, LUA_REGISTRYINDEX, REG_SIGC);
-	/* if the registry entry isn't a number greater than 0... */
-	if (!lua_isnoneornil(L, -1)) {
-		if (lua_type(L, -1) != LUA_TNUMBER || lua_tointeger(L, -1) <= 0) {
-			luaL_error(L, "registry index for signal count is invalid");
-			return 0;
-		}
-	}
+	int i, j;
 
 	sigc = 0;
 	while (signals[sigc] != -1)
 		sigc++;
-
-	lua_pushinteger(L, sigc + 1);
-	lua_setfield(L, LUA_REGISTRYINDEX, REG_SIGC);
-
-	return 1;
-}
-
-static int
-strtosig(const char *sig, int sigc)
-{
-	int i, j;
+	sigc--;
 
 	j = 0;
 	for (i = signals[j]; i < sigc; j++) {
@@ -253,18 +233,11 @@ strtosig(const char *sig, int sigc)
 static int
 process_signum(lua_State *L)
 {
-	char *sigstr;
-	int sig, sigc;
+	const char *sigstr;
+	int sig;
 
-	sigstr = strdup(luaL_checkstring(L, 1));
-
-	if (!initsignals(L))
-		return 0;
-
-	lua_getfield(L, LUA_REGISTRYINDEX, REG_SIGC);
-	sigc = lua_tointeger(L, -1);
-	sig = strtosig(sigstr, sigc);
-	free(sigstr);
+	sigstr = luaL_checkstring(L, 1);
+	sig = strtosig(sigstr);
 
 	if (sig != -1) {             /* valid signal? */
 		lua_pushinteger(L, sig); /* return signal */
@@ -277,15 +250,9 @@ process_signum(lua_State *L)
 static int
 sigsend(lua_State *L, pid_t pid, const char *sigstr)
 {
-	int ret, sig, sigc;
+	int ret, sig;
 
-	if (!initsignals(L))
-		return 0;
-
-	lua_getfield(L, LUA_REGISTRYINDEX, REG_SIGC);
-	sigc = lua_tointeger(L, -1);
-
-	sig = strtosig(sigstr, sigc);
+	sig = strtosig(sigstr);
 	if (sig != -1) /* valid signal? */
 		ret = kill(pid, sig);
 	else
@@ -298,8 +265,6 @@ sigsend(lua_State *L, pid_t pid, const char *sigstr)
 
 	return lfail(L);
 }
-
-#undef REG_SIGC
 
 /***
  * Sends the given signal to the process with the given PID.
