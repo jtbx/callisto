@@ -52,6 +52,10 @@ local tests = {
 	},
 
 	extra = {
+		printfmt = function ()
+			printfmt("Testing %s (%d)", "printfmt", os.time())
+			return 'printfmt("Testing %%s (%%d)", ...)'
+		end
 	},
 
 	fs = {
@@ -215,6 +219,9 @@ do
 	test(environ.get)
 	test(environ.set)
 	test(environ.pairs)
+
+	-- extra
+	test(extra.printfmt)
 
 	-- fs
 	test(fs.copy)
