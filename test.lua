@@ -195,6 +195,14 @@ fs.remove("%s")]]):format(
 			local sig = "SIGKILL"
 
 			assert(math.type(process.signum(sig)) == "integer")
+
+			-- https://todo.sr.ht/~jeremy/callisto/2
+			local ok, err = pcall(function ()
+				process.signum("SIGHELLO")
+			end)
+			assert(not ok)
+			assert(err:find("no such signal$"))
+
 			return 'process.signum("' .. sig .. '")'
 		end,
 		send = function ()
