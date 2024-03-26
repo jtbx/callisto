@@ -83,7 +83,7 @@ local tests = {
 			assert(fs.mkdir(dir))
 			assert(fs.exists(dir) and fs.isdirectory(dir))
 			assert(fs.rmdir(dir))
-			assert(fs.mkdir(subdir, true))
+			assert(fs.mkpath(subdir))
 
 			assert(fs.exists(dir))
 			assert(fs.isdirectory(dir))
@@ -96,7 +96,7 @@ local tests = {
 			return ([[
 fs.mkdir("%s")
 fs.rmdir("%s")
-fs.mkdir("%s", true)
+fs.mkpath("%s")
 fs.rmdir("%s"")
 fs.rmdir("%s")]]):format(
 				dir,
