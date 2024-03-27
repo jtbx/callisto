@@ -94,7 +94,7 @@ fs_basename(lua_State *L)
 	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
 	ret = basename(path);
 
-	if (ret == NULL) /* failed? */
+	if (ret == NULL)
 		return lfail(L);
 
 	lua_pushstring(L, ret);
@@ -192,7 +192,7 @@ fs_dirname(lua_State *L)
 	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
 	ret = dirname(path);
 
-	if (ret == NULL) /* failed? */
+	if (ret == NULL)
 		return lfail(L);
 
 	lua_pushstring(L, ret);
@@ -289,9 +289,9 @@ fs_exists(lua_State *L)
 	int ret;
 
 	path = luaL_checkstring(L, 1);
-	ret = access(path, F_OK); /* check if file exists */
+	ret = access(path, F_OK);
 
-	if (ret == -1) /* failed? */
+	if (ret == -1)
 		return lfail(L);
 
 	lua_pushboolean(L, ret == 0);
@@ -495,9 +495,9 @@ fs_move(lua_State *L)
 
 	src = luaL_checkstring(L, 1);
 	dest = luaL_checkstring(L, 2);
-	ret = rename(src, dest); /* move file */
+	ret = rename(src, dest);
 
-	if (ret == 0) { /* check for success */
+	if (ret == 0) {
 		lua_pushboolean(L, 1);
 		return 1;
 	}
