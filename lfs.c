@@ -518,7 +518,7 @@ recursiveremove(lua_State *L, const char *path)
 			return lfail(L);
 
 		/* if it's a file... */
-		if (remove(path) == -1)
+		if (unlink(path) == -1)
 			return lfail(L);
 
 		lua_pushboolean(L, 1);
@@ -551,7 +551,7 @@ recursiveremove(lua_State *L, const char *path)
 			else /* if some other error occurred */
 				return lfail(L);
 		} else {
-			if (remove(fullname) == -1)
+			if (unlink(fullname) == -1)
 				return lfail(L);
 		}
 
