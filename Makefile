@@ -82,6 +82,6 @@ install:
 	cp -f ${HEADERS} "${DESTDIR}${PREFIX}"/include/callisto/
 	cp -f csto "${DESTDIR}${PREFIX}"/bin/
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib/
-	cp -f man/csto.1 "${DESTDIR}${PREFIX}"/share/man/man1/
+	cp -f man/man1/*.1 "${DESTDIR}${PREFIX}"/share/man/man1/
 
 .PHONY: all clean doc format gitconfig install lua
