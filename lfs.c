@@ -89,17 +89,13 @@ static int
 fs_basename(lua_State *L)
 {
 	const char *ret;
-	char *path; /* parameter 1 (string) */
 
-	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
-	ret = basename(path);
+	ret = basename((char *)luaL_checkstring(L, 1));
 
 	if (ret == NULL)
 		return lfail(L);
 
 	lua_pushstring(L, ret);
-
-	free(path);
 	return 1;
 }
 
@@ -187,17 +183,13 @@ static int
 fs_dirname(lua_State *L)
 {
 	const char *ret;
-	char *path; /* parameter 1 (string) */
 
-	path = strndup(luaL_checkstring(L, 1), lua_rawlen(L, 1));
-	ret = dirname(path);
+	ret = dirname((char *)luaL_checkstring(L, 1));
 
 	if (ret == NULL)
 		return lfail(L);
 
 	lua_pushstring(L, ret);
-
-	free(path);
 	return 1;
 }
 
@@ -454,19 +446,11 @@ fs_mkpath(lua_State *L)
 static int
 fs_mkdir(lua_State *L)
 {
-	char *dir; /* parameter 1 (string) */
-	int ret;
+	if (mkdir(luaL_checkstring(L, 1), 0755) == 0)
+		return lfail(L);
 
-	dir = strdup(luaL_checkstring(L, 1));
-	ret = mkdir(dir, 0755);
-	free(dir);
-
-	if (ret == 0) {
-		lua_pushboolean(L, 1);
-		return 1;
-	}
-
-	return lfail(L);
+	lua_pushboolean(L, 1);
+	return 1;
 }
 
 /***
