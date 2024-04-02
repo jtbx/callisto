@@ -27,7 +27,7 @@ and use other OS functionality not available to a regular Lua interpreter.
 .Nm
 loads all Callisto libraries before any script is run,
 allowing you to omit calls to
-.Sy require
+.Fn require
 at the beginning of your script.
 .Pp
 For a description of these libraries and how to use them,
@@ -96,7 +96,7 @@ into global
 Print version information.
 .It Fl W
 Enable warnings (see
-.Sy warn()
+.Fn warn
 in the Lua manual).
 .El
 .Sh ENVIRONMENT
@@ -124,13 +124,13 @@ and is executed as Lua code.
 Initial value of
 .Em package.path ,
 the path used by
-.Sy require()
+.Fn require
 to search for Lua modules.
 .It Ev LUA_CPATH , Ev LUA_CPATH_5_4
 Initial value of
 .Em package.cpath ,
 the path used by
-.Sy require()
+.Fn require
 to search for C loaders.
 .El
 .Sh AUTHORS
