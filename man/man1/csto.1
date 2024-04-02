@@ -1,4 +1,4 @@
-.Dd $Mdocdate: April 1 2024 $
+.Dd $Mdocdate: April 3 2024 $
 .Dt CSTO 1
 .Os
 .Sh NAME
@@ -16,22 +16,30 @@
 .Sh DESCRIPTION
 .Nm
 is an interpreter for the Lua programming language,
-using the Callisto libraries.
+which exposes the Callisto libraries to scripts.
 Callisto provides Lua libraries for operating systems
 following the POSIX standard.
-These allow Lua programs to
+These libraries allow Lua programs to
 manipulate the file system,
 send signals to processes,
 parse command line arguments,
 and use other OS functionality not available to a regular Lua interpreter.
+.Nm
+loads all Callisto libraries before any script is run,
+allowing you to omit calls to
+.Sy require
+at the beginning of your script.
 .Pp
+For a description of these libraries and how to use them,
+see
+.Xr callisto 3lua .
 All of these libraries are conveniently bundled directly into
 .Nm
 and do not depend on any external libraries or files,
 unless your copy of
 .Nm
 was built with support for
-.Lb libreadline .
+.Lb readline .
 .Pp
 For up-to-date information concerning Callisto, visit
 .Lk https://sr.ht/\[ti]jeremy/callisto/
