@@ -3,7 +3,7 @@
 .Os
 .Sh NAME
 .Nm csto
-.Nd Lua interpreter with POSIX interfaces
+.Nd Lua interpreter with operating system interfaces
 .Sh SYNOPSIS
 .Nm csto
 .Bk -words
@@ -15,10 +15,11 @@
 .Ek
 .Sh DESCRIPTION
 .Nm
-is an interpreter for the Lua programming language, bundled with the Callisto
-libraries. Callisto provides Lua libraries for POSIX operating systems. These
-can aid in file manipulation, process management, command line argument parsing
-and other operations not available through the standard Lua library.
+is an interpreter for the Lua programming language, using the Callisto
+libraries. Callisto provides Lua libraries for operating systems following
+the POSIX standard. These allow Lua programs to manipulate the file system,
+send signals to processes, parse command line arguments,
+and use other OS functionality not available to a regular Lua interpreter.
 .Pp
 All of these libraries are conveniently bundled directly into
 .Nm
