@@ -3,12 +3,6 @@
  * Copyright (c) 2023-2024 Jeremy Baxter.
  */
 
-/***
- * Files, directories and file system manipulation.
- *
- * @module fs
- */
-
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -69,22 +63,6 @@ struct {
 };
 /* clang-format on */
 
-/***
- * Returns the last component of the given path,
- * removing any trailing '/' characters. If the given
- * path consists entirely of '/' characters, the string
- * `"/"` is returned. If *path* is an empty string,
- * the string `"."` is returned.
- *
- * This is purely a string manipulation function and
- * depends on no outside state.
- *
- * @function basename
- * @usage
-print("name of script file is " .. fs.basename(arg[0]))
-assert(fs.basename("/etc/fstab") == "fstab")
- * @tparam string path The path to process.
- */
 static int
 fs_basename(lua_State *L)
 {
@@ -99,19 +77,6 @@ fs_basename(lua_State *L)
 	return 1;
 }
 
-/***
- * Copies the contents of the file *source* to
- * the file *target*. *target* will be overwritten
- * if it already exists.
- *
- * @function copy
- * @usage
-io.output("hello"):write("hello world")
-fs.copy("hello", "world")
-assert(io.input("world"):read("a") == "hello world")
- * @tparam string source The source file to copy.
- * @tparam string target The destination file.
- */
 static int
 fs_copy(lua_State *L)
 {
@@ -164,21 +129,6 @@ finish:
 	return 1;
 }
 
-/***
- * Returns the parent directory of the pathname given.
- *
- * Any trailing '/' characters are not counted
- * as part of the directory name. If the given path is
- * an empty string or contains no '/' characters, the string
- * `"."` is returned.
- *
- * This is purely a string manipulation function and
- * depends on no outside state.
- *
- * @function dirname
- * @usage assert(fs.dirname("/usr/local/bin") == "/usr/local")
- * @tparam string path The path to process.
- */
 static int
 fs_dirname(lua_State *L)
 {
@@ -263,17 +213,6 @@ fs_entries(lua_State *L)
 	return 1;
 }
 
-/***
- * Returns true if the given pathname exists
- * in the file system.
- *
- * @function exists
- * @usage
-if fs.exists("/etc/fstab") then
-	-- ...
-end
- * @tparam string path The path of the file to look for.
- */
 static int
 fs_exists(lua_State *L)
 {
@@ -307,77 +246,24 @@ istype(lua_State *L, char *type)
 	return 1;
 }
 
-/***
- * Returns true if the given path specifies a directory.
- * Will return false if either the given path does not
- * specify a directory or the path does not exist at all.
- *
- * On error returns nil, an error message and a
- * platform-dependent error code.
- *
- * @function isdirectory
- * @usage
-if not fs.isdirectory("/usr") then
-    print("something's wrong")
-end
- * @tparam string path The path to check.
- */
 static int
 fs_isdirectory(lua_State *L)
 {
 	return istype(L, "directory");
 }
 
-/***
- * Returns true if the given path specifies a file.
- * Will return false if either the given path
- * does not specify a file or the path
- * does not exist at all.
- *
- * On error returns nil, an error message and a
- * platform-dependent error code.
- *
- * @function isfile
- * @usage
-if not fs.isfile("/sbin/init") then
-    print("something's wrong")
-end
- * @tparam string path The path to check.
- */
 static int
 fs_isfile(lua_State *L)
 {
 	return istype(L, "file");
 }
 
-/***
- * Returns true if the given path specifies a symbolic link.
- * Will return false if either the given path
- * does not specify a file or the path
- * does not exist at all.
- *
- * On error returns nil, an error message and a
- * platform-dependent error code.
- *
- * @function issymlink
- * @tparam string path The path to check.
- */
 static int
 fs_issymlink(lua_State *L)
 {
 	return istype(L, "symlink");
 }
 
-/***
- * Creates a new directory, creating intermediate directories as required.
- *
- * On success, returns true. Otherwise returns nil, an error
- * message and a platform-dependent error code.
- *
- * @function mkpath
- * @usage fs.mkpath("/usr/local/bin")
- * @tparam string path The path to create.
- */
 static int
 fs_mkpath(lua_State *L)
 {
@@ -430,19 +316,6 @@ fs_mkpath(lua_State *L)
 	return 1;
 }
 
-/***
- * Creates a new directory.
- *
- * If you need to create multiple directories at once (similar to
- * the behaviour of `mkdir -p`), use *fs.mkpath* instead.
- *
- * On success, returns true. Otherwise returns nil, an error
- * message and a platform-dependent error code.
- *
- * @function mkdir
- * @usage fs.mkdir("/usr/local/bin")
- * @tparam string dir The path of the directory to create.
- */
 static int
 fs_mkdir(lua_State *L)
 {
@@ -453,23 +326,6 @@ fs_mkdir(lua_State *L)
 	return 1;
 }
 
-/***
- * Moves the item at path *src* to path *dest*.
- * If *dest* exists, it is overwritten. Both *src* and *dest*
- * must be of the same type (that is, both directories or both
- * non-directories) and must reside on the same file system.
- *
- * (If you need to move files across different file systems,
- * consider using `fs.copy` instead.)
- *
- * On success, returns true. Otherwise returns nil, an error
- * message and a platform-dependent error code.
- *
- * @function move
- * @usage fs.move("srcfile", "destfile")
- * @tparam string src  The pathname of the file to move.
- * @tparam string dest The destination pathname.
- */
 static int
 fs_move(lua_State *L)
 {
@@ -551,16 +407,6 @@ next:
 	return 1;
 }
 
-/***
- * Removes a file or directory.
- *
- * On success, returns true. Otherwise returns nil, an error
- * message and a platform-dependent error code.
- *
- * @function remove
- * @usage fs.remove("path/to/file")
- * @tparam string dir The path to remove.
- */
 static int
 fs_remove(lua_State *L)
 {
@@ -571,16 +417,6 @@ fs_remove(lua_State *L)
 	return recursiveremove(L, path);
 }
 
-/***
- * Removes an empty directory.
- *
- * On success, returns true. Otherwise returns nil, an error
- * message and a platform-dependent error code.
- *
- * @function rmdir
- * @usage fs.rmdir("yourdirectory")
- * @tparam string dir The path of the directory to remove.
- */
 static int
 fs_rmdir(lua_State *L)
 {
@@ -670,25 +506,6 @@ fs_type(lua_State *L)
 	return 1;
 }
 
-/***
- * Returns or sets the current working directory.
- *
- * If *dir* is nil, returns the current working
- * directory. Otherwise, sets the current working
- * directory to *dir*.
- *
- * On success, returns true. Otherwise returns nil, an error
- * message and a platform-dependent error code.
- *
- * @function workdir
- * @usage
--- Store the current working directory in a variable:
-local wd = fs.workdir()
--- Set the current working directory to the value of
--- the HOME environment variable:
-fs.workdir(environ["HOME"])
- * @tparam[opt] string dir The directory to set as the current working directory.
- */
 static int
 fs_workdir(lua_State *L)
 {
