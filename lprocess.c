@@ -135,12 +135,6 @@ static const char *sigstrs[] = {
 
 /* clang-format on */
 
-/***
- * Returns the PID of the current process.
- *
- * @function pid
- * @usage local pid = process.pid()
- */
 static int
 process_pid(lua_State *L)
 {
@@ -148,19 +142,6 @@ process_pid(lua_State *L)
 	return 1;
 }
 
-/***
- * Returns the PID (process ID) of the given process,
- * or nil if the process could not be found.
- *
- * Depends on the nonportable userspace utility `pgrep`.
- * Can be found in the procps-ng package on Linux usually
- * included in most distributions, or as part of the base
- * system on OpenBSD, NetBSD and FreeBSD.
- *
- * @function pidof
- * @usage process.pidof("init")
- * @tparam string process The name of the process to look up.
- */
 static int
 process_pidof(lua_State *L)
 {
@@ -220,16 +201,6 @@ strtosig(const char *sig)
 	return -1; /* invalid signal */
 }
 
-/***
- * Returns the given signal as an integer.
- *
- * This signal value is a platform-dependent value;
- * do not attempt to use it portably across different platforms.
- *
- * @function signum
- * @usage local sigkill = process.signum("SIGKILL")
- * @tparam string signal The signal to look up.
- */
 static int
 process_signum(lua_State *L)
 {
@@ -266,19 +237,6 @@ sigsend(lua_State *L, pid_t pid, const char *sigstr)
 	return lfail(L);
 }
 
-/***
- * Sends the given signal to the process with the given PID.
- *
- * The *signal* parameter is a string containing the name
- * of the desired signal to send (e.g. SIGKILL).
- *
- * @function send
- * @usage
-local pid = process.pid("sh")
-process.send(pid, "SIGTERM")
- * @tparam integer pid The PID of the process.
- * @tparam string signal The signal to send.
- */
 static int
 process_send(lua_State *L)
 {
@@ -291,14 +249,6 @@ process_send(lua_State *L)
 	return sigsend(L, pid, sig);
 }
 
-/***
- * Kills the process with the given PID.
- *
- * Equivalent to `process.send(pid, "SIGKILL")`.
- *
- * @function kill
- * @tparam integer pid The PID of the process.
- */
 static int
 process_kill(lua_State *L)
 {
@@ -308,14 +258,7 @@ process_kill(lua_State *L)
 
 	return sigsend(L, pid, "SIGKILL");
 }
-/***
- * Terminates the process with the given PID.
- *
- * Equivalent to `process.send(pid, "SIGTERM")`.
- *
- * @function terminate
- * @tparam integer pid The PID of the process.
- */
+
 static int
 process_terminate(lua_State *L)
 {
