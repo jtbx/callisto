@@ -319,7 +319,7 @@ fs_mkpath(lua_State *L)
 static int
 fs_mkdir(lua_State *L)
 {
-	if (mkdir(luaL_checkstring(L, 1), 0755) == 0)
+	if (mkdir(luaL_checkstring(L, 1), 0755) == -1)
 		return lfail(L);
 
 	lua_pushboolean(L, 1);
