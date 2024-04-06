@@ -22,115 +22,58 @@
 #define PID_MAX     8 /* rounded to the nearest even number */
 #define PROCESS_MAX 256
 
-static int sigc = -1;
+static const int sigc = 22;
 
 /* clang-format off */
 
 static const int signals[] = {
-	SIGHUP,
-	SIGINT,
-	SIGQUIT,
-	SIGILL,
-	SIGTRAP,
 	SIGABRT,
-	SIGIOT,
-	SIGFPE,
-	SIGKILL,
-	SIGBUS,
-	SIGSEGV,
-	SIGSYS,
-	SIGPIPE,
 	SIGALRM,
-	SIGTERM,
-	SIGURG,
-	SIGSTOP,
-	SIGTSTP,
-	SIGCONT,
+	SIGBUS,
 	SIGCHLD,
+	SIGCONT,
+	SIGFPE,
+	SIGHUP,
+	SIGILL,
+	SIGINT,
+	SIGKILL,
+	SIGPIPE,
+	SIGQUIT,
+	SIGSEGV,
+	SIGSTOP,
+	SIGTERM,
+	SIGTSTP,
 	SIGTTIN,
 	SIGTTOU,
-#ifdef SIGSTKFL
-	SIGSTKFL,
-#endif
-	SIGIO,
-	SIGXCPU,
-	SIGXFSZ,
-#ifdef SIGVTALR
-	SIGVTALR,
-#elif defined(SIGVTALRM)
-	SIGVTALRM,
-#endif
-	SIGPROF,
-#ifdef SIGWINC
-	SIGWINC,
-#elif defined(SIGWINCH)
-	SIGWINCH,
-#endif
-#ifdef SIGINFO
-	SIGINFO,
-#endif
-#ifdef SIGPOLL
-	SIGPOLL,
-#endif
-#ifdef SIGPWR
-	SIGPWR,
-#endif
 	SIGUSR1,
 	SIGUSR2,
-	-1 /* end */
+	SIGTRAP,
+	SIGURG
 };
 
 static const char *sigstrs[] = {
-	[SIGHUP]  = "SIGHUP",
-	[SIGINT]  = "SIGINT",
-	[SIGQUIT] = "SIGQUIT",
-	[SIGILL]  = "SIGILL",
-	[SIGTRAP] = "SIGTRAP",
 	[SIGABRT] = "SIGABRT",
-	[SIGIOT]  = "SIGIOT",
-	[SIGFPE]  = "SIGFPE",
-	[SIGKILL] = "SIGKILL",
-	[SIGBUS]  = "SIGBUS",
-	[SIGSEGV] = "SIGSEGV",
-	[SIGSYS]  = "SIGSYS",
-	[SIGPIPE] = "SIGPIPE",
 	[SIGALRM] = "SIGALRM",
-	[SIGTERM] = "SIGTERM",
-	[SIGURG]  = "SIGURG",
-	[SIGSTOP] = "SIGSTOP",
-	[SIGTSTP] = "SIGTSTP",
-	[SIGCONT] = "SIGCONT",
+	[SIGBUS] = "SIGBUS",
 	[SIGCHLD] = "SIGCHLD",
+	[SIGCONT] = "SIGCONT",
+	[SIGFPE] = "SIGFPE",
+	[SIGHUP] = "SIGHUP",
+	[SIGILL] = "SIGILL",
+	[SIGINT] = "SIGINT",
+	[SIGKILL] = "SIGKILL",
+	[SIGPIPE] = "SIGPIPE",
+	[SIGQUIT] = "SIGQUIT",
+	[SIGSEGV] = "SIGSEGV",
+	[SIGSTOP] = "SIGSTOP",
+	[SIGTERM] = "SIGTERM",
+	[SIGTSTP] = "SIGTSTP",
 	[SIGTTIN] = "SIGTTIN",
 	[SIGTTOU] = "SIGTTOU",
-#ifdef SIGSTKFL
-	[SIGSTKFL] = "SIGSTKFL",
-#endif
-	[SIGIO]   = "SIGIO",
-	[SIGXCPU] = "SIGXCPU",
-	[SIGXFSZ] = "SIGXFSZ",
-#ifdef SIGVTALR
-	[SIGVTALR] = "SIGVTALR",
-#elif defined(SIGVTALRM)
-	[SIGVTALRM] = "SIGVTALRM",
-#endif
-	[SIGPROF] = "SIGPROF",
-#ifdef SIGWINC
-	[SIGWINC] = "SIGWINC",
-#elif defined(SIGWINCH)
-	[SIGWINCH] = "SIGWINCH",
-#endif
-#ifdef SIGINFO
-	[SIGINFO] = "SIGINFO",
-#endif
-#ifdef SIGPOLL
-	[SIGPOLL] = "SIGPOLL",
-#endif
-#ifdef SIGPWR
-	[SIGPWR] = "SIGPWR",
-#endif
 	[SIGUSR1] = "SIGUSR1",
-	[SIGUSR2] = "SIGUSR2"
+	[SIGUSR2] = "SIGUSR2",
+	[SIGTRAP] = "SIGTRAP",
+	[SIGURG] = "SIGURG"
 };
 
 /* clang-format on */
@@ -187,13 +130,8 @@ strtosig(const char *sig)
 {
 	int i, j;
 
-	sigc = 0;
-	while (signals[sigc] != -1)
-		sigc++;
-	sigc--;
-
 	j = 0;
-	for (i = signals[j]; i < sigc; j++) {
+	for (i = signals[j]; j < sigc; j++) {
 		i = signals[j];
 		if (strcasecmp(sigstrs[i], sig) == 0)
 			return i; /* signal found */
