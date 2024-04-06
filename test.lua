@@ -192,9 +192,34 @@ fs.remove("%s")]]):format(
 			return 'process.pidof("' .. proc .. '")'
 		end,
 		signum = function ()
-			local sig = "SIGKILL"
+			local sigs = {
+				"SIGABRT",
+				"SIGALRM",
+				"SIGBUS",
+				"SIGCHLD",
+				"SIGCONT",
+				"SIGFPE",
+				"SIGHUP",
+				"SIGILL",
+				"SIGINT",
+				"SIGKILL",
+				"SIGPIPE",
+				"SIGQUIT",
+				"SIGSEGV",
+				"SIGSTOP",
+				"SIGTERM",
+				"SIGTSTP",
+				"SIGTTIN",
+				"SIGTTOU",
+				"SIGTRAP",
+				"SIGURG",
+				"SIGUSR1",
+				"SIGUSR2"
+			}
 
-			assert(math.type(process.signum(sig)) == "integer")
+			for _, sig in ipairs(sigs) do
+				assert(math.type(process.signum(sig)) == "integer")
+			end
 
 			-- https://todo.sr.ht/~jeremy/callisto/2
 			local ok, err = pcall(function ()
@@ -203,7 +228,7 @@ fs.remove("%s")]]):format(
 			assert(not ok)
 			assert(err:find("no such signal$"))
 
-			return 'process.signum("' .. sig .. '")'
+			return 'process.signum("' .. sigs[#sigs] .. '")'
 		end,
 		send = function ()
 			local hdl = io.popen("sleep 2")
