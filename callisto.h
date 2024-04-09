@@ -17,7 +17,8 @@
 #define CALLISTO_VERSION \
 	"Callisto " CALLISTO_VERSION_MAJOR "." CALLISTO_VERSION_MINOR
 #define CALLISTO_COPYRIGHT \
-	CALLISTO_VERSION " (" LUA_RELEASE ")  Copyright (C) 1994-2023 Lua.org, PUC-Rio"
+	LUA_RELEASE "  Copyright (c) 1994-2023 Lua.org, PUC-Rio\n" \
+	CALLISTO_VERSION "  Copyright (c) 2023-2024 Jeremy Baxter"
 
 #define CALLISTO_CLLIBNAME   "cl"
 #define CALLISTO_ENVLIBNAME  "environ"
