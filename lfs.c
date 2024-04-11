@@ -316,7 +316,6 @@ ismode(lua_State *L, mode_t mode)
 	case ENOENT:
 		lua_pushboolean(L, 0);
 		return 1;
-		break;
 	default:
 		return lfail(L);
 	}
