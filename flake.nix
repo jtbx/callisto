@@ -37,6 +37,8 @@
           "DESTDIR=$(out)"
           "PREFIX=/"
         ];
+
+        meta.mainProgram = "csto";
       };
     });
   };
