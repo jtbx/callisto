@@ -1,0 +1,82 @@
+.Dd $Mdocdate: April 4 2024 $
+.Dt CALLISTO 3lua
+.Os
+.Sh NAME
+.Nm callisto
+.Nd operating system interface for Lua programs
+.Sh DESCRIPTION
+Callisto provides Lua interfaces for operating system functionality.
+Using Callisto, Lua programs can
+manipulate the file system,
+send signals to processes,
+parse command line arguments,
+and use other OS functionality otherwise not available to Lua.
+.Pp
+The Callisto libraries are not available to a standard Lua interpreter;
+usually, one would access the Callisto libraries through
+the standalone interpreter
+.Xr csto 1 .
+.Xr csto 1
+behaves the same as the standalone
+.Xr lua 1
+interpreter;
+existing Lua code will work as intended.
+Before any scripts are executed,
+.Xr csto 1
+loads the Callisto libraries
+into their global tables,
+eliminating the need to call
+.Fn require
+on each library.
+See its manual for more information.
+.Pp
+For up-to-date information concerning Callisto, visit
+.Lk https://sr.ht/\[ti]jeremy/callisto/
+in a web browser.
+.Ss Libraries
+To get started programming with Callisto,
+see the manuals for the libraries below.
+Library manuals contain a brief description of the library,
+and a list of functions in that library.
+Function manuals are concise and should be easy to read and understand
+for anyone who has programmed in Lua before.
+.Pp
+The following libraries are included in Callisto:
+.Bl -tag -width 1 -offset indent
+.It Sy extra
+extra utility library
+.It Sy fs
+file system and path manipulation library
+.It Sy process
+process and signal library
+.El
+.Pp
+Manuals for these libraries can be found in the
+.Sy 3lua
+section.
+You may need to supply
+.Ar -s3lua
+to your
+.Xr man 1
+program
+to enable searching for manuals in the
+.Sy 3lua
+section.
+.Sh SEE ALSO
+.Xr csto 1
+.Sh STANDARDS
+Callisto relies heavily on functionality
+provided by your POSIX-compliant operating system.
+.Pp
+The POSIX revision supported is
+.Em IEEE Std 1003.1-2017 ("POSIX.1-2017") .
+.Sh AUTHORS
+.An Jeremy Baxter Aq Mt jtbx@disroot.org
+authored and maintains the Callisto libraries.
+.Sh BUGS
+Known bugs can be found at the bug tracker found at
+.Lk https://todo.sr.ht/\[ti]jeremy/callisto .
+.Pp
+If you have found a bug in Callisto,
+please report it to the bug tracker or send an email to
+.Aq Mt \[ti]jeremy/callisto@todo.sr.ht .
