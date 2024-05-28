@@ -1,7 +1,5 @@
 ---
 image: openbsd/latest
-packages:
-  - gcc-11.2.0p9
 sources:
   - "https://git.sr.ht/~jeremy/callisto"
 tasks:
@@ -11,6 +9,7 @@ tasks:
       make
       make clean
   - build-gcc: |
+      doas pkg_add "$(pkg_info -Q gcc | grep -E '^gcc-1.+' | head -n1)"
       cd callisto
       ./configure -c egcc
       make
