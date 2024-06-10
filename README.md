@@ -114,6 +114,9 @@ an email to ~jeremy/callisto@todo.sr.ht.
 
 ## contributing
 
-Send a patch to ~jeremy/callisto-devel@lists.sr.ht using
-[`git send-email`](https://git-send-email.io). Preferred code style is
-detailed in the style.md document but is not required. Thanks :)
+Send patches to [my public inbox][2] using [git send-email][3].
+Preferred code style is detailed in the style.md document but is not
+required. Thanks :)
+
+[2]: https://lists.sr.ht/~jeremy/public-inbox
+[3]: https://git-send-email.io
