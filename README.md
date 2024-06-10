@@ -21,10 +21,6 @@ First and foremost, Callisto tries to be:
    and its standard library, and is easy to use for those who have no
    prior experience with C
 
-Callisto relies on APIs specified in the POSIX specification;
-therefore it cannot be used on operating systems that are not
-POSIX-compliant (like Microsoft Windows).
-
 ## portability
 
 To build Callisto, all you need is a C99 compiler. The configure
@@ -37,11 +33,21 @@ configure script before you build. The compiler must support gcc-like
 command line arguments.
 
 Callisto has zero runtime dependencies, unless you built it with
-support for GNU libreadline*. Lua 5.4 is statically linked in. This
+support for GNU libreadline [1]. Lua 5.4 is statically linked in. This
 means that the same binary will work across different Linux
 distributions.
 
-*libreadline support can be enabled at build time, but is disabled by
+Callisto relies on APIs standardized by POSIX.1-2017; therefore it
+cannot be used on operating systems that do not comply with this
+specification (like Microsoft Windows).
+
+Theoretically Callisto should work on all operating systems
+implementing POSIX. It has been tested on Linux and OpenBSD; but if
+you find Callisto unable to build on your platform, please let me
+know. Send an email to jeremy@baxters.nz or file a ticket by emailing
+~jeremy/callisto@todo.sr.ht.
+
+[1]: libreadline support can be enabled at build time, but is disabled by
 default. To force building with libreadline support, pass the
 `-wreadline` flag to the configure script.
 
