@@ -38,7 +38,7 @@ environ["MYVAR"] = 1
  * Returns the value of the given environment variable.
  */
 static int
-environ_index(lua_State *L)
+environ__index(lua_State *L)
 {
 	const char *variable; /* parameter 2 (string) */
 	char *ret;
@@ -58,7 +58,7 @@ environ_index(lua_State *L)
  * Sets the value of the given environment variable.
  */
 static int
-environ_newindex(lua_State *L)
+environ__newindex(lua_State *L)
 {
 	int ret;
 	const char *variable; /* parameter 2 (string) */
@@ -97,8 +97,8 @@ environ_newindex(lua_State *L)
 /* clang-format off */
 
 static const luaL_Reg mt[] = {
-	{"__index",    environ_index},
-	{"__newindex", environ_newindex},
+	{"__index",    environ__index},
+	{"__newindex", environ__newindex},
 	{NULL, NULL}
 };
 
