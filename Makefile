@@ -72,6 +72,10 @@ format:
 	find . -maxdepth 1 -iname '*.c' -o -iname '*.h' \
 		| xargs ${CLANG_FORMAT} -i
 
+gitconfig:
+	git config format.subjectPrefix "PATCH callisto"
+	git config sendemail.to '~jeremy/public-inbox@lists.sr.ht'
+
 install:
 	mkdir -p "${DESTDIR}${PREFIX}"/bin
 	mkdir -p "${DESTDIR}${PREFIX}"/include/callisto
@@ -82,4 +86,4 @@ install:
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib/
 	cp -f man/csto.1 "${DESTDIR}${PREFIX}"/share/man/man1/
 
-.PHONY: all clean doc format install
+.PHONY: all clean doc format gitconfig install

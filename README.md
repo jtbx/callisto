@@ -115,6 +115,7 @@ an email to ~jeremy/callisto@todo.sr.ht.
 ## contributing
 
 Send patches to [my public inbox][2] using [git send-email][3].
+`make gitconfig` will set you up with the correct settings.
 Preferred code style is detailed in the style.md document but is not
 required. Thanks :)
 
