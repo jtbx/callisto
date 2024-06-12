@@ -1,0 +1,34 @@
+---
+image: debian/unstable
+packages:
+  - clang
+  - clang-format
+  - nix-bin
+  - nix-setup-systemd
+sources:
+  - "https://git.sr.ht/~jeremy/callisto"
+tasks:
+  - prepare: |
+      printf 'experimental-features = nix-command flakes\n' \
+        | sudo tee -a /etc/nix/nix.conf
+      sudo systemctl start nix-daemon
+      sudo usermod -aG nix-users build
+  - build-clang: |
+      cd callisto
+      ./configure -c clang
+      make
+      make clean
+  - build-gcc: |
+      cd callisto
+      ./configure -c gcc
+      make
+  - install: |
+      sudo make -Ccallisto install
+  - test: |
+      csto callisto/test.lua
+  - format: |
+      cd callisto
+      make format
+      git diff --exit-code
+  - flake: |
+      nix build ./callisto
