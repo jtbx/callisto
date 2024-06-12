@@ -16,6 +16,17 @@
       );
   in
   {
+    devShells = forAllSystems (pkgs: {
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          stdenv
+          clang-tools
+        ];
+        shellHook = ''
+          export PS1="(callisto) $ "
+        '';
+      };
+    });
     packages = forAllSystems (pkgs: {
       default = pkgs.stdenv.mkDerivation {
         name = "callisto";
