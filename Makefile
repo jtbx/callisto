@@ -14,7 +14,6 @@ LDFLAGS  = ${_LDFLAGS}
 
 OBJS = callisto.o lcl.o lenviron.o lextra.o lfs.o ljson.o \
        lprocess.o util.o
-LIBS = liblua.a
 HEADERS = callisto.h \
 	${LUADIR}/lua.h \
 	${LUADIR}/luaconf.h \
@@ -27,10 +26,10 @@ CJSON_CFLAGS = ${_CFLAGS} -I${LUADIR}
 
 all: csto libcallisto.a
 
-csto: ${LIBS} libcallisto.a csto.o
-	${CC} -o $@ csto.o libcallisto.a ${LIBS} ${LDFLAGS}
-libcallisto.a: liblua.a ${CJSON_OBJS} ${OBJS}
-	ar cr $@ ${OBJS} ${CJSON_OBJS}
+csto: libcallisto.a csto.o
+	${CC} -o $@ csto.o libcallisto.a ${LDFLAGS}
+libcallisto.a: lua ${CJSON_OBJS} ${OBJS}
+	ar cr $@ ${OBJS} ${CJSON_OBJS} ${_LUAOBJS}
 
 .SUFFIXES: .o
 
@@ -56,14 +55,13 @@ lua_cjson.o: ${CJSON_SRC}/lua_cjson.c
 strbuf.o: ${CJSON_SRC}/strbuf.c
 	${CC} ${CJSON_CFLAGS} -c $<
 
-liblua.a: external/lua/*.c
-	${MAKE} -Cexternal/lua
-	mv -f external/lua/liblua.a .
+lua:
+	${MAKE} -C${LUADIR}
 
 clean:
-	rm -f csto libcallisto.a csto.o ${OBJS} ${CJSON_OBJS} ${LIBS}
+	rm -f csto libcallisto.a csto.o ${OBJS} ${CJSON_OBJS}
 	rm -fr include doc/*.html doc/modules
-	${MAKE} -s -Cexternal/lua clean
+	${MAKE} -s -C${LUADIR} clean
 
 doc:
 	ldoc -s . -q . >/dev/null
@@ -86,4 +84,4 @@ install:
 	cp -f libcallisto.a "${DESTDIR}${PREFIX}"/lib/
 	cp -f man/csto.1 "${DESTDIR}${PREFIX}"/share/man/man1/
 
-.PHONY: all clean doc format gitconfig install
+.PHONY: all clean doc format gitconfig install lua
