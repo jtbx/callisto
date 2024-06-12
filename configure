@@ -132,6 +132,7 @@ gen_LDFLAGS () {
 
 ## Lua objects
 gen_LUAOBJS () {
+	touch config.mk
 	for obj in $(make -Cexternal/lua -s echo | grep -E '^BASE_O= ' | cut -d " " -f2-); do
 		luaobjs="$luaobjs external/lua/$obj"
 	done
