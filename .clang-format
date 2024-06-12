@@ -83,7 +83,8 @@ SpaceBeforeAssignmentOperators: true
 SpaceBeforeParens: ControlStatements
 SpacesBeforeTrailingComments: 1
 SpacesInCStyleCastParentheses: false
-SpacesInParens: Never
+# clang-format 17
+#SpacesInParens: Never
 SpacesInSquareBrackets: false
 TabWidth: 4
 UseTab: ForContinuationAndIndentation
