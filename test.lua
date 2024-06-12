@@ -41,6 +41,17 @@ local tests = {
 			environ[var] = val
 			assert(environ[var] == "hello")
 			return 'environ["' .. var .. '"] = "' .. val .. '"'
+		end,
+		pairs = function ()
+			local ev = {}
+			local var = "VAR"
+
+			environ[var] = "1"
+			for env in pairs(environ) do
+				ev[env] = environ[env]
+			end
+			assert(ev[var] == "1")
+			return "pairs(environ)"
 		end
 	},
 
@@ -251,6 +262,7 @@ do
 	-- environ
 	test(environ.getvar)
 	test(environ.setvar)
+	test(environ.pairs)
 
 	-- fs
 	test(fs.copy)

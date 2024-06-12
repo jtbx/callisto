@@ -10,11 +10,15 @@
 
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <lua/lauxlib.h>
 #include <lua/lua.h>
 
 #include "callisto.h"
+#include "util.h"
+
+extern char **environ;
 
 /***
  * Table enabling easy access to environment
@@ -94,11 +98,55 @@ environ__newindex(lua_State *L)
 	return 0;
 }
 
+int
+pairs_iter(lua_State *L)
+{
+	char *line, *name;
+	size_t *envi, len;
+	int i;
+
+	len = 0;
+	envi = (size_t *)lua_touserdata(L, 1);
+	line = environ[*envi];
+
+	if (line == NULL) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	name = calloc(strlen(line), sizeof(char));
+
+	/* extract the name portion from the environ line */
+	for (i = 0; line[i] != '='; i++) {
+		if (line[i] == '\0')
+			return lfailm(L, "process environment is corrupted");
+
+		name[len] = line[i];
+		len++;
+	}
+
+	(*envi)++;
+	lua_pushlstring(L, name, len);
+	return 1;
+}
+
+int
+environ__pairs(lua_State *L)
+{
+	size_t *p;
+
+	lua_pushcfunction(L, pairs_iter);
+	p = lua_newuserdatauv(L, sizeof(size_t), 0);
+	*p = 0;
+	return 2;
+}
+
 /* clang-format off */
 
 static const luaL_Reg mt[] = {
 	{"__index",    environ__index},
 	{"__newindex", environ__newindex},
+	{"__pairs",    environ__pairs},
 	{NULL, NULL}
 };
 
