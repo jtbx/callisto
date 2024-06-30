@@ -21,7 +21,7 @@
  
  #include "lua.h"
  
-@@ -723,8 +730,25 @@
+@@ -732,6 +739,23 @@
    return luaL_fileresult(L, res == 0, NULL);
  }
  
@@ -41,13 +41,11 @@
 +  lua_pushboolean(L, isatty(fd));
 +  return 1;
 +}
- 
- 
 +
+ 
+ 
  static int io_flush (lua_State *L) {
-   return luaL_fileresult(L, fflush(getiofile(L, IO_OUTPUT)) == 0, NULL);
- }
-@@ -765,6 +789,7 @@
+@@ -778,6 +802,7 @@
    {"seek", f_seek},
    {"close", f_close},
    {"setvbuf", f_setvbuf},
