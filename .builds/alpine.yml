@@ -17,7 +17,7 @@ tasks:
       ./configure -c gcc
       make
   - install: |
-      sudo make -Ccallisto install
+      sudo make -C callisto install
   - test: |
       csto callisto/test.lua
   - format: |
