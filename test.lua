@@ -15,12 +15,8 @@ local oldenv = _ENV
 
 local function test(f)
 	local _ENV = oldenv
-	local function mesg(...)
-		io.stdout:write(..., '\n')
-	end
-
 	assert(type(f) == "function")
-	mesg(f())
+	printfmt(f())
 end
 
 -- Table containing tests for each library.
@@ -28,13 +24,13 @@ end
 -- impossible to test without user interaction.
 local tests = {
 	environ = {
-		getvar = function ()
+		get = function ()
 			local var = "HOME"
 
 			assert(environ[var])
 			return 'environ["' .. var .. '"] ~= nil'
 		end,
-		setvar = function ()
+		set = function ()
 			local var = "VAR"
 			local val = "hello"
 
@@ -80,31 +76,31 @@ local tests = {
 		directory = function ()
 			local dir, subdir = "testdir", "testdir/sub"
 
+			-- leftovers from last time?
+			if fs.isdirectory(dir) then
+				fs.remove(dir)
+			end
+
 			assert(fs.mkdir(dir))
-			assert(fs.exists(dir) and fs.isdirectory(dir))
+			assert(fs.exists(dir) and fs.isdirectory(dir)
+				and fs.type(dir) == "directory")
 			assert(fs.rmdir(dir))
 			assert(fs.mkpath(subdir))
 
-			assert(fs.exists(dir))
-			assert(fs.isdirectory(dir))
-			assert(fs.exists(subdir))
-			assert(fs.isdirectory(subdir))
+			assert(fs.exists(dir) and fs.isdirectory(dir))
+			assert(fs.exists(subdir) and fs.isdirectory(subdir))
 
-			assert(fs.rmdir(subdir))
-			assert(fs.rmdir(dir))
+			assert(fs.remove(dir))
 
 			return ([[
 fs.mkdir("%s")
 fs.rmdir("%s")
 fs.mkpath("%s")
-fs.rmdir("%s"")
-fs.rmdir("%s")]]):format(
+fs.remove("%s")]]):format(
 				dir,
 				dir,
 				subdir,
-				subdir,
-				dir
-			)
+				dir)
 		end,
 		move = function ()
 			local src, dst = "testfile", "testfile.new"
@@ -124,14 +120,28 @@ fs.rmdir("%s")]]):format(
 			return 'fs.move("' .. src .. '", "' .. dst .. '")'
 		end,
 		path = function ()
-			local bpath, base = "/etc/fstab", "fstab"
-			local dpath, dir = "/usr/local/bin", "/usr/local"
+			local bpaths = {
+				{"/etc/fstab", "fstab"},
+				{"/sbin/init", "init"},
+				{"init", "init"}
+			}
+			local dpaths = {
+				{"/usr/local/bin", "/usr/local"},
+				{"test.lua", "."}
+			}
+			local res = {}
 
-			assert(fs.basename(bpath) == base)
-			assert(fs.dirname(dpath) == dir)
+			for _, entry in ipairs(bpaths) do
+				assert(fs.basename(entry[1]) == entry[2])
+				res[#res + 1] = '\nfs.basename("' .. entry[1] .. '")'
+			end
+			for _, entry in ipairs(bpaths) do
+				assert(fs.basename(entry[1]) == entry[2])
+				res[#res + 1] = '\nfs.dirname("' .. entry[1] .. '")'
+			end
 
-			return 'fs.basename("' .. bpath .. [[")
-fs.dirname("]] .. dpath .. '")'
+			res[1] = res[1]:sub(2) -- strip leading newline
+			return table.concat(res)
 		end,
 		remove = function ()
 			local file = "testfile"
@@ -147,9 +157,10 @@ fs.dirname("]] .. dpath .. '")'
 			return 'fs.remove("' .. file .. '")'
 		end,
 		workdir = function ()
-			local d = "/usr"
+			local d = "/etc"
 			local wd = fs.workdir()
 
+			assert(type(wd) == "string")
 			fs.workdir(d)
 			assert(fs.workdir() == d)
 			fs.workdir(wd)
@@ -160,7 +171,7 @@ fs.dirname("]] .. dpath .. '")'
 
 	os = {
 		hostname = function ()
-			assert(os.hostname())
+			assert(type(os.hostname()) == "string")
 			return "os.hostname()"
 		end
 	},
@@ -179,12 +190,11 @@ fs.dirname("]] .. dpath .. '")'
 		signum = function ()
 			local sig = "SIGKILL"
 
-			-- probably signal no.9
 			assert(math.type(process.signum(sig)) == "integer")
 			return 'process.signum("' .. sig .. '")'
 		end,
 		send = function ()
-			local hdl = io.popen("sleep 8")
+			local hdl = io.popen("sleep 2")
 			local pid = process.pidof("sleep")
 
 			assert(process.send(pid, "SIGKILL"))
@@ -202,8 +212,8 @@ do
 	local _ENV = env
 
 	-- environ
-	test(environ.getvar)
-	test(environ.setvar)
+	test(environ.get)
+	test(environ.set)
 	test(environ.pairs)
 
 	-- fs
