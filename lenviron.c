@@ -98,7 +98,7 @@ environ__newindex(lua_State *L)
 	return 0;
 }
 
-int
+static int
 pairs_iter(lua_State *L)
 {
 	char *line, *name;
@@ -130,7 +130,7 @@ pairs_iter(lua_State *L)
 	return 1;
 }
 
-int
+static int
 environ__pairs(lua_State *L)
 {
 	size_t *p;
